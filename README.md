@@ -1,2 +1,1 @@
-# teleprompter
-teleprompter specially designed for musicians.
+# Teleprompter
