@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Teleprompter</string>
+    <string name="app_name">Music Teleprompter</string>
+    <string name="btnCreateFileName">Create Text File</string>
+    <string name="btnEditConfigTextName">Edit Global Config</string>
+    <string name="etTextFileLabel">Type Or Paste Your Text Here</string>
+    <string name="btnSaveName">Save File</string>
 </resources>
