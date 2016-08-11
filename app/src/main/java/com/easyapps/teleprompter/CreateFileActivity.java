@@ -1,15 +1,16 @@
 package com.easyapps.teleprompter;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 
 public class CreateFileActivity extends AppCompatActivity {
 
@@ -27,25 +28,16 @@ public class CreateFileActivity extends AppCompatActivity {
             // Restore value of members from saved state
             String savedText = savedInstanceState.getString(TEXT_WRITTEN);
             etTextFile.setText(savedText);
-
-            // Hide label that shows the information inside text box
-            if (savedText != null && !savedText.equals(""))
-                hideLabel(null);
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        EditText etTextFile = (EditText) findViewById(R.id.etTextFile);
+        String textToSave = getTextContent();
 
-        savedInstanceState.putString(TEXT_WRITTEN, etTextFile.getText().toString());
+        savedInstanceState.putString(TEXT_WRITTEN, textToSave);
 
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-    public void hideLabel(View view) {
-        TextView tvTextFile = (TextView) findViewById(R.id.tvTextFile);
-        tvTextFile.setVisibility(View.GONE);
     }
 
     @Override
@@ -64,5 +56,35 @@ public class CreateFileActivity extends AppCompatActivity {
             return true;
         } else
             return super.dispatchKeyEvent(event);
+    }
+
+    public void SaveFile(View v) {
+        String textToSave = getTextContent();
+        String fileName = getFileName();
+        try {
+            FileOutputStream file = openFileOutput(fileName, MODE_PRIVATE);
+            OutputStreamWriter outputWriter = new OutputStreamWriter(file);
+            outputWriter.write(textToSave);
+            outputWriter.close();
+
+            //display file saved message
+            Toast.makeText(getBaseContext(), "File saved successfully!",
+                    Toast.LENGTH_SHORT).show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getBaseContext(), "Problem while saving file",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String getTextContent() {
+        EditText etTextFile = (EditText) findViewById(R.id.etTextFile);
+        return etTextFile.getText().toString();
+    }
+
+    private String getFileName() {
+        EditText etFileName = (EditText) findViewById(R.id.etFileName);
+        return etFileName.getText().toString();
     }
 }

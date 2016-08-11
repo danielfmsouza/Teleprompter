@@ -12,7 +12,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btnCreateFileName"
+        android:text="@string/btn_create_file_name"
         android:id="@+id/btnCreateFile"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
@@ -28,7 +28,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btnEditConfigTextName"
+        android:text="@string/btn_edit_config_text_name"
         android:id="@+id/btnEditConfig"
         android:layout_below="@+id/btnCreateFile"
         android:layout_alignParentStart="true"
