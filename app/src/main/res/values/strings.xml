@@ -5,4 +5,8 @@
     <string name="et_text_file_hint">Type Or Paste Your Text Here</string>
     <string name="btn_save_name">Save File</string>
     <string name="et_file_name_hint">File Name</string>
+
+    <string name="title_activity_prompter">PrompterActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

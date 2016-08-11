@@ -1,6 +1,7 @@
 package com.easyapps.teleprompter;
 
 import android.content.Intent;
+import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.easyapps.teleprompter.constans.Constants;
 
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -62,7 +65,7 @@ public class CreateFileActivity extends AppCompatActivity {
         String textToSave = getTextContent();
         String fileName = getFileName();
         try {
-            FileOutputStream file = openFileOutput(fileName, MODE_PRIVATE);
+            FileOutputStream file = openFileOutput(fileName + Constants.FILE_EXTENSION, MODE_PRIVATE);
             OutputStreamWriter outputWriter = new OutputStreamWriter(file);
             outputWriter.write(textToSave);
             outputWriter.close();
