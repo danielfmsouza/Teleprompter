@@ -10,9 +10,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.easyapps.teleprompter.constans.Constants;
+import com.easyapps.teleprompter.messages.Constants;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,9 +46,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayDecisionDialog(String s) {
+        String message = MessageFormat.format(
+                getResources().getString(R.string.start_prompt_question), s);
+
+        String yes = getResources().getString(R.string.yes);
+        String no = getResources().getString(R.string.no);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Start song " + s + "?").setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("No", dialogClickListener).show();
+        builder.setMessage(message).setPositiveButton(yes, dialogClickListener)
+                .setNegativeButton(no, dialogClickListener).show();
     }
 
     public void createTextFile(View view) {
@@ -79,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            switch (which){
+            switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
                     startPrompter();
                     break;
@@ -91,9 +98,12 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void startPrompter(){
-        Intent i = new Intent(this, PrompterActivity.class);
-        //TODO Pass text content as parameter
+    private void startPrompter() {
+        Intent i = new Intent(this, TestActivity.class);
+
+        Bundle b = new Bundle();
+        b.putString(Constants.FILE_NAME_PARAM, fileNames.get(selectedFile));
+        i.putExtras(b);
         startActivity(i);
 
         finish();

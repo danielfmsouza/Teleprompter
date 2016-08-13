@@ -1,12 +1,22 @@
 package com.easyapps.teleprompter;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
+
+import com.easyapps.teleprompter.messages.Constants;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -106,8 +116,46 @@ public class PrompterActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+
+        Bundle b = getIntent().getExtras();
+        String fileName = null;
+        if (b != null)
+            fileName = b.getString(Constants.FILE_NAME_PARAM);
+
+        if (fileName != null)
+            startPrompt(getFileContent(fileName));
     }
 
+    private void startPrompt(String fileContent) {
+        ((TextView)mContentView).setText(fileContent);
+    }
+
+    private String getFileContent(String fileName) {
+        String completeFileName = fileName + Constants.FILE_EXTENSION;
+        File[] files = this.getFilesDir().listFiles();
+        for (File f : files) {
+            if (f.getName().equals(completeFileName))
+                return readFile(f);
+        }
+        return null;
+    }
+
+    private String readFile(File f){
+        StringBuilder text = new StringBuilder();
+        String line;
+        try {
+            BufferedReader br = new BufferedReader((new FileReader(f)));
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return text.toString();
+    }
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -159,5 +207,13 @@ public class PrompterActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+
+        finish();
     }
 }

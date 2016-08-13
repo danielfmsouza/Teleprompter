@@ -1,7 +1,6 @@
 package com.easyapps.teleprompter;
 
 import android.content.Intent;
-import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -10,7 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.easyapps.teleprompter.constans.Constants;
+import com.easyapps.teleprompter.messages.Constants;
 
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;

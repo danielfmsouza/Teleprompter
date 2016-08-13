@@ -1,4 +1,10 @@
 <resources>
+    <!--Java resources-->
+    <string name="start_prompt_question">Start song {0}?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <!--UI components resources-->
     <string name="app_name">Music Teleprompter</string>
     <string name="btn_create_file_name">Create Text File</string>
     <string name="btn_edit_config_text_name">Edit Global Config</string>
