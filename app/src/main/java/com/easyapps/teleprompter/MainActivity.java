@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,6 +33,13 @@ public class MainActivity extends AppCompatActivity {
         ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
         onItemFileClickListener(lvFiles);
         listFiles(lvFiles);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_settings, menu);
+        return true;
     }
 
     private void onItemFileClickListener(ListView lvFiles) {
@@ -99,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void startPrompter() {
-        Intent i = new Intent(this, TestActivity.class);
+        Intent i = new Intent(this, PrompterActivity.class);
 
         Bundle b = new Bundle();
         b.putString(Constants.FILE_NAME_PARAM, fileNames.get(selectedFile));
@@ -107,5 +117,14 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
 
         finish();
+    }
+
+    public void startSettings(MenuItem item) {
+        Intent i = new Intent(this, SettingsActivity.class);
+        startActivity(i);
+        finish();
+    }
+
+    public void startAbout(MenuItem item) {
     }
 }
