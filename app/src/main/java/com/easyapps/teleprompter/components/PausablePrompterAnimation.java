@@ -3,6 +3,7 @@ package com.easyapps.teleprompter.components;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
+import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Xml;
 import android.view.animation.Animation;
@@ -14,6 +15,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by danielfmsouza on 13/08/2016.
@@ -22,7 +25,6 @@ public class PausablePrompterAnimation extends AnimationSet {
 
     private long mElapsedAtPause = 0;
     private boolean isPaused = false;
-
     private PausablePrompterAnimation(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -53,6 +55,7 @@ public class PausablePrompterAnimation extends AnimationSet {
             pause();
         }
     }
+
     private static Animation createAnimationFromXml(Context c, XmlPullParser parser, int toYDelta)
             throws XmlPullParserException, IOException {
 
@@ -106,7 +109,7 @@ public class PausablePrompterAnimation extends AnimationSet {
                 createAnimationFromXml(c, parser, (PausablePrompterAnimation) anim, attrs, toYDelta);
             } else if (name.equals("translate")) {
                 anim = new TranslateAnimation(0, 0, 0, -toYDelta);
-                anim.setDuration(toYDelta * 20);
+                anim.setDuration(toYDelta * 25);
             } else {
                 throw new RuntimeException("Unknown animation name: " + parser.getName());
             }
@@ -118,7 +121,7 @@ public class PausablePrompterAnimation extends AnimationSet {
         return anim;
     }
 
-    public boolean isRunning(){
+    public boolean isRunning() {
         return !isPaused;
     }
 }

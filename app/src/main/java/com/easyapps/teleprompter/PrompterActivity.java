@@ -23,6 +23,8 @@ public class PrompterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        hideUI();
+
         setContentView(R.layout.activity_prompter);
 
         Bundle b = getIntent().getExtras();
@@ -36,7 +38,6 @@ public class PrompterActivity extends AppCompatActivity {
         if (fileName != null) {
             mPrompter.setText(getFileContent(fileName));
         }
-        hideUI();
     }
 
     private String getFileContent(String fileName) {

@@ -4,9 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:interpolator="@android:anim/accelerate_interpolator"
     tools:context=".PrompterActivity">
-
     <ScrollView
         android:id="@+id/svText"
         android:layout_width="match_parent"

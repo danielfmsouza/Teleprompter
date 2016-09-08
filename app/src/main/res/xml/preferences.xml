@@ -1,0 +1,25 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.easyapps.teleprompter.components.NumberPickerPreference
+        android:key="@string/pref_key_scrollSpeed"
+        android:title="@string/pref_title_scrollSpeed"
+        android:defaultValue="5"
+        android:summary="@string/pref_summary_scrollSpeed"/>
+
+    <com.easyapps.teleprompter.components.NumberPickerPreference
+        android:key="@string/pref_key_totalTimers"
+        android:title="@string/pref_title_totalTimers"
+        android:defaultValue="1"
+        android:summary="@string/pref_summary_totalTimers"/>
+
+    <com.easyapps.teleprompter.components.NumberPickerPreference
+        android:key="@string/pref_key_timeWaiting"
+        android:title="@string/pref_title_timeWaiting"
+        android:defaultValue="5"
+        android:summary="@string/pref_summary_timeWaiting"/>
+
+    <com.easyapps.teleprompter.components.NumberPickerPreference
+        android:key="@string/pref_key_timeRunning"
+        android:title="@string/pref_title_timeRunning"
+        android:defaultValue="5"
+        android:summary="@string/pref_summary_timeRunning"/>
+</PreferenceScreen>
