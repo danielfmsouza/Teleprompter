@@ -10,32 +10,42 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.NumberPicker;
 
+import com.easyapps.teleprompter.R;
+
 /**
- * Created by danielfmsouza on 08/09/2016.
+ * A {@link android.preference.Preference} that displays a number picker as a dialog.
+ * Copyright rhmeeuwisse (https://github.com/rhmeeuwisse)
  */
 public class NumberPickerPreference extends DialogPreference {
 
-    // allowed range
-    public static final int MAX_VALUE = 20;
-    public static final int MIN_VALUE = 0;
-    // enable or disable the 'circular behavior'
-    public static final boolean WRAP_SELECTOR_WHEEL = true;
+    public static final int DEFAULT_MAX_VALUE = 50;
+    public static final int DEFAULT_MIN_VALUE = 0;
+    public static final boolean DEFAULT_WRAP_SELECTOR_WHEEL = true;
+
+    private final int minValue;
+    private final int maxValue;
+    private final boolean wrapSelectorWheel;
 
     private NumberPicker picker;
     private int value;
 
     public NumberPickerPreference(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, android.R.attr.dialogPreferenceStyle);
     }
 
     public NumberPickerPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumberPickerPreference);
+        minValue = a.getInteger(R.styleable.NumberPickerPreference_minValue, DEFAULT_MIN_VALUE);
+        maxValue = a.getInteger(R.styleable.NumberPickerPreference_maxValue, DEFAULT_MAX_VALUE);
+        wrapSelectorWheel = a.getBoolean(R.styleable.NumberPickerPreference_wrapSelectorWheel, DEFAULT_WRAP_SELECTOR_WHEEL);
+        a.recycle();
     }
 
     @Override
     protected View onCreateDialogView() {
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
 
         picker = new NumberPicker(getContext());
@@ -50,9 +60,9 @@ public class NumberPickerPreference extends DialogPreference {
     @Override
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
-        picker.setMinValue(MIN_VALUE);
-        picker.setMaxValue(MAX_VALUE);
-        picker.setWrapSelectorWheel(WRAP_SELECTOR_WHEEL);
+        picker.setMinValue(minValue);
+        picker.setMaxValue(maxValue);
+        picker.setWrapSelectorWheel(wrapSelectorWheel);
         picker.setValue(getValue());
     }
 
@@ -69,12 +79,12 @@ public class NumberPickerPreference extends DialogPreference {
 
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
-        return a.getInt(index, MIN_VALUE);
+        return a.getInt(index, minValue);
     }
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        setValue(restorePersistedValue ? getPersistedInt(MIN_VALUE) : (Integer) defaultValue);
+        setValue(restorePersistedValue ? getPersistedInt(minValue) : (Integer) defaultValue);
     }
 
     public void setValue(int value) {

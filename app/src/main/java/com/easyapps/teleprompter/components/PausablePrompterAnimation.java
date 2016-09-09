@@ -56,19 +56,19 @@ public class PausablePrompterAnimation extends AnimationSet {
         }
     }
 
-    private static Animation createAnimationFromXml(Context c, XmlPullParser parser, int toYDelta)
+    private static Animation createAnimationFromXml(Context c, XmlPullParser parser, int toYDelta, int scrollSpeed)
             throws XmlPullParserException, IOException {
 
-        return createAnimationFromXml(c, parser, null, Xml.asAttributeSet(parser), toYDelta);
+        return createAnimationFromXml(c, parser, null, Xml.asAttributeSet(parser), toYDelta, scrollSpeed);
     }
 
-    public static Animation loadAnimation(Context context, int id, int toYDelta)
+    public static Animation loadAnimation(Context context, int id, int toYDelta, int scrollSpeed)
             throws Resources.NotFoundException {
 
         XmlResourceParser parser = null;
         try {
             parser = context.getResources().getAnimation(id);
-            return createAnimationFromXml(context, parser, toYDelta);
+            return createAnimationFromXml(context, parser, toYDelta, scrollSpeed);
         } catch (XmlPullParserException ex) {
             Resources.NotFoundException rnf = new Resources.NotFoundException("Can't load animation resource ID #0x" +
                     Integer.toHexString(id));
@@ -86,7 +86,7 @@ public class PausablePrompterAnimation extends AnimationSet {
 
     private static Animation createAnimationFromXml(Context c, XmlPullParser parser,
                                                     AnimationSet parent, AttributeSet attrs,
-                                                    int toYDelta)
+                                                    int toYDelta, int scrollSpeed)
             throws XmlPullParserException, IOException {
 
         Animation anim = null;
@@ -106,10 +106,10 @@ public class PausablePrompterAnimation extends AnimationSet {
 
             if (name.equals("set")) {
                 anim = new PausablePrompterAnimation(c, attrs);
-                createAnimationFromXml(c, parser, (PausablePrompterAnimation) anim, attrs, toYDelta);
+                createAnimationFromXml(c, parser, (PausablePrompterAnimation) anim, attrs, toYDelta, scrollSpeed);
             } else if (name.equals("translate")) {
                 anim = new TranslateAnimation(0, 0, 0, -toYDelta);
-                anim.setDuration(toYDelta * 25);
+                anim.setDuration(toYDelta * scrollSpeed);
             } else {
                 throw new RuntimeException("Unknown animation name: " + parser.getName());
             }

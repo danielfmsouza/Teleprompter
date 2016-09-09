@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="number_default_value_scroll_speed">5</integer>
+    <integer name="number_max_value_scroll_speed">200</integer>
+    <integer name="number_min_value_scroll_speed">1</integer>
+
+    <integer name="number_default_value_timer">5</integer>
+    <integer name="number_min_value_timer">0</integer>
+    <integer name="number_max_value_timer">900</integer>
+
+    <integer name="number_max_value_count_timers">30</integer>
+    <integer name="number_min_value_count_timers">0</integer>
+
+    <integer name="number_default_value_text_size">40</integer>
+    <integer name="number_min_value_text_size">10</integer>
+    <integer name="number_max_value_text_size">100</integer>
+</resources>

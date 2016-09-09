@@ -1,25 +1,47 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:preference="http://schemas.android.com/apk/res-auto">
     <com.easyapps.teleprompter.components.NumberPickerPreference
         android:key="@string/pref_key_scrollSpeed"
         android:title="@string/pref_title_scrollSpeed"
-        android:defaultValue="5"
-        android:summary="@string/pref_summary_scrollSpeed"/>
+        android:summary="@string/pref_summary_scrollSpeed"
+        android:defaultValue="@integer/number_default_value_scroll_speed"
+        preference:maxValue="@integer/number_max_value_scroll_speed"
+        preference:minValue="@integer/number_min_value_scroll_speed"
+        preference:wrapSelectorWheel="false"/>
 
     <com.easyapps.teleprompter.components.NumberPickerPreference
         android:key="@string/pref_key_totalTimers"
         android:title="@string/pref_title_totalTimers"
-        android:defaultValue="1"
-        android:summary="@string/pref_summary_totalTimers"/>
+        android:summary="@string/pref_summary_totalTimers"
+        android:defaultValue="@integer/number_min_value_count_timers"
+        preference:maxValue="@integer/number_max_value_count_timers"
+        preference:minValue="@integer/number_min_value_count_timers"
+        preference:wrapSelectorWheel="false"/>
 
     <com.easyapps.teleprompter.components.NumberPickerPreference
         android:key="@string/pref_key_timeWaiting"
         android:title="@string/pref_title_timeWaiting"
-        android:defaultValue="5"
-        android:summary="@string/pref_summary_timeWaiting"/>
+        android:summary="@string/pref_summary_timeWaiting"
+        android:defaultValue="@integer/number_default_value_timer"
+        preference:maxValue="@integer/number_max_value_timer"
+        preference:minValue="@integer/number_min_value_timer"
+        preference:wrapSelectorWheel="false"/>
 
     <com.easyapps.teleprompter.components.NumberPickerPreference
         android:key="@string/pref_key_timeRunning"
         android:title="@string/pref_title_timeRunning"
-        android:defaultValue="5"
-        android:summary="@string/pref_summary_timeRunning"/>
+        android:summary="@string/pref_summary_timeRunning"
+        android:defaultValue="@integer/number_default_value_timer"
+        preference:maxValue="@integer/number_max_value_timer"
+        preference:minValue="@integer/number_min_value_timer"
+        preference:wrapSelectorWheel="false"/>
+
+    <com.easyapps.teleprompter.components.NumberPickerPreference
+        android:key="@string/pref_key_textSize"
+        android:title="@string/pref_title_textSize"
+        android:summary="@string/pref_summary_textSize"
+        android:defaultValue="@integer/number_default_value_text_size"
+        preference:maxValue="@integer/number_max_value_text_size"
+        preference:minValue="@integer/number_min_value_text_size"
+        preference:wrapSelectorWheel="false"/>
 </PreferenceScreen>

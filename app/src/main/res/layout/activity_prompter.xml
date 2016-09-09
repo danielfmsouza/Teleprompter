@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:preference="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -21,7 +22,12 @@
             android:onClick="startStop"
             android:textColor="#ffffff"
             android:textSize="50sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            preference:scrollSpeed="@integer/number_default_value_scroll_speed"
+            preference:timersCount="@integer/number_min_value_count_timers"
+            preference:timerWaitingValue="@integer/number_min_value_timer"
+            preference:timerRunningValue="@integer/number_min_value_timer"
+            />
 
     </ScrollView>
 </FrameLayout>
