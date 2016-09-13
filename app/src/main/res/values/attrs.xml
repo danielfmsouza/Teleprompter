@@ -8,5 +8,16 @@
         <attr name="metaButtonBarStyle" format="reference" />
         <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
+    <declare-styleable name="NumberPickerPreference">
+        <attr name="minValue" format="integer|reference" />
+        <attr name="maxValue" format="integer|reference" />
+        <attr name="wrapSelectorWheel" format="boolean" />
+    </declare-styleable>
 
+    <declare-styleable name="PrompterView">
+        <attr name="scrollSpeed" format="integer|reference" />
+        <attr name="timersCount" format="integer|reference" />
+        <attr name="timerWaitingValue" format="integer|reference" />
+        <attr name="timerRunningValue" format="integer|reference" />
+    </declare-styleable>
 </resources>

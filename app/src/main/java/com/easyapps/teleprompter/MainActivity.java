@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     private List<String> fileNames = new ArrayList<>();
     private int selectedFile = -1;
+    private List<Integer> selectedFiles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +50,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
                 selectedFile = position;
                 displayDecisionDialog(fileNames.get(position));
+            }
+        });
+
+        lvFiles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (selectedFiles == null)
+                    selectedFiles = new ArrayList<Integer>();
+
+                selectedFiles.add(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                selectedFiles = null;
             }
         });
     }
@@ -59,12 +75,9 @@ public class MainActivity extends AppCompatActivity {
         String message = MessageFormat.format(
                 getResources().getString(R.string.start_prompt_question), s);
 
-        String yes = getResources().getString(R.string.yes);
-        String no = getResources().getString(R.string.no);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message).setPositiveButton(yes, dialogClickListener)
-                .setNegativeButton(no, dialogClickListener).show();
+        builder.setMessage(message).setPositiveButton(Constants.YES, dialogClickListener)
+                .setNegativeButton(Constants.NO, dialogClickListener).show();
     }
 
     public void createTextFile(View view) {
@@ -88,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             ArrayAdapter<String> listAdapter = new ArrayAdapter<>(this,
-                    R.layout.support_simple_spinner_dropdown_item, fileNames);
+                    android.R.layout.simple_list_item_multiple_choice, fileNames);
             lvFiles.setAdapter(listAdapter);
         }
     }
