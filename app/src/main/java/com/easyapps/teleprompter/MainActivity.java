@@ -5,15 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.easyapps.teleprompter.components.PlayableCustomAdapter;
 import com.easyapps.teleprompter.messages.Constants;
 
 import java.io.File;
@@ -21,11 +21,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ActivityCallback {
 
     private List<String> fileNames = new ArrayList<>();
-    private int selectedFile = -1;
-    private List<Integer> selectedFiles;
+    private Menu mOptionsMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
-        onItemFileClickListener(lvFiles);
         listFiles(lvFiles);
     }
 
@@ -41,43 +39,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_settings, menu);
+        mOptionsMenu = menu;
+
+        // hiding the Delete button
+        hideContent();
         return true;
-    }
-
-    private void onItemFileClickListener(ListView lvFiles) {
-        lvFiles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                selectedFile = position;
-                displayDecisionDialog(fileNames.get(position));
-            }
-        });
-
-        lvFiles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (selectedFiles == null)
-                    selectedFiles = new ArrayList<Integer>();
-
-                selectedFiles.add(i);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                selectedFiles = null;
-            }
-        });
-    }
-
-    private void displayDecisionDialog(String s) {
-        String message = MessageFormat.format(
-                getResources().getString(R.string.start_prompt_question), s);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message).setPositiveButton(Constants.YES, dialogClickListener)
-                .setNegativeButton(Constants.NO, dialogClickListener).show();
     }
 
     public void createTextFile(View view) {
@@ -87,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    private void listFiles(ListView lvFiles) {
+    private void listFiles(final ListView lvFiles) {
         File workDirectory = this.getFilesDir();
         File[] files = workDirectory.listFiles();
 
@@ -100,36 +66,9 @@ public class MainActivity extends AppCompatActivity {
                     fileNames.add(f.getName().substring(0, indexBeforeFileExtension));
             }
 
-            ArrayAdapter<String> listAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_multiple_choice, fileNames);
+            ArrayAdapter<String> listAdapter = new PlayableCustomAdapter(this, this, fileNames);
             lvFiles.setAdapter(listAdapter);
         }
-    }
-
-    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    startPrompter();
-                    break;
-
-                case DialogInterface.BUTTON_NEGATIVE:
-                    //No button clicked
-                    break;
-            }
-        }
-    };
-
-    private void startPrompter() {
-        Intent i = new Intent(this, PrompterActivity.class);
-
-        Bundle b = new Bundle();
-        b.putString(Constants.FILE_NAME_PARAM, fileNames.get(selectedFile));
-        i.putExtras(b);
-        startActivity(i);
-
-        finish();
     }
 
     public void startSettings(MenuItem item) {
@@ -139,5 +78,65 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startAbout(MenuItem item) {
+    }
+
+    public void deleteSelectedFiles(MenuItem item) {
+        displayDecisionDialog();
+    }
+
+    private void displayDecisionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_files_question).
+                setPositiveButton(Constants.YES, dialogClickListener).show();
+    }
+
+    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    deleteFiles();
+                    break;
+            }
+        }
+    };
+
+    private void deleteFiles() {
+        ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
+        ListAdapter adapter = lvFiles.getAdapter();
+
+        for (int i = 0; i < adapter.getCount(); i++) {
+            PlayableCustomAdapter row = (PlayableCustomAdapter) adapter.getItem(i);
+            if (row.isChecked(i))
+                deleteFileFromDisk(i, lvFiles);
+        }
+    }
+
+    private void deleteFileFromDisk(int i, ListView lvFiles) {
+        File workDirectory = this.getFilesDir();
+        File[] files = workDirectory.listFiles();
+        for (File f : files) {
+            if (f.getName().equals(fileNames.get(i) + Constants.FILE_EXTENSION))
+                f.delete();
+        }
+        listFiles(lvFiles);
+    }
+
+    /**
+     * Show the trash button when called from some child component.
+     */
+    @Override
+    public void showContent() {
+        MenuItem deleteItemMenu = mOptionsMenu.getItem(0);
+        deleteItemMenu.setVisible(true);
+    }
+
+    /**
+     * Hide the trash button when called from some child component.
+     */
+    @Override
+    public void hideContent() {
+        MenuItem deleteItemMenu = mOptionsMenu.getItem(0);
+        deleteItemMenu.setVisible(false);
     }
 }
