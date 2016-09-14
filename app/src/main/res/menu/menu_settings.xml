@@ -4,6 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.easyapps.teleprompter.MainActivity">
     <item
+        android:icon="@drawable/ic_delete"
+        android:id="@+id/menu_delete"
+        android:title="Delete Files"
+        android:orderInCategory="99"
+        app:showAsAction="always"
+        android:onClick="deleteSelectedFiles"/>
+    <item
         android:id="@+id/menu_settings"
         android:title="Settings"
         android:orderInCategory="100"
