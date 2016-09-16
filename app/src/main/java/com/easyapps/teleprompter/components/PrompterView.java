@@ -50,13 +50,17 @@ public class PrompterView extends TextView {
     private void createTimers() {
         final int SECONDS_TO_MILLISECONDS = 1000;
 
-        if (timeRunning == 0)
-            timers.add(new CountDownTimerPrompter(timeWaiting * SECONDS_TO_MILLISECONDS, 0));
+        if (totalTimers > 0) {
+            if (timeRunning == 0)
+                timers.add(new CountDownTimerPrompter(timeWaiting * SECONDS_TO_MILLISECONDS, 0));
+            else
+                for (int i = 0; i < totalTimers * 2; i++) {
+                    timers.add(new CountDownTimerPrompter(timeWaiting * SECONDS_TO_MILLISECONDS, i));
+                    timers.add(new CountDownTimerPrompter(timeRunning * SECONDS_TO_MILLISECONDS, ++i));
+                }
+        }
         else
-            for (int i = 0; i < totalTimers * 2; i++) {
-                timers.add(new CountDownTimerPrompter(timeWaiting * SECONDS_TO_MILLISECONDS, i));
-                timers.add(new CountDownTimerPrompter(timeRunning * SECONDS_TO_MILLISECONDS, ++i));
-            }
+            startStop();
     }
 
     private void initializeTimers() {

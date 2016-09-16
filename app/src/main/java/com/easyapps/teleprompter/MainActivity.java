@@ -10,14 +10,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.easyapps.teleprompter.components.PlayableCustomAdapter;
 import com.easyapps.teleprompter.messages.Constants;
 
 import java.io.File;
-import java.text.MessageFormat;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,21 +54,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     }
 
     private void listFiles(final ListView lvFiles) {
-        File workDirectory = this.getFilesDir();
-        File[] files = workDirectory.listFiles();
-
-        if (files != null && files.length > 0) {
-            for (File f : files) {
-                int indexBeforeFileExtension = f.getName().length() - 3;
-                String fileExtension = f.getName().substring(indexBeforeFileExtension);
-
-                if (indexBeforeFileExtension >= 0 && fileExtension.equals(Constants.FILE_EXTENSION))
-                    fileNames.add(f.getName().substring(0, indexBeforeFileExtension));
-            }
-
-            ArrayAdapter<String> listAdapter = new PlayableCustomAdapter(this, this, fileNames);
-            lvFiles.setAdapter(listAdapter);
+        for (File f : getAppFiles()) {
+            int indexBeforeFileExtension = f.getName().length() - 3;
+            fileNames.add(f.getName().substring(0, indexBeforeFileExtension));
         }
+        lvFiles.setAdapter(new PlayableCustomAdapter(this, this, fileNames));
+        ((PlayableCustomAdapter) lvFiles.getAdapter()).notifyDataSetChanged();
     }
 
     public void startSettings(MenuItem item) {
@@ -87,7 +78,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     private void displayDecisionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.delete_files_question).
-                setPositiveButton(Constants.YES, dialogClickListener).show();
+                setPositiveButton(Constants.YES, dialogClickListener)
+                .setNegativeButton(Constants.NO, dialogClickListener).show();
     }
 
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -103,23 +95,47 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
 
     private void deleteFiles() {
         ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
-        ListAdapter adapter = lvFiles.getAdapter();
+        PlayableCustomAdapter adapter = (PlayableCustomAdapter) lvFiles.getAdapter();
 
+        List<Integer> positionsToDelete = new ArrayList<>();
         for (int i = 0; i < adapter.getCount(); i++) {
-            PlayableCustomAdapter row = (PlayableCustomAdapter) adapter.getItem(i);
-            if (row.isChecked(i))
-                deleteFileFromDisk(i, lvFiles);
+            if (adapter.isChecked(i)) {
+                positionsToDelete.add(i);
+            }
         }
+
+        deleteFilesFromDisk(positionsToDelete, adapter);
     }
 
-    private void deleteFileFromDisk(int i, ListView lvFiles) {
-        File workDirectory = this.getFilesDir();
-        File[] files = workDirectory.listFiles();
-        for (File f : files) {
-            if (f.getName().equals(fileNames.get(i) + Constants.FILE_EXTENSION))
-                f.delete();
+    private void deleteFilesFromDisk(List<Integer> positionsToDelete, ArrayAdapter adapter) {
+        File[] files = getAppFiles();
+        for (int position : positionsToDelete) {
+            if (files[position].delete()) {
+                adapter.remove(fileNames.get(position));
+                fileNames.remove(position);
+            } else
+                showMessage(R.string.delete_file_error, fileNames.get(position));
         }
-        listFiles(lvFiles);
+        recreate(); // Horrible workaround, but it works!
+    }
+
+    private void showMessage(int resource, String... parameters) {
+        String message = getResources().getString(resource, parameters);
+        Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private File[] getAppFiles() {
+        File workDirectory = this.getFilesDir();
+        File[] files = workDirectory.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File directory, String fileName) {
+                if (fileName.endsWith(Constants.FILE_EXTENSION)) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        return files == null ? new File[]{} : files;
     }
 
     /**
