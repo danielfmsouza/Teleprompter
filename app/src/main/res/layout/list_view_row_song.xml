@@ -9,7 +9,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_margin="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="0dp"
         android:text="@string/btn_play_description"
         android:contentDescription="@string/btn_play_description"
         />
@@ -22,17 +25,33 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:paddingLeft="60dp"
-        android:textSize="18sp"
+        android:layout_marginLeft="40dp"
+        android:textSize="16sp"
         android:lines="2"
         android:textStyle="normal"
         android:textColor="@android:color/black"/>
+
+    <ImageButton
+        android:background="@drawable/ic_settings"
+        android:id="@+id/btnConfig"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="0dp"
+        android:text="@string/btn_config_description"
+        android:contentDescription="@string/btn_config_description"
+        />
 
     <CheckBox
         android:id="@+id/cbDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="false"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:visibility="visible"
         />

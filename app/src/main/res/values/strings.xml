@@ -1,6 +1,7 @@
 <resources>
     <!--Java resources-->
     <string name="delete_files_question">Delete all selected files?</string>
+    <string name="delete_file_error">Error: The file {0} could not be deleted.</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
@@ -8,6 +9,7 @@
     <string name="app_name">Music Teleprompter</string>
     <string name="btn_create_file_description">Create a new lyric file</string>
     <string name="btn_play_description">Play song</string>
+    <string name="btn_config_description">Configuration for this file</string>
     <string name="btn_edit_config_text_name">Edit Global Config</string>
     <string name="et_text_file_hint">Type Or Paste Your Text Here</string>
     <string name="btn_save_name">Save File</string>
