@@ -33,7 +33,7 @@
 
     <ImageButton
         android:background="@drawable/ic_settings"
-        android:id="@+id/btnConfig"
+        android:id="@+id/btnSettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

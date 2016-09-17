@@ -2,7 +2,7 @@ package com.easyapps.teleprompter.components;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.easyapps.teleprompter.ActivityCallback;
 import com.easyapps.teleprompter.PrompterActivity;
 import com.easyapps.teleprompter.R;
+import com.easyapps.teleprompter.SettingsActivity;
+import com.easyapps.teleprompter.helper.ActivityUtils;
 import com.easyapps.teleprompter.messages.Constants;
 
 import java.util.List;
@@ -52,6 +54,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<String> {
             holder.text = (TextView) row.findViewById(R.id.tvFiles);
             holder.checkBox = (CheckBox) row.findViewById(R.id.cbDelete);
             holder.playButton = (ImageButton) row.findViewById(R.id.btnPlay);
+            holder.settingsButton = (ImageButton) row.findViewById(R.id.btnSettings);
             holder.text.setText(getItem(position));
 
             row.setTag(holder);
@@ -64,6 +67,13 @@ public class PlayableCustomAdapter extends ArrayAdapter<String> {
             @Override
             public void onClick(View view) {
                 startPrompter(position);
+            }
+        });
+
+        holder.settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startSettings(position);
             }
         });
 
@@ -115,14 +125,21 @@ public class PlayableCustomAdapter extends ArrayAdapter<String> {
         TextView text;
         ImageButton playButton;
         CheckBox checkBox;
+        ImageButton settingsButton;
     }
 
     private void startPrompter(int position) {
-        Intent i = new Intent(getContext(), PrompterActivity.class);
+        startActivity(PrompterActivity.class, position);
+    }
 
-        Bundle b = new Bundle();
-        b.putString(Constants.FILE_NAME_PARAM, getItem(position));
-        i.putExtras(b);
+    private void startSettings(int position){
+        startActivity(SettingsActivity.class, position);
+    }
+
+    private void startActivity(Class clazz, int position){
+        Intent i = new Intent(getContext(), clazz);
+        ActivityUtils.setStringParameter(Constants.FILE_NAME_PARAM, getItem(position), i);
         getContext().startActivity(i);
+        ((AppCompatActivity) getContext()).finish();
     }
 }

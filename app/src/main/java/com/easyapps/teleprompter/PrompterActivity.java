@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.ScrollView;
 
 import com.easyapps.teleprompter.components.PrompterView;
+import com.easyapps.teleprompter.helper.ActivityUtils;
 import com.easyapps.teleprompter.messages.Constants;
 
 import java.io.BufferedReader;
@@ -31,42 +32,44 @@ public class PrompterActivity extends AppCompatActivity {
         hideUI();
 
         setContentView(R.layout.activity_prompter);
+        mPrompter = (PrompterView) findViewById(R.id.fullscreen_content);
 
+        String fileName = ActivityUtils.getStringParameter(Constants.FILE_NAME_PARAM, getIntent());
+        if (fileName != null) {
+            mPrompter.setText(getFileContent(fileName));
+        } else
+            throw new RuntimeException("File not found.");
+
+        setPrompterDefinitions(fileName);
+    }
+
+    private void setPrompterDefinitions(String fileName) {
         String scrollSpeedPrefKey = getResources().getString(R.string.pref_key_scrollSpeed);
         String timeRunningPrefKey = getResources().getString(R.string.pref_key_timeRunning);
         String timeWaitingPrefKey = getResources().getString(R.string.pref_key_timeWaiting);
         String totalTimersPrefKey = getResources().getString(R.string.pref_key_totalTimers);
         String textSizePrefKey = getResources().getString(R.string.pref_key_textSize);
 
-        int scrollSpeedDefault = (getResources().getInteger(R.integer.number_default_value_scroll_speed));
+        int scrollSpeedDefault = getResources().getInteger(R.integer.number_default_value_scroll_speed);
         int timeRunningDefault = getResources().getInteger(R.integer.number_min_value_timer);
         int timeWaitingDefault = getResources().getInteger(R.integer.number_min_value_timer);
         int totalTimersDefault = getResources().getInteger(R.integer.number_min_value_count_timers);
         int textSizeDefault = getResources().getInteger(R.integer.number_default_value_text_size);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        int scrollSpeed = preferences.getInt(scrollSpeedPrefKey, scrollSpeedDefault);
-        int timeRunning = preferences.getInt(timeRunningPrefKey, timeRunningDefault);
-        int timeWaiting = preferences.getInt(timeWaitingPrefKey, timeWaitingDefault);
-        int totalTimers = preferences.getInt(totalTimersPrefKey, totalTimersDefault);
-        int textSize = preferences.getInt(textSizePrefKey, textSizeDefault);
+        int scrollSpeed = preferences.getInt(scrollSpeedPrefKey + fileName, scrollSpeedDefault);
+        int timeRunning = preferences.getInt(timeRunningPrefKey + fileName, timeRunningDefault);
+        int timeWaiting = preferences.getInt(timeWaitingPrefKey + fileName, timeWaitingDefault);
+        int totalTimers = preferences.getInt(totalTimersPrefKey + fileName, totalTimersDefault);
+        int textSize = preferences.getInt(textSizePrefKey + fileName, textSizeDefault);
 
-        mPrompter = (PrompterView) findViewById(R.id.fullscreen_content);
+
         mPrompter.setAnimationId(R.anim.text_prompter);
         mPrompter.setTextSize(textSize);
         mPrompter.setScrollSpeed(scrollSpeed);
         mPrompter.setTimeRunning(timeRunning);
         mPrompter.setTimeWaiting(timeWaiting);
         mPrompter.setTotalTimers(totalTimers);
-
-        Bundle b = getIntent().getExtras();
-        String fileName = null;
-        if (b != null)
-            fileName = b.getString(Constants.FILE_NAME_PARAM);
-
-        if (fileName != null) {
-            mPrompter.setText(getFileContent(fileName));
-        }
     }
 
     private String getFileContent(String fileName) {

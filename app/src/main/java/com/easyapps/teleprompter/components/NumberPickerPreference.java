@@ -1,6 +1,8 @@
 package com.easyapps.teleprompter.components;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
@@ -11,6 +13,8 @@ import android.widget.FrameLayout;
 import android.widget.NumberPicker;
 
 import com.easyapps.teleprompter.R;
+import com.easyapps.teleprompter.helper.ActivityUtils;
+import com.easyapps.teleprompter.messages.Constants;
 
 /**
  * A {@link android.preference.Preference} that displays a number picker as a dialog.
@@ -41,6 +45,10 @@ public class NumberPickerPreference extends DialogPreference {
         maxValue = a.getInteger(R.styleable.NumberPickerPreference_maxValue, DEFAULT_MAX_VALUE);
         wrapSelectorWheel = a.getBoolean(R.styleable.NumberPickerPreference_wrapSelectorWheel, DEFAULT_WRAP_SELECTOR_WHEEL);
         a.recycle();
+
+        Activity parent = ((Activity)context);
+        String fileName = ActivityUtils.getStringParameter(Constants.FILE_NAME_PARAM, parent.getIntent());
+        setKey(getKey() + (fileName == null ? "" : fileName));
     }
 
     @Override
