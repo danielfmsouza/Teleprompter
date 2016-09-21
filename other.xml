@@ -91,4 +91,7 @@
       <option name="ENABLED" value="true" />
     </filter>
   </component>
+  <component name="RefactoringSettings">
+    <option name="INTRODUCE_CONSTANT_VISIBILITY" value="public" />
+  </component>
 </application>
