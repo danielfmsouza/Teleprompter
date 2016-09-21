@@ -15,7 +15,6 @@
         android:id="@+id/etTextFile"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:editable="true"
         android:enabled="true"
         android:inputType="textMultiLine"
         android:textAlignment="center"

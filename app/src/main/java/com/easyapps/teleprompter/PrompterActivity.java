@@ -1,24 +1,17 @@
 package com.easyapps.teleprompter;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.easyapps.teleprompter.components.PrompterView;
 import com.easyapps.teleprompter.helper.ActivityUtils;
-import com.easyapps.teleprompter.messages.Constants;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 
 public class PrompterActivity extends AppCompatActivity {
@@ -34,13 +27,26 @@ public class PrompterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_prompter);
         mPrompter = (PrompterView) findViewById(R.id.fullscreen_content);
 
-        String fileName = ActivityUtils.getStringParameter(Constants.FILE_NAME_PARAM, getIntent());
+        String fileName = ActivityUtils.getFileNameParameter(getIntent());
         if (fileName != null) {
-            mPrompter.setText(getFileContent(fileName));
+            loadFileIntoPrompter(fileName);
         } else
-            throw new RuntimeException("File not found.");
+            ActivityUtils.showMessage(R.string.file_not_found, getBaseContext(),
+                    Toast.LENGTH_LONG);
+    }
 
-        setPrompterDefinitions(fileName);
+    private void loadFileIntoPrompter(String fileName) {
+        try {
+            mPrompter.setText(ActivityUtils.getFileContent(fileName, this));
+            setPrompterDefinitions(fileName);
+
+        } catch (FileNotFoundException e) {
+            ActivityUtils.showMessage(R.string.file_not_found, getBaseContext(),
+                    Toast.LENGTH_LONG);
+        } catch (IOException e) {
+            ActivityUtils.showMessage(R.string.input_output_file_error, getBaseContext(),
+                    Toast.LENGTH_LONG);
+        }
     }
 
     private void setPrompterDefinitions(String fileName) {
@@ -58,11 +64,15 @@ public class PrompterActivity extends AppCompatActivity {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         int scrollSpeed = preferences.getInt(scrollSpeedPrefKey + fileName, scrollSpeedDefault);
-        int timeRunning = preferences.getInt(timeRunningPrefKey + fileName, timeRunningDefault);
-        int timeWaiting = preferences.getInt(timeWaitingPrefKey + fileName, timeWaitingDefault);
         int totalTimers = preferences.getInt(totalTimersPrefKey + fileName, totalTimersDefault);
         int textSize = preferences.getInt(textSizePrefKey + fileName, textSizeDefault);
 
+        int[] timeRunning = new int[totalTimers];
+        int[] timeWaiting = new int[totalTimers];
+        for (int i = 0; i < totalTimers; i++) {
+            timeRunning[i] = preferences.getInt(timeRunningPrefKey + fileName + i, timeRunningDefault);
+            timeWaiting[i] = preferences.getInt(timeWaitingPrefKey + fileName + i, timeWaitingDefault);
+        }
 
         mPrompter.setAnimationId(R.anim.text_prompter);
         mPrompter.setTextSize(textSize);
@@ -70,33 +80,6 @@ public class PrompterActivity extends AppCompatActivity {
         mPrompter.setTimeRunning(timeRunning);
         mPrompter.setTimeWaiting(timeWaiting);
         mPrompter.setTotalTimers(totalTimers);
-    }
-
-    private String getFileContent(String fileName) {
-        String completeFileName = fileName + Constants.FILE_EXTENSION;
-        File[] files = this.getFilesDir().listFiles();
-        for (File f : files) {
-            if (f.getName().equals(completeFileName))
-                return readFile(f);
-        }
-        return null;
-    }
-
-    private String readFile(File f) {
-        StringBuilder text = new StringBuilder();
-        String line;
-        try {
-            BufferedReader br = new BufferedReader((new FileReader(f)));
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return text.toString();
     }
 
     public void startStop(View view) {
@@ -116,9 +99,6 @@ public class PrompterActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
-
-        finish();
+        ActivityUtils.backToMain(this);
     }
 }

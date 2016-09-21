@@ -1,17 +1,19 @@
 package com.easyapps.teleprompter;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.easyapps.teleprompter.helper.ActivityUtils;
 import com.easyapps.teleprompter.messages.Constants;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 public class CreateFileActivity extends AppCompatActivity {
@@ -22,14 +24,29 @@ public class CreateFileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_file);
+        EditText etTextFile = (EditText) findViewById(R.id.etTextFile);
 
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
-            EditText etTextFile = (EditText) findViewById(R.id.etTextFile);
-
             // Restore value of members from saved state
             String savedText = savedInstanceState.getString(TEXT_WRITTEN);
             etTextFile.setText(savedText);
+
+        } else {
+            String fileName = ActivityUtils.getFileNameParameter(getIntent());
+            if (fileName != null) {
+                try {
+                    etTextFile.setText(ActivityUtils.getFileContent(fileName, this));
+                } catch (FileNotFoundException e) {
+                    ActivityUtils.showMessage(R.string.file_not_found, getBaseContext(),
+                            Toast.LENGTH_LONG);
+                } catch (IOException e) {
+                    ActivityUtils.showMessage(R.string.input_output_file_error, getBaseContext(),
+                            Toast.LENGTH_LONG);
+                }
+                EditText etFileName = (EditText) findViewById(R.id.etFileName);
+                etFileName.setText(fileName);
+            }
         }
     }
 
@@ -44,10 +61,7 @@ public class CreateFileActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
-
-        finish();
+        ActivityUtils.backToMain(this);
     }
 
     @Override
@@ -69,14 +83,12 @@ public class CreateFileActivity extends AppCompatActivity {
             outputWriter.write(textToSave);
             outputWriter.close();
 
-            //display file saved message
-            Toast.makeText(getBaseContext(), "File saved successfully!",
-                    Toast.LENGTH_SHORT).show();
-
+            ActivityUtils.showMessage(R.string.file_saved, getBaseContext(),
+                    Toast.LENGTH_SHORT);
+            ActivityUtils.backToMain(this);
         } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(getBaseContext(), "Problem while saving file",
-                    Toast.LENGTH_SHORT).show();
+            ActivityUtils.showMessage(R.string.file_saving_error, getBaseContext(),
+                    Toast.LENGTH_SHORT);
         }
     }
 
