@@ -2,6 +2,7 @@
   <component name="AndroidEditors">
     <option name="state">
       <GlobalState>
+        <option name="showLint" value="true" />
         <option name="visible" value="false" />
       </GlobalState>
     </option>
