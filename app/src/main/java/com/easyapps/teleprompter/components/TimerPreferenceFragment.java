@@ -59,13 +59,15 @@ public class TimerPreferenceFragment extends PreferenceFragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         int totalTimers = getTotalTimers(fileName, preferences);
+        int minValue = mContext.getResources().getInteger(R.integer.number_min_value_timer);
+        int maxValue = mContext.getResources().getInteger(R.integer.number_max_value_timer);
         final int orderWaiting = 99;
         final int orderRunning = 100;
 
         // creating each timer configuration for each timer.
         for (int i = 0; i < totalTimers; i++) {
-            setTimerStopped(pScreen, orderWaiting, fileName, i, preferences);
-            setTimerRunning(pScreen, orderRunning, fileName, i, preferences);
+            setTimerStopped(pScreen, orderWaiting, fileName, i, preferences, minValue, maxValue);
+            setTimerRunning(pScreen, orderRunning, fileName, i, preferences, minValue, maxValue);
             setPreferenceScreen(pScreen);
         }
         if (totalTimers > 0)
@@ -79,8 +81,10 @@ public class TimerPreferenceFragment extends PreferenceFragment {
     }
 
     private void setTimerRunning(PreferenceScreen pScreen, int orderRunning,
-                                 String fileName, int i, SharedPreferences preferences) {
-        NumberPickerPreference npTimeRunning = new NumberPickerPreference(mContext);
+                                 String fileName, int i, SharedPreferences preferences,
+                                 int minValue, int maxValue) {
+        NumberPickerPreference npTimeRunning =
+                new NumberPickerPreference(mContext, minValue, maxValue);
         String keyRunning = getResources().getString(R.string.pref_key_timeRunning);
         String fullKey = keyRunning + fileName + i;
 
@@ -97,8 +101,10 @@ public class TimerPreferenceFragment extends PreferenceFragment {
     }
 
     private void setTimerStopped(PreferenceScreen pScreen, int orderWaiting,
-                                 String fileName, int i, SharedPreferences preferences) {
-        NumberPickerPreference npTimeWaiting = new NumberPickerPreference(mContext);
+                                 String fileName, int i, SharedPreferences preferences,
+                                 int minValue, int maxValue) {
+        NumberPickerPreference npTimeWaiting =
+                new NumberPickerPreference(mContext, minValue, maxValue);
         String keyWaiting = getResources().getString(R.string.pref_key_timeWaiting);
         String fullKey = keyWaiting + fileName + i;
 

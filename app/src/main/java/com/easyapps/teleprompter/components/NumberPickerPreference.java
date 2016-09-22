@@ -24,12 +24,18 @@ class NumberPickerPreference extends DialogPreference {
     private static final int DEFAULT_MIN_VALUE = 0;
     private static final boolean DEFAULT_WRAP_SELECTOR_WHEEL = true;
 
-    private final int minValue;
-    private final int maxValue;
+    private int minValue;
+    private int maxValue;
     private final boolean wrapSelectorWheel;
 
     private NumberPicker picker;
     private int value;
+
+    public NumberPickerPreference(Context context, int minValue, int maxValue){
+        this(context, null, android.R.attr.dialogPreferenceStyle);
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+    }
 
     public NumberPickerPreference(Context context){
         this(context, null, android.R.attr.dialogPreferenceStyle);

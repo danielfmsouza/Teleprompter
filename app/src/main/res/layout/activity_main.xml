@@ -1,29 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:clipToPadding="false"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
     android:padding="15dp"
-    android:background="@color/default_color"
     tools:context="com.easyapps.teleprompter.MainActivity">
 
     <ListView
         android:id="@+id/lvFiles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|top"
-       />
+        android:layout_gravity="left|top" />
 
     <ImageButton
         android:id="@+id/btnCreateFile"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="right|bottom"
-        android:background="@drawable/round_button"
+        android:background="@drawable/ic_add"
         android:contentDescription="@string/btn_create_file_description"
-        android:foreground="@drawable/ic_add"
         android:onClick="createTextFile"
         android:paddingBottom="20dp"
         android:text="@string/btn_create_file_description" />

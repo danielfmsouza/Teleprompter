@@ -75,21 +75,33 @@ public class CreateFileActivity extends AppCompatActivity {
     }
 
     public void SaveFile(View v) {
-        String textToSave = getTextContent();
         String fileName = getFileName();
-        try {
-            FileOutputStream file = openFileOutput(fileName + Constants.FILE_EXTENSION, MODE_PRIVATE);
-            OutputStreamWriter outputWriter = new OutputStreamWriter(file);
-            outputWriter.write(textToSave);
-            outputWriter.close();
+        if (fileName.trim().equals(""))
+            setErrorFileNameRequired();
+        else {
+            String textToSave = getTextContent();
+            try {
+                FileOutputStream file = openFileOutput(
+                        fileName + Constants.FILE_EXTENSION, MODE_PRIVATE);
+                OutputStreamWriter outputWriter = new OutputStreamWriter(file);
+                outputWriter.write(textToSave);
+                outputWriter.close();
 
-            ActivityUtils.showMessage(R.string.file_saved, getBaseContext(),
-                    Toast.LENGTH_SHORT);
-            ActivityUtils.backToMain(this);
-        } catch (Exception e) {
-            ActivityUtils.showMessage(R.string.file_saving_error, getBaseContext(),
-                    Toast.LENGTH_SHORT);
+                ActivityUtils.showMessage(R.string.file_saved, getBaseContext(),
+                        Toast.LENGTH_SHORT);
+                ActivityUtils.backToMain(this);
+            } catch (Exception e) {
+                ActivityUtils.showMessage(R.string.file_saving_error, getBaseContext(),
+                        Toast.LENGTH_SHORT);
+            }
         }
+    }
+
+    private void setErrorFileNameRequired() {
+        EditText etFileName = (EditText) findViewById(R.id.etFileName);
+        String error = getResources().getString(R.string.file_name_required);
+
+        etFileName.setError(error);
     }
 
     private String getTextContent() {

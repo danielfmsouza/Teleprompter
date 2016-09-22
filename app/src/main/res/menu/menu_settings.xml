@@ -8,7 +8,7 @@
         android:id="@+id/menu_delete"
         android:title="@string/menu_item_delete_files_title"
         android:orderInCategory="99"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:onClick="deleteSelectedFiles"/>
     <item
         android:id="@+id/menu_about"

@@ -82,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     private void displayDecisionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.delete_files_question).
-                setPositiveButton(Constants.YES, dialogClickListener)
-                .setNegativeButton(Constants.NO, dialogClickListener).show();
+                setPositiveButton(getResources().getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(getResources().getString(R.string.no), dialogClickListener).show();
     }
 
     private final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
