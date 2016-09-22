@@ -2,6 +2,9 @@ package com.easyapps.teleprompter.components;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,23 +16,23 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.easyapps.teleprompter.ActivityCallback;
+import com.easyapps.teleprompter.CreateFileActivity;
 import com.easyapps.teleprompter.PrompterActivity;
 import com.easyapps.teleprompter.R;
 import com.easyapps.teleprompter.SettingsActivity;
 import com.easyapps.teleprompter.helper.ActivityUtils;
-import com.easyapps.teleprompter.messages.Constants;
 
 import java.util.List;
 
 /**
- * Created by danielfmsouza on 12/09/2016.
- * Custom adapter that holds a play button, the song name, it configurations and one checkbox to
+ * Created by daniel on 12/09/2016.
+ * Custom adapter that holds a play button, the song name, its configurations and one checkbox to
  * select it for deletion
  */
 public class PlayableCustomAdapter extends ArrayAdapter<String> {
-    private boolean[] checkedItems;
-    private LayoutInflater mInflater;
-    private ActivityCallback activityCallback;
+    private final boolean[] checkedItems;
+    private final LayoutInflater mInflater;
+    private final ActivityCallback activityCallback;
 
     public PlayableCustomAdapter(Context context, ActivityCallback activityCallback,
                                  List<String> files) {
@@ -51,12 +54,13 @@ public class PlayableCustomAdapter extends ArrayAdapter<String> {
             row = mInflater.inflate(R.layout.list_view_row_song, null);
 
             holder = new Holder();
-            holder.text = (TextView) row.findViewById(R.id.tvFiles);
+            holder.text = (TextView) row.findViewById(R.id.tvFileName);
+            holder.configs = (TextView) row.findViewById(R.id.tvFileConfiguration);
             holder.checkBox = (CheckBox) row.findViewById(R.id.cbDelete);
             holder.playButton = (ImageButton) row.findViewById(R.id.btnPlay);
             holder.settingsButton = (ImageButton) row.findViewById(R.id.btnSettings);
             holder.text.setText(getItem(position));
-
+            holder.configs.setText(getLyricConfiguration(getItem(position)));
             row.setTag(holder);
 
         } else {
@@ -77,11 +81,10 @@ public class PlayableCustomAdapter extends ArrayAdapter<String> {
             }
         });
 
-        final Holder finalHolder = holder;
         holder.text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finalHolder.checkBox.setChecked(!checkedItems[position]);
+                startEditFile(position);
             }
         });
         holder.checkBox.setChecked(checkedItems[position]);
@@ -123,6 +126,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<String> {
 
     static class Holder {
         TextView text;
+        TextView configs;
         ImageButton playButton;
         CheckBox checkBox;
         ImageButton settingsButton;
@@ -132,14 +136,70 @@ public class PlayableCustomAdapter extends ArrayAdapter<String> {
         startActivity(PrompterActivity.class, position);
     }
 
-    private void startSettings(int position){
+    private void startSettings(int position) {
         startActivity(SettingsActivity.class, position);
     }
 
-    private void startActivity(Class clazz, int position){
+    private void startEditFile(int position) {
+        startActivity(CreateFileActivity.class, position);
+    }
+
+    private void startActivity(Class clazz, int position) {
         Intent i = new Intent(getContext(), clazz);
-        ActivityUtils.setStringParameter(Constants.FILE_NAME_PARAM, getItem(position), i);
+        ActivityUtils.setFileNameParameter(getItem(position), i);
         getContext().startActivity(i);
         ((AppCompatActivity) getContext()).finish();
+    }
+
+    private String getLyricConfiguration(String fileName) {
+        String scrollSpeedPrefKey = getStringFromResource(R.string.pref_key_scrollSpeed);
+        String totalTimersPrefKey = getStringFromResource(R.string.pref_key_totalTimers);
+        String textSizePrefKey = getStringFromResource(R.string.pref_key_textSize);
+
+        int scrollSpeedDefault = getIntFromResource(R.integer.number_default_value_scroll_speed);
+        int totalTimersDefault = getIntFromResource(R.integer.number_min_value_count_timers);
+        int textSizeDefault = getIntFromResource(R.integer.number_default_value_text_size);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        int scrollSpeed = preferences.getInt(scrollSpeedPrefKey + fileName, scrollSpeedDefault);
+        int totalTimers = preferences.getInt(totalTimersPrefKey + fileName, totalTimersDefault);
+        int textSize = preferences.getInt(textSizePrefKey + fileName, textSizeDefault);
+
+        StringBuilder timersMessage = getTimersConfigMessage(fileName, preferences, totalTimers);
+
+        return getContext().getResources().getString(R.string.lyric_configuration, scrollSpeed,
+                textSize, totalTimers, timersMessage.toString());
+    }
+
+    @NonNull
+    private StringBuilder getTimersConfigMessage(String fileName, SharedPreferences preferences,
+                                                 int totalTimers) {
+        String timeRunningPrefKey = getStringFromResource(R.string.pref_key_timeRunning);
+        String timeWaitingPrefKey = getStringFromResource(R.string.pref_key_timeWaiting);
+        int timeRunningDefault = getIntFromResource(R.integer.number_min_value_timer);
+        int timeWaitingDefault = getIntFromResource(R.integer.number_min_value_timer);
+
+        String timerMessage = getContext().getResources().getString(
+                R.string.lyric_configuration_timers);
+        StringBuilder timersMessage = new StringBuilder();
+
+        for (int i = 0; i < totalTimers; i++) {
+            int timeRunning = preferences.getInt(timeRunningPrefKey + fileName + i, timeRunningDefault);
+            int timeWaiting = preferences.getInt(timeWaitingPrefKey + fileName + i, timeWaitingDefault);
+            timersMessage.append(String.format(timerMessage, i + 1, timeWaiting, timeRunning));
+
+            if (i + 1 < totalTimers)
+                timersMessage.append("\n");
+        }
+        return timersMessage;
+    }
+
+    private int getIntFromResource(int resource) {
+        return getContext().getResources().getInteger(resource);
+    }
+
+    @NonNull
+    private String getStringFromResource(int resource) {
+        return getContext().getResources().getString(resource);
     }
 }

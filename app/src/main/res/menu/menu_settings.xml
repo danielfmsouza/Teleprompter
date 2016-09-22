@@ -6,19 +6,13 @@
     <item
         android:icon="@drawable/ic_delete"
         android:id="@+id/menu_delete"
-        android:title="Delete Files"
+        android:title="@string/menu_item_delete_files_title"
         android:orderInCategory="99"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:onClick="deleteSelectedFiles"/>
     <item
-        android:id="@+id/menu_settings"
-        android:title="Settings"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:onClick="startSettings"/>
-    <item
         android:id="@+id/menu_about"
-        android:title="About"
+        android:title="@string/menu_item_about_title"
         android:orderInCategory="101"
         app:showAsAction="never"
         android:onClick="startAbout"/>

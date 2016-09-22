@@ -3,7 +3,6 @@ package com.easyapps.teleprompter.components;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
-import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Xml;
 import android.view.animation.Animation;
@@ -15,36 +14,40 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Queue;
 
 /**
- * Created by danielfmsouza on 13/08/2016.
+ * Created by daniel on 13/08/2016.
+ * Animation that is pausable by touch on the screen, for example. Designed to work with animated
+ * texts.
  */
-public class PausablePrompterAnimation extends AnimationSet {
+class PausablePrompterAnimation extends AnimationSet {
+
+    public static final String ANIMATION_NAME_SET = "set";
+    public static final String ANIMATION_NAME_TRANSLATE = "translate";
 
     private long mElapsedAtPause = 0;
     private boolean isPaused = false;
+
     private PausablePrompterAnimation(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
     public boolean getTransformation(long currentTime, Transformation outTransformation) {
-        if (isPaused && mElapsedAtPause == 0) {
+        if (isPaused && mElapsedAtPause == 0)
             mElapsedAtPause = currentTime - getStartTime();
-        }
         if (isPaused)
             setStartTime(currentTime - mElapsedAtPause);
+
         return super.getTransformation(currentTime, outTransformation);
     }
 
-    public void pause() {
+    private void pause() {
         mElapsedAtPause = 0;
         isPaused = true;
     }
 
-    public void resume() {
+    private void resume() {
         isPaused = false;
     }
 
@@ -104,14 +107,18 @@ public class PausablePrompterAnimation extends AnimationSet {
 
             String name = parser.getName();
 
-            if (name.equals("set")) {
-                anim = new PausablePrompterAnimation(c, attrs);
-                createAnimationFromXml(c, parser, (PausablePrompterAnimation) anim, attrs, toYDelta, scrollSpeed);
-            } else if (name.equals("translate")) {
-                anim = new TranslateAnimation(0, 0, 0, -toYDelta);
-                anim.setDuration(toYDelta * scrollSpeed);
-            } else {
-                throw new RuntimeException("Unknown animation name: " + parser.getName());
+            switch (name) {
+                case ANIMATION_NAME_SET:
+                    anim = new PausablePrompterAnimation(c, attrs);
+                    createAnimationFromXml(c, parser, (PausablePrompterAnimation) anim, attrs,
+                            toYDelta, scrollSpeed);
+                    break;
+                case ANIMATION_NAME_TRANSLATE:
+                    anim = new TranslateAnimation(0, 0, 0, -toYDelta);
+                    anim.setDuration(toYDelta * scrollSpeed);
+                    break;
+                default:
+                    throw new RuntimeException("Unknown animation name: " + parser.getName());
             }
 
             if (parent != null) {

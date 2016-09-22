@@ -1,7 +1,7 @@
 package com.easyapps.teleprompter.messages;
 
 /**
- * Created by danielfmsouza on 11/08/2016.
+ * Created by daniel on 11/08/2016.
  *
  * Constants file
  */

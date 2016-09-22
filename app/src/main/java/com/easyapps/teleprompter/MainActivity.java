@@ -23,7 +23,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ActivityCallback {
 
-    private List<String> fileNames = new ArrayList<>();
+    private final List<String> fileNames = new ArrayList<>();
     private Menu mOptionsMenu;
 
     @Override
@@ -69,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     }
 
     public void startAbout(MenuItem item) {
+        Intent i = new Intent(this, AboutActivity.class);
+        startActivity(i);
+
+        finish();
     }
 
     public void deleteSelectedFiles(MenuItem item) {
@@ -78,11 +82,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     private void displayDecisionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.delete_files_question).
-                setPositiveButton(Constants.YES, dialogClickListener)
-                .setNegativeButton(Constants.NO, dialogClickListener).show();
+                setPositiveButton(getResources().getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(getResources().getString(R.string.no), dialogClickListener).show();
     }
 
-    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+    private final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
@@ -109,18 +113,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
 
     private void deleteFilesFromDisk(List<Integer> positionsToDelete, ArrayAdapter adapter) {
         File[] files = getAppFiles();
-        for (int position : positionsToDelete) {
+        for (int position : positionsToDelete)
             if (files[position].delete()) {
                 adapter.remove(fileNames.get(position));
                 fileNames.remove(position);
             } else
-                showMessage(R.string.delete_file_error, fileNames.get(position));
-        }
+                showMessage(fileNames.get(position));
         recreate(); // Horrible workaround, but it works!
     }
 
-    private void showMessage(int resource, String... parameters) {
-        String message = getResources().getString(resource, parameters);
+    private void showMessage(String... parameters) {
+        String message = getResources().getString(R.string.delete_file_error, parameters);
         Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
     }
 
@@ -129,10 +132,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         File[] files = workDirectory.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File directory, String fileName) {
-                if (fileName.endsWith(Constants.FILE_EXTENSION)) {
-                    return true;
-                }
-                return false;
+                return fileName.endsWith(Constants.FILE_EXTENSION);
             }
         });
         return files == null ? new File[]{} : files;

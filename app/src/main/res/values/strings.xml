@@ -1,22 +1,32 @@
 <resources>
     <!--Java resources-->
+    <string name="file_not_found">File not found.</string>
+    <string name="input_output_file_error">An error occurred while reading the file.</string>
+    <string name="file_saved">File saved successfully!</string>
+    <string name="file_saving_error">Problem while saving file.</string>
+    <string name="file_name_required">File name is required</string>
     <string name="delete_files_question">Delete all selected files?</string>
     <string name="delete_file_error">Error: The file {0} could not be deleted.</string>
+    <string name="lyric_configuration">Scroll Speed: %1$d; Text Size: %2$d; Timers: %3$d\n%4$2s</string>
+    <string name="lyric_configuration_timers">Time stopped (%1$d): %2$ds; Time running (%1$d): %3$ds</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
     <!--UI components resources-->
-    <string name="app_name">Music Teleprompter</string>
+    <string name="app_name">Singer Pro</string>
     <string name="btn_create_file_description">Create a new lyric file</string>
     <string name="btn_play_description">Play song</string>
     <string name="btn_config_description">Configuration for this file</string>
-    <string name="btn_edit_config_text_name">Edit Global Config</string>
-    <string name="et_text_file_hint">Type Or Paste Your Text Here</string>
+    <string name="et_text_file_hint">Type or paste your text here</string>
     <string name="btn_save_name">Save File</string>
     <string name="et_file_name_hint">File Name</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="app_logo_description">App logo</string>
+    <string name="menu_item_delete_files_title">Delete Files</string>
+    <string name="menu_item_about_title">About</string>
+    <string name="copyright_developer">EasyApps - Daniel Faria</string>
 
-    <!-- Strings related to Settings -->
+    <!-- Strings related to Preferences -->
     <string name="pref_key_scrollSpeed">pref_scrollSpeed</string>
     <string name="pref_key_totalTimers">pref_totalTimers</string>
     <string name="pref_key_timeWaiting">pref_timeWaiting</string>
@@ -24,12 +34,12 @@
     <string name="pref_key_textSize">pref_textSize</string>
     <string name="pref_summary_scrollSpeed">Defines how fast the screen must scroll. It will decrease with higher values.</string>
     <string name="pref_summary_timeWaiting">How much time (in seconds) should the screen keep frozen.</string>
-    <string name="pref_summary_timeRunning">How much time (in seconds) should the screen keep running normally. If zero, it will run indefinitely.</string>
-    <string name="pref_summary_totalTimers">How many timers will execute while prompting.</string>
+    <string name="pref_summary_timeRunning">How much time (in seconds) should the screen keep running normally. If zero, it will run indefinitely. Consequently, if a timer with zero is not the last, the other ones won\'t make any difference.</string>
+    <string name="pref_summary_totalTimers">How many timers will execute while prompting. After changed, the amount of time that the lyric is stopped and running on the screen must be set for each timer. The execution sequence follows exactly the way as the timers are placed here.</string>
     <string name="pref_summary_textSize">Size of the text prompted.</string>
     <string name="pref_title_scrollSpeed">Scroll speed</string>
     <string name="pref_title_textSize">Text size</string>
     <string name="pref_title_totalTimers">Timers to execute</string>
-    <string name="pref_title_timeWaiting">Time stopped</string>
-    <string name="pref_title_timeRunning">Time running</string>
+    <string name="pref_title_timeWaiting">Time stopped (%1$d)</string>
+    <string name="pref_title_timeRunning">Time running (%1$d)</string>
 </resources>

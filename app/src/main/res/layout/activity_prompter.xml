@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:preference="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".PrompterActivity">
+
     <ScrollView
         android:id="@+id/svText"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/black">
+        android:background="@android:color/black"
+        android:layout_height="match_parent">
 
         <com.easyapps.teleprompter.components.PrompterView
             android:id="@+id/fullscreen_content"
@@ -24,10 +25,9 @@
             android:textSize="50sp"
             android:textStyle="bold"
             preference:scrollSpeed="@integer/number_default_value_scroll_speed"
-            preference:timersCount="@integer/number_min_value_count_timers"
-            preference:timerWaitingValue="@integer/number_min_value_timer"
             preference:timerRunningValue="@integer/number_min_value_timer"
-            />
+            preference:timerWaitingValue="@integer/number_min_value_timer"
+            preference:timersCount="@integer/number_min_value_count_timers" />
 
     </ScrollView>
-</FrameLayout>
+</merge>

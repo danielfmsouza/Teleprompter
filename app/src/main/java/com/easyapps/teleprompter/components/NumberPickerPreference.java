@@ -2,7 +2,6 @@ package com.easyapps.teleprompter.components;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
@@ -14,30 +13,39 @@ import android.widget.NumberPicker;
 
 import com.easyapps.teleprompter.R;
 import com.easyapps.teleprompter.helper.ActivityUtils;
-import com.easyapps.teleprompter.messages.Constants;
 
 /**
  * A {@link android.preference.Preference} that displays a number picker as a dialog.
  * Copyright rhmeeuwisse (https://github.com/rhmeeuwisse)
  */
-public class NumberPickerPreference extends DialogPreference {
+class NumberPickerPreference extends DialogPreference {
 
-    public static final int DEFAULT_MAX_VALUE = 50;
-    public static final int DEFAULT_MIN_VALUE = 0;
-    public static final boolean DEFAULT_WRAP_SELECTOR_WHEEL = true;
+    private static final int DEFAULT_MAX_VALUE = 50;
+    private static final int DEFAULT_MIN_VALUE = 0;
+    private static final boolean DEFAULT_WRAP_SELECTOR_WHEEL = true;
 
-    private final int minValue;
-    private final int maxValue;
+    private int minValue;
+    private int maxValue;
     private final boolean wrapSelectorWheel;
 
     private NumberPicker picker;
     private int value;
 
-    public NumberPickerPreference(Context context, AttributeSet attrs) {
+    public NumberPickerPreference(Context context, int minValue, int maxValue){
+        this(context, null, android.R.attr.dialogPreferenceStyle);
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+    }
+
+    public NumberPickerPreference(Context context){
+        this(context, null, android.R.attr.dialogPreferenceStyle);
+    }
+
+    NumberPickerPreference(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.dialogPreferenceStyle);
     }
 
-    public NumberPickerPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+    private NumberPickerPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NumberPickerPreference);
@@ -47,7 +55,7 @@ public class NumberPickerPreference extends DialogPreference {
         a.recycle();
 
         Activity parent = ((Activity)context);
-        String fileName = ActivityUtils.getStringParameter(Constants.FILE_NAME_PARAM, parent.getIntent());
+        String fileName = ActivityUtils.getFileNameParameter(parent.getIntent());
         setKey(getKey() + (fileName == null ? "" : fileName));
     }
 

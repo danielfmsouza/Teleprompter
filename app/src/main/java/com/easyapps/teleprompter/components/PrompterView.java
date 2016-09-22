@@ -10,17 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by danielfmsouza on 13/08/2016.
+ * Created by daniel on 13/08/2016.
+ * View ready to hold a animated text on the screen. Besides that, it stills controls
+ * CountDownTimerPrompter instances.
  */
 public class PrompterView extends TextView {
     private int animationId;
 
     private int scrollSpeed;
-    private int timeRunning;
-    private int timeWaiting;
+    private int[] timeRunning;
+    private int[] timeWaiting;
     private int totalTimers;
 
-    private List<CountDownTimerPrompter> timers = new ArrayList<>();
+    private final List<CountDownTimerPrompter> timers = new ArrayList<>();
 
     public PrompterView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -51,15 +53,16 @@ public class PrompterView extends TextView {
         final int SECONDS_TO_MILLISECONDS = 1000;
 
         if (totalTimers > 0) {
-            if (timeRunning == 0)
-                timers.add(new CountDownTimerPrompter(timeWaiting * SECONDS_TO_MILLISECONDS, 0));
-            else
-                for (int i = 0; i < totalTimers * 2; i++) {
-                    timers.add(new CountDownTimerPrompter(timeWaiting * SECONDS_TO_MILLISECONDS, i));
-                    timers.add(new CountDownTimerPrompter(timeRunning * SECONDS_TO_MILLISECONDS, ++i));
+            int pos = 0;
+            for (int i = 0; i < totalTimers; i++, pos++) {
+                if (timeRunning[i] == 0) {
+                    timers.add(new CountDownTimerPrompter(timeWaiting[i] * SECONDS_TO_MILLISECONDS, pos));
+                    break;
                 }
-        }
-        else
+                timers.add(new CountDownTimerPrompter(timeWaiting[i] * SECONDS_TO_MILLISECONDS, pos));
+                timers.add(new CountDownTimerPrompter(timeRunning[i] * SECONDS_TO_MILLISECONDS, ++pos));
+            }
+        } else
             startStop();
     }
 
@@ -77,21 +80,15 @@ public class PrompterView extends TextView {
             ((PausablePrompterAnimation) getAnimation()).startStop();
     }
 
-    public boolean isRunning() {
-        if (getAnimation() != null)
-            return ((PausablePrompterAnimation) getAnimation()).isRunning();
-        return false;
-    }
-
     public void setScrollSpeed(int scrollSpeed) {
         this.scrollSpeed = scrollSpeed;
     }
 
-    public void setTimeRunning(int timeRunning) {
+    public void setTimeRunning(int[] timeRunning) {
         this.timeRunning = timeRunning;
     }
 
-    public void setTimeWaiting(int timeWaiting) {
+    public void setTimeWaiting(int[] timeWaiting) {
         this.timeWaiting = timeWaiting;
     }
 
@@ -101,7 +98,7 @@ public class PrompterView extends TextView {
 
     class CountDownTimerPrompter extends CountDownTimer {
 
-        private int id;
+        private final int id;
 
         public CountDownTimerPrompter(long timeToCount, int id) {
             super(timeToCount, timeToCount);
@@ -120,8 +117,9 @@ public class PrompterView extends TextView {
     }
 
     private void startNextTimer(int id) {
-        if (id >= 0 && id < timers.size())
+        if (id >= 0 && id < timers.size()) {
             timers.get(id).start();
+        }
     }
 }
 

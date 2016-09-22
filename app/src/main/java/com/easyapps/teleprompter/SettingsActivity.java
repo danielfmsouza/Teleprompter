@@ -1,41 +1,28 @@
 package com.easyapps.teleprompter;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 
-import com.easyapps.teleprompter.components.NumberPickerPreference;
+import com.easyapps.teleprompter.components.TimerPreferenceFragment;
 import com.easyapps.teleprompter.helper.ActivityUtils;
-import com.easyapps.teleprompter.messages.Constants;
 
 /**
- * Created by danielfmsouza on 08/09/2016.
+ * Created by daniel on 08/09/2016.
+ * Settings activity for each lyric. The file name is received by parameter.
  */
 public class SettingsActivity extends Activity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        String fileName = ActivityUtils.getFileNameParameter(getIntent());
+        if (fileName == null)
+            throw new RuntimeException("File not found.");
+
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction().replace(android.R.id.content,
-                new PrefsFragment()).commit();
-    }
-
-
-    public static class PrefsFragment extends PreferenceFragment {
-
-        @TargetApi(Build.VERSION_CODES.M)
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-
-            // Load the preferences from an XML resource
-            addPreferencesFromResource(R.xml.preferences);
-        }
+                TimerPreferenceFragment.newInstance(fileName)).commit();
     }
 
     @Override
