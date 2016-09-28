@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     android:background="@color/black_overlay"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.easyapps.teleprompter.AboutActivity">
 
@@ -14,15 +12,17 @@
         android:layout_width="@dimen/about_icon_width"
         android:layout_height="@dimen/about_icon_height"
         android:layout_gravity="center"
-        android:background="@mipmap/ic_launcher"
+        android:background="@mipmap/ic_about"
         android:contentDescription="@string/app_logo_description" />
 
-
     <TextView
-        android:layout_width="300dp"
-        android:layout_height="69dp"
+        android:id="@+id/tvAbout"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
         android:layout_gravity="center_horizontal|bottom"
         android:text="@string/copyright_developer"
         android:textAlignment="center"
-        android:textSize="18sp" />
+        android:textSize="13sp"
+        android:autoLink="web"
+        android:linksClickable="true"/>
 </FrameLayout>

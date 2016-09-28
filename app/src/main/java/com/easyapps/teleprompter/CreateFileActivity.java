@@ -1,6 +1,9 @@
 package com.easyapps.teleprompter;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -150,6 +153,7 @@ public class CreateFileActivity extends AppCompatActivity {
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
                 return false;
             } else {
+                renamePreferences(mFileName, newFileName);
                 mFileName = newFileName;
                 return true;
             }
@@ -158,6 +162,47 @@ public class CreateFileActivity extends AppCompatActivity {
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             return false;
         }
+    }
+
+    private void renamePreferences(String oldFileName, String newFileName) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        String scrollSpeedPrefKey = getResources().getString(R.string.pref_key_scrollSpeed);
+        String totalTimersPrefKey = getResources().getString(R.string.pref_key_totalTimers);
+        String textSizePrefKey = getResources().getString(R.string.pref_key_textSize);
+        String timeRunningPrefKey = getResources().getString(R.string.pref_key_timeRunning);
+        String timeWaitingPrefKey = getResources().getString(R.string.pref_key_timeWaiting);
+
+        int scrollSpeed = preferences.getInt(scrollSpeedPrefKey + oldFileName, 0);
+        int totalTimers = preferences.getInt(totalTimersPrefKey + oldFileName, 0);
+        int textSize = preferences.getInt(textSizePrefKey + oldFileName, 0);
+
+        editor.remove(scrollSpeedPrefKey);
+        editor.remove(totalTimersPrefKey);
+        editor.remove(textSizePrefKey);
+
+        if (scrollSpeed != 0)
+            editor.putInt(scrollSpeedPrefKey + newFileName, scrollSpeed);
+        if (totalTimers != 0)
+            editor.putInt(totalTimersPrefKey + newFileName, totalTimers);
+        if (textSize != 0)
+            editor.putInt(textSizePrefKey + newFileName, textSize);
+
+        for (int i = 0; i < totalTimers; i++) {
+            int timeRunning = preferences.getInt(timeRunningPrefKey + oldFileName + i, 0);
+            int timeWaiting = preferences.getInt(timeWaitingPrefKey + oldFileName + i, 0);
+
+            editor.remove(timeRunningPrefKey + oldFileName + i);
+            editor.remove(timeWaitingPrefKey + oldFileName + i);
+
+            if (timeRunning != 0)
+                editor.putInt(timeRunningPrefKey + newFileName + i, timeRunning);
+            if (timeWaiting != 0)
+                editor.putInt(timeWaitingPrefKey + newFileName + i, timeWaiting);
+        }
+
+        editor.apply();
     }
 
     private void setErrorFileNameRequired() {

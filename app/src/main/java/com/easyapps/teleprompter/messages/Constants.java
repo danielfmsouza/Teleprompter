@@ -7,7 +7,5 @@ package com.easyapps.teleprompter.messages;
  */
 public class Constants {
     public static final String FILE_EXTENSION = ".mt";
-    public static final String YES = "Yes";
-    public static final String NO = "No";
     public static final String FILE_NAME_PARAM = "fileName";
 }
