@@ -62,10 +62,4 @@ public class ActivityUtils {
         }
         return text.toString();
     }
-
-    public static void showMessage(int resource, Context activity, int duration,
-                                   String... parameters) {
-        String message = activity.getResources().getString(resource, parameters);
-        Toast.makeText(activity, message, duration).show();
-    }
 }

@@ -11,13 +11,13 @@
         android:id="@+id/lvFiles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|top" />
+        android:layout_gravity="start|top" />
 
     <ImageButton
         android:id="@+id/btnCreateFile"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_gravity="right|bottom"
+        android:layout_gravity="end|bottom"
         android:background="@drawable/ic_add"
         android:contentDescription="@string/btn_create_file_description"
         android:onClick="createTextFile"

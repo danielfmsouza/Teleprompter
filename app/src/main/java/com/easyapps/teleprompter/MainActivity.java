@@ -114,16 +114,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     private void deleteFilesFromDisk(List<Integer> positionsToDelete, ArrayAdapter adapter) {
         File[] files = getAppFiles();
         for (int position : positionsToDelete)
-            if (files[position].delete()) {
-                adapter.remove(fileNames.get(position));
-                fileNames.remove(position);
-            } else
-                showMessage(fileNames.get(position));
+            if (!files[position].delete())
+                showMessage();
         recreate(); // Horrible workaround, but it works!
     }
 
-    private void showMessage(String... parameters) {
-        String message = getResources().getString(R.string.delete_file_error, parameters);
+    private void showMessage() {
+        String message = getResources().getString(R.string.delete_file_error);
         Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
     }
 

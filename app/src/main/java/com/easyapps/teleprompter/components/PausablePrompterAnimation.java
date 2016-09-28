@@ -1,5 +1,6 @@
 package com.easyapps.teleprompter.components;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
@@ -9,6 +10,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Toast;
+
+import com.easyapps.teleprompter.R;
+import com.easyapps.teleprompter.helper.ActivityUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -22,14 +27,30 @@ import java.io.IOException;
  */
 class PausablePrompterAnimation extends AnimationSet {
 
-    public static final String ANIMATION_NAME_SET = "set";
-    public static final String ANIMATION_NAME_TRANSLATE = "translate";
+    private static final String ANIMATION_NAME_SET = "set";
+    private static final String ANIMATION_NAME_TRANSLATE = "translate";
 
     private long mElapsedAtPause = 0;
     private boolean isPaused = false;
 
-    private PausablePrompterAnimation(Context context, AttributeSet attrs) {
+    private PausablePrompterAnimation(final Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        setAnimationListener(new AnimationListener(){
+
+            @Override
+            public void onAnimationStart(Animation animation){}
+
+            @Override
+            public void onAnimationRepeat(Animation animation){}
+
+            @Override
+            public void onAnimationEnd(Animation animation){
+                ActivityUtils.backToMain((Activity) context);
+                String message = context.getResources().getString(R.string.prompting_finished);
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -51,7 +72,7 @@ class PausablePrompterAnimation extends AnimationSet {
         isPaused = false;
     }
 
-    public void startStop() {
+    void startStop() {
         if (isPaused) {
             resume();
         } else {
@@ -65,7 +86,7 @@ class PausablePrompterAnimation extends AnimationSet {
         return createAnimationFromXml(c, parser, null, Xml.asAttributeSet(parser), toYDelta, scrollSpeed);
     }
 
-    public static Animation loadAnimation(Context context, int id, int toYDelta, int scrollSpeed)
+    static Animation loadAnimation(Context context, int id, int toYDelta, int scrollSpeed)
             throws Resources.NotFoundException {
 
         XmlResourceParser parser = null;
@@ -126,9 +147,5 @@ class PausablePrompterAnimation extends AnimationSet {
             }
         }
         return anim;
-    }
-
-    public boolean isRunning() {
-        return !isPaused;
     }
 }
