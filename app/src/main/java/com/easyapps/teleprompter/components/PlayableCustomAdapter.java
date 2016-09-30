@@ -22,6 +22,7 @@ import com.easyapps.teleprompter.R;
 import com.easyapps.teleprompter.SettingsActivity;
 import com.easyapps.teleprompter.helper.ActivityUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ import java.util.List;
  * select it for deletion
  */
 public class PlayableCustomAdapter extends ArrayAdapter<String> {
-    private final boolean[] checkedItems;
+    private final List<Integer> checkedItems;
     private final LayoutInflater mInflater;
     private final ActivityCallback activityCallback;
 
@@ -40,32 +41,30 @@ public class PlayableCustomAdapter extends ArrayAdapter<String> {
 
         this.activityCallback = activityCallback;
         this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.checkedItems = new boolean[files.size()];
+        this.checkedItems = new ArrayList<>();
 
         addAll(files);
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         View row = convertView;
         Holder holder;
 
         if (row == null) {
             row = mInflater.inflate(R.layout.list_view_row_song, null);
-
-            holder = new Holder();
-            holder.text = (TextView) row.findViewById(R.id.tvFileName);
-            holder.configs = (TextView) row.findViewById(R.id.tvFileConfiguration);
-            holder.checkBox = (CheckBox) row.findViewById(R.id.cbDelete);
-            holder.playButton = (ImageButton) row.findViewById(R.id.btnPlay);
-            holder.settingsButton = (ImageButton) row.findViewById(R.id.btnSettings);
-            holder.text.setText(getItem(position));
-            holder.configs.setText(getLyricConfiguration(getItem(position)));
-            row.setTag(holder);
-
-        } else {
-            holder = (Holder) convertView.getTag();
         }
+
+        holder = new Holder();
+        holder.text = (TextView) row.findViewById(R.id.tvFileName);
+        holder.configs = (TextView) row.findViewById(R.id.tvFileConfiguration);
+        holder.checkBox = (CheckBox) row.findViewById(R.id.cbDelete);
+        holder.playButton = (ImageButton) row.findViewById(R.id.btnPlay);
+        holder.settingsButton = (ImageButton) row.findViewById(R.id.btnSettings);
+        holder.text.setText(getItem(position));
+        holder.configs.setText(getLyricConfiguration(getItem(position)));
+        row.setTag(holder);
 
         holder.playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,16 +86,17 @@ public class PlayableCustomAdapter extends ArrayAdapter<String> {
                 startEditFile(position);
             }
         });
-        holder.checkBox.setChecked(checkedItems[position]);
+        holder.checkBox.setChecked(checkedItems.contains(position));
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    checkedItems[position] = true;
+                    checkedItems.add(position);
                     activityCallback.showContent();
                 } else {
-                    verifySelectedItems(position);
+                    checkedItems.remove(Integer.valueOf(position));
+                    verifySelectedItems();
                 }
             }
         });
@@ -104,27 +104,25 @@ public class PlayableCustomAdapter extends ArrayAdapter<String> {
         return row;
     }
 
-    private void verifySelectedItems(int position) {
-        checkedItems[position] = false;
-        for (boolean checked : checkedItems) {
-            if (checked)
-                return;
+    private void verifySelectedItems() {
+        if (checkedItems.isEmpty()) {
+            activityCallback.hideContent();
         }
-        activityCallback.hideContent();
     }
 
     public boolean isChecked(int position) {
-        return checkedItems[position];
+        return checkedItems.contains(position);
     }
 
     @Override
     public void remove(String s) {
-        verifySelectedItems(getPosition(s));
+        checkedItems.remove(Integer.valueOf(getPosition(s)));
         super.remove(s);
+        activityCallback.hideContent();
         notifyDataSetChanged();
     }
 
-    static class Holder {
+    private static class Holder {
         TextView text;
         TextView configs;
         ImageButton playButton;

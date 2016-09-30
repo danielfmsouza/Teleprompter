@@ -13,8 +13,8 @@ android {
         applicationId "com.easyapps.teleprompter"
         minSdkVersion 21
         targetSdkVersion 24
-        versionCode 5
-        versionName '1.0.3'
+        versionCode 7
+        versionName '1.0.7'
     }
     buildTypes {
         release {
