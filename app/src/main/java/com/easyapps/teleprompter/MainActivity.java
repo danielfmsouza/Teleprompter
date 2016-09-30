@@ -101,22 +101,27 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
         PlayableCustomAdapter adapter = (PlayableCustomAdapter) lvFiles.getAdapter();
 
-        List<Integer> positionsToDelete = new ArrayList<>();
+        List<String> filesToDelete = new ArrayList<>();
         for (int i = 0; i < adapter.getCount(); i++) {
             if (adapter.isChecked(i)) {
-                positionsToDelete.add(i);
+                filesToDelete.add(adapter.getItem(i));
             }
         }
 
-        deleteFilesFromDisk(positionsToDelete, adapter);
+        deleteFilesFromDisk(filesToDelete, adapter);
+        hideContent();
     }
 
-    private void deleteFilesFromDisk(List<Integer> positionsToDelete, ArrayAdapter adapter) {
-        File[] files = getAppFiles();
-        for (int position : positionsToDelete)
-            if (!files[position].delete())
+    private void deleteFilesFromDisk(List<String> filesToDelete, ArrayAdapter adapter) {
+        for (String fileName : filesToDelete) {
+            File fileToDelete = getFileByName(fileName);
+            if (fileToDelete.delete()) {
+                adapter.remove(fileName);
+                fileNames.remove(fileName);
+            }
+            else
                 showMessage();
-        recreate(); // Horrible workaround, but it works!
+        }
     }
 
     private void showMessage() {
@@ -133,6 +138,19 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
             }
         });
         return files == null ? new File[]{} : files;
+    }
+
+    private File getFileByName(final String name) {
+        File workDirectory = this.getFilesDir();
+        File[] files = workDirectory.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File directory, String fileName) {
+                return fileName.equals(name + Constants.FILE_EXTENSION);
+            }
+        });
+        if (files != null && files.length > 0)
+            return files[0];
+        return null;
     }
 
     /**
