@@ -30,9 +30,10 @@ public class PrompterActivity extends AppCompatActivity {
         String fileName = ActivityUtils.getFileNameParameter(getIntent());
         if (fileName != null) {
             loadFileIntoPrompter(fileName);
-        } else
-            ActivityUtils.showMessage(R.string.file_not_found, getBaseContext(),
-                    Toast.LENGTH_LONG);
+        } else {
+            String message = getResources().getString(R.string.file_not_found);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void loadFileIntoPrompter(String fileName) {
@@ -41,11 +42,11 @@ public class PrompterActivity extends AppCompatActivity {
             setPrompterDefinitions(fileName);
 
         } catch (FileNotFoundException e) {
-            ActivityUtils.showMessage(R.string.file_not_found, getBaseContext(),
-                    Toast.LENGTH_LONG);
+            String message = getResources().getString(R.string.file_not_found);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         } catch (IOException e) {
-            ActivityUtils.showMessage(R.string.input_output_file_error, getBaseContext(),
-                    Toast.LENGTH_LONG);
+            String message = getResources().getString(R.string.input_output_file_error);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -100,5 +101,7 @@ public class PrompterActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         ActivityUtils.backToMain(this);
+        String message = getResources().getString(R.string.prompting_canceled);
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }

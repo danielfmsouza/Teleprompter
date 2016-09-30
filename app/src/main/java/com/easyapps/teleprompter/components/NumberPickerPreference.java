@@ -41,7 +41,7 @@ class NumberPickerPreference extends DialogPreference {
         this(context, null, android.R.attr.dialogPreferenceStyle);
     }
 
-    NumberPickerPreference(Context context, AttributeSet attrs) {
+    public NumberPickerPreference(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.dialogPreferenceStyle);
     }
 

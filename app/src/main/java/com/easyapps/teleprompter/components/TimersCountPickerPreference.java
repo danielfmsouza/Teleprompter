@@ -25,8 +25,10 @@ public class TimersCountPickerPreference extends NumberPickerPreference {
                 mContext.getIntent());
         if (fileName != null) {
             mFileName = fileName;
-        } else
-            ActivityUtils.showMessage(R.string.file_not_found, mContext, Toast.LENGTH_SHORT);
+        } else {
+            String message = mContext.getResources().getString(R.string.file_not_found);
+            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

@@ -4,13 +4,17 @@
     <string name="input_output_file_error">An error occurred while reading the file.</string>
     <string name="file_saved">File saved successfully!</string>
     <string name="file_saving_error">Problem while saving file.</string>
+    <string name="file_exists_error">The name %1$2s already exists in another file. Please change it and try again.</string>
+    <string name="file_rename_error">Could not rename the file %1$2s.</string>
     <string name="file_name_required">File name is required</string>
     <string name="delete_files_question">Delete all selected files?</string>
-    <string name="delete_file_error">Error: The file {0} could not be deleted.</string>
+    <string name="delete_file_error">Error: The file could not be deleted.</string>
     <string name="lyric_configuration">Scroll Speed: %1$d; Text Size: %2$d; Timers: %3$d\n%4$2s</string>
     <string name="lyric_configuration_timers">Time stopped (%1$d): %2$ds; Time running (%1$d): %3$ds</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="prompting_finished">Prompting finished successfully.</string>
+    <string name="prompting_canceled">Prompting cancelled by user.</string>
 
     <!--UI components resources-->
     <string name="app_name">Singer Pro</string>
@@ -24,7 +28,7 @@
     <string name="app_logo_description">App logo</string>
     <string name="menu_item_delete_files_title">Delete Files</string>
     <string name="menu_item_about_title">About</string>
-    <string name="copyright_developer">EasyApps - Daniel Faria</string>
+    <string name="copyright_developer">Singer Pro - version 1.0\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->
     <string name="pref_key_scrollSpeed">pref_scrollSpeed</string>

@@ -29,23 +29,4 @@
         preference:wrapSelectorWheel="false"
         />
 
-    <!--<com.easyapps.teleprompter.components.NumberPickerPreference-->
-        <!--android:key="@string/pref_key_timeWaiting"-->
-        <!--android:title="@string/pref_title_timeWaiting"-->
-        <!--android:summary="@string/pref_summary_timeWaiting"-->
-        <!--android:defaultValue="@integer/number_default_value_timer"-->
-        <!--preference:maxValue="@integer/number_max_value_timer"-->
-        <!--preference:minValue="@integer/number_min_value_timer"-->
-        <!--preference:wrapSelectorWheel="false"/>-->
-
-    <!--<com.easyapps.teleprompter.components.NumberPickerPreference-->
-        <!--android:key="@string/pref_key_timeRunning"-->
-        <!--android:title="@string/pref_title_timeRunning"-->
-        <!--android:summary="@string/pref_summary_timeRunning"-->
-        <!--android:defaultValue="@integer/number_default_value_timer"-->
-        <!--preference:maxValue="@integer/number_max_value_timer"-->
-        <!--preference:minValue="@integer/number_min_value_timer"-->
-        <!--preference:wrapSelectorWheel="false"/>-->
-
-
 </PreferenceScreen>
