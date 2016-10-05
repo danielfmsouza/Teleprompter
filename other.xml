@@ -10,7 +10,13 @@
             <id>Android &gt; Lint &gt; Internationalization</id>
           </State>
           <State>
+            <id>Data flow issuesGroovy</id>
+          </State>
+          <State>
             <id>Declaration redundancyJava</id>
+          </State>
+          <State>
+            <id>Groovy</id>
           </State>
           <State>
             <id>Java</id>
@@ -21,7 +27,7 @@
         </expanded-state>
         <selected-state>
           <State>
-            <id>SpellCheckingInspection</id>
+            <id>GroovyMissingReturnStatement</id>
           </State>
         </selected-state>
       </profile-state>
