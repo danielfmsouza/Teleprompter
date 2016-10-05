@@ -3,10 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black_overlay"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.easyapps.teleprompter.AboutActivity">
+    tools:context="com.easyapps.teleprompter.presentation.AboutActivity">
 
     <ImageView
         android:layout_width="@dimen/about_icon_width"

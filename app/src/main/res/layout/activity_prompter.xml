@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".PrompterActivity">
+    tools:context=".presentation.PrompterActivity">
 
     <ScrollView
         android:id="@+id/svText"
@@ -13,7 +13,7 @@
         android:background="@android:color/black"
         android:layout_height="match_parent">
 
-        <com.easyapps.teleprompter.components.PrompterView
+        <com.easyapps.teleprompter.presentation.components.PrompterView
             android:id="@+id/fullscreen_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

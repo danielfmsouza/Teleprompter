@@ -1,7 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:preference="http://schemas.android.com/apk/res-auto"
-    android:key="testPlease" >
-    <com.easyapps.teleprompter.components.NumberPickerPreference
+    xmlns:preference="http://schemas.android.com/apk/res-auto">
+    <com.easyapps.teleprompter.presentation.components.NumberPickerPreference
         android:key="@string/pref_key_scrollSpeed"
         android:title="@string/pref_title_scrollSpeed"
         android:summary="@string/pref_summary_scrollSpeed"
@@ -10,7 +9,7 @@
         preference:minValue="@integer/number_min_value_scroll_speed"
         preference:wrapSelectorWheel="false"/>
 
-    <com.easyapps.teleprompter.components.NumberPickerPreference
+    <com.easyapps.teleprompter.presentation.components.NumberPickerPreference
         android:key="@string/pref_key_textSize"
         android:title="@string/pref_title_textSize"
         android:summary="@string/pref_summary_textSize"
@@ -19,7 +18,7 @@
         preference:minValue="@integer/number_min_value_text_size"
         preference:wrapSelectorWheel="false"/>
 
-    <com.easyapps.teleprompter.components.TimersCountPickerPreference
+    <com.easyapps.teleprompter.presentation.components.TimersCountPickerPreference
         android:key="@string/pref_key_totalTimers"
         android:title="@string/pref_title_totalTimers"
         android:summary="@string/pref_summary_totalTimers"
