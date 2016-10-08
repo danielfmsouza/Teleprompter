@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         return true;
     }
 
-    public void createTextFile(View view) {
+    public void createLyric(View view) {
         Intent i = new Intent(this, CreateLyricActivity.class);
         startActivity(i);
 
