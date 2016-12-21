@@ -170,8 +170,11 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
 
     private void startActivity(Class clazz, int position) {
         Intent i = new Intent(getContext(), clazz);
+
         ActivityUtils.setFileNameParameter(getLyricName(position), i);
+
         getContext().startActivity(i);
+
         ((AppCompatActivity) getContext()).finish();
     }
 
@@ -181,6 +184,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
                 R.string.lyric_configuration_timers);
 
         for (int i = 0; i < config.getTimersCount(); i++) {
+
             int timeRunning = config.getTimerRunning()[i];
             int timeStopped = config.getTimerStopped()[i];
             timersMessage.append(String.format(timerMessage, i + 1, timeStopped, timeRunning));

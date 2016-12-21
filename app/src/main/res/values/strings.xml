@@ -36,6 +36,7 @@
     <string name="pref_key_timeWaiting">pref_timeWaiting</string>
     <string name="pref_key_timeRunning">pref_timeRunning</string>
     <string name="pref_key_textSize">pref_textSize</string>
+    <string name="pref_key_songNumber">pref_songNumber</string>
     <string name="pref_summary_scrollSpeed">Defines how fast the screen must scroll. It will decrease with higher values.</string>
     <string name="pref_summary_timeWaiting">How much time (in seconds) should the screen keep frozen.</string>
     <string name="pref_summary_timeRunning">How much time (in seconds) should the screen keep running normally. If zero, it will run indefinitely. Consequently, if a timer with zero is not the last, the other ones won\'t make any difference.</string>

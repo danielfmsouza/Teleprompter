@@ -64,6 +64,7 @@ public class AndroidFileSystemLyricFinder implements ILyricFinder {
                 config.getTimerRunning(),
                 config.getFontSize(),
                 config.getTimersCount(),
-                config.getTimerStopped());
+                config.getTimerStopped(),
+                config.getSongNumber());
     }
 }

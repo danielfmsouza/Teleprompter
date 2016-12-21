@@ -24,12 +24,14 @@ class AndroidPreferenceConfigurationRepository implements IConfigurationReposito
     private final String timeStoppedPrefKey;
     private final String totalTimersPrefKey;
     private final String textSizePrefKey;
+    private final String songNumberPrefKey;
 
     private final int scrollSpeedDefault;
     private final int timeRunningDefault;
     private final int timeStoppedDefault;
     private final int totalTimersDefault;
     private final int fontSizeDefault;
+    private final int songNumberDefault;
 
     AndroidPreferenceConfigurationRepository(Context androidApplicationContext) {
         this.androidApplicationContext = androidApplicationContext;
@@ -41,11 +43,13 @@ class AndroidPreferenceConfigurationRepository implements IConfigurationReposito
         timeStoppedPrefKey = getResourcesString(R.string.pref_key_timeWaiting);
         totalTimersPrefKey = getResourcesString(R.string.pref_key_totalTimers);
         textSizePrefKey = getResourcesString(R.string.pref_key_textSize);
+        songNumberPrefKey = getResourcesString(R.string.pref_key_songNumber);
 
         scrollSpeedDefault = getResourcesInt(R.integer.number_default_value_scroll_speed);
         timeRunningDefault = getResourcesInt(R.integer.number_min_value_timer);
         timeStoppedDefault = getResourcesInt(R.integer.number_min_value_timer);
         totalTimersDefault = getResourcesInt(R.integer.number_min_value_count_timers);
+        songNumberDefault = getResourcesInt(R.integer.number_song);
         fontSizeDefault = getResourcesInt(R.integer.number_default_value_text_size);
     }
 
@@ -59,6 +63,7 @@ class AndroidPreferenceConfigurationRepository implements IConfigurationReposito
         int scrollSpeed = preferences.getInt(scrollSpeedPrefKey + id, scrollSpeedDefault);
         int totalTimers = preferences.getInt(totalTimersPrefKey + id, totalTimersDefault);
         int fontSize = preferences.getInt(textSizePrefKey + id, fontSizeDefault);
+        int songNumber = preferences.getInt(songNumberPrefKey + id, songNumberDefault);
 
         int[] timeRunning = new int[totalTimers];
         int[] timeStopped = new int[totalTimers];
@@ -68,7 +73,7 @@ class AndroidPreferenceConfigurationRepository implements IConfigurationReposito
         }
 
         return Configuration.newCompleteInstance(scrollSpeed, timeRunning,
-                fontSize, timeStopped, totalTimers);
+                fontSize, timeStopped, totalTimers, songNumber);
     }
 
     private void renamePreferences(String oldFileName, String newFileName) {
@@ -77,10 +82,12 @@ class AndroidPreferenceConfigurationRepository implements IConfigurationReposito
         int scrollSpeed = preferences.getInt(scrollSpeedPrefKey + oldFileName, scrollSpeedDefault);
         int totalTimers = preferences.getInt(totalTimersPrefKey + oldFileName, totalTimersDefault);
         int fontSize = preferences.getInt(textSizePrefKey + oldFileName, fontSizeDefault);
+        int songNumber = preferences.getInt(songNumberPrefKey + oldFileName, songNumberDefault);
 
         editor.remove(scrollSpeedPrefKey);
         editor.remove(totalTimersPrefKey);
         editor.remove(textSizePrefKey);
+        editor.remove(songNumberPrefKey);
 
         if (scrollSpeed != 0)
             editor.putInt(scrollSpeedPrefKey + newFileName, scrollSpeed);
@@ -88,10 +95,14 @@ class AndroidPreferenceConfigurationRepository implements IConfigurationReposito
             editor.putInt(totalTimersPrefKey + newFileName, totalTimers);
         if (fontSize != 0)
             editor.putInt(textSizePrefKey + newFileName, fontSize);
+        if (songNumber != 0)
+            editor.putInt(songNumberPrefKey + newFileName, songNumber);
 
         for (int i = 0; i < totalTimers; i++) {
-            int timeRunning = preferences.getInt(timeRunningPrefKey + oldFileName + i, timeRunningDefault);
-            int timeStopped = preferences.getInt(timeStoppedPrefKey + oldFileName + i, timeStoppedDefault);
+            int timeRunning = preferences.getInt(timeRunningPrefKey + oldFileName + i,
+                    timeRunningDefault);
+            int timeStopped = preferences.getInt(timeStoppedPrefKey + oldFileName + i,
+                    timeStoppedDefault);
 
             editor.remove(timeRunningPrefKey + oldFileName + i);
             editor.remove(timeStoppedPrefKey + oldFileName + i);

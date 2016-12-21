@@ -13,4 +13,6 @@
     <integer name="number_default_value_text_size">40</integer>
     <integer name="number_min_value_text_size">10</integer>
     <integer name="number_max_value_text_size">100</integer>
+
+    <integer name="number_song">0</integer>
 </resources>

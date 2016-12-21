@@ -6,6 +6,7 @@ package com.easyapps.teleprompter.query.model.lyric;
  */
 
 public class LyricQueryModel {
+    private int order;
     private String name;
     private ConfigurationQueryModel configuration;
 
@@ -16,6 +17,10 @@ public class LyricQueryModel {
 
     public String getName() {
         return name;
+    }
+
+    public int getOrder() {
+        return order;
     }
 
     public ConfigurationQueryModel getConfiguration() {
@@ -30,7 +35,6 @@ public class LyricQueryModel {
         LyricQueryModel that = (LyricQueryModel) o;
 
         return name.equals(that.name);
-
     }
 
     @Override
