@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
 
         ILyricRepository mLyricRepository = new AndroidFileSystemLyricRepository(getApplicationContext());
         ILyricFinder lyricFinder = new AndroidFileSystemLyricFinder(getApplicationContext());
-        mAppService = new LyricApplicationService(mLyricRepository, lyricFinder);
+        mAppService = new LyricApplicationService(mLyricRepository, lyricFinder, null);
 
         ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
         listFiles(lvFiles);

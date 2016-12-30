@@ -13,6 +13,7 @@ public class LyricQueryModel {
     public LyricQueryModel(String name, ConfigurationQueryModel configuration) {
         this.name = name;
         this.configuration = configuration;
+        this.order = configuration != null ? configuration.getSongNumber() : 0;
     }
 
     public String getName() {

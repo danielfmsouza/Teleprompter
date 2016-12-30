@@ -40,7 +40,16 @@
         android:id="@+id/etFileName"
         android:layout_alignEnd="@+id/etTextFile"
         android:inputType="text"
-        android:layout_alignParentStart="true"
-        android:hint="@string/et_file_name_hint" />
+        android:hint="@string/et_file_name_hint"
+        android:layout_toEndOf="@+id/etSongNumber" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etSongNumber"
+        android:inputType="number"
+        android:hint="@string/et_song_number_hint"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

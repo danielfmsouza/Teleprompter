@@ -14,7 +14,7 @@ import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
  * Created by daniel on 01/10/2016.
  */
 
-class AndroidPreferenceConfigurationRepository implements IConfigurationRepository {
+public class AndroidPreferenceConfigurationRepository implements IConfigurationRepository {
 
     private final Context androidApplicationContext;
     private final SharedPreferences preferences;
@@ -33,7 +33,7 @@ class AndroidPreferenceConfigurationRepository implements IConfigurationReposito
     private final int fontSizeDefault;
     private final int songNumberDefault;
 
-    AndroidPreferenceConfigurationRepository(Context androidApplicationContext) {
+    public AndroidPreferenceConfigurationRepository(Context androidApplicationContext) {
         this.androidApplicationContext = androidApplicationContext;
         this.preferences =
                 PreferenceManager.getDefaultSharedPreferences(androidApplicationContext);
@@ -56,6 +56,15 @@ class AndroidPreferenceConfigurationRepository implements IConfigurationReposito
     @Override
     public void updateId(String oldId, String newId) {
         renamePreferences(oldId, newId);
+    }
+
+    @Override
+    public void addOrUpdateSongNumber(String id, int songNumber) {
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putInt(songNumberPrefKey + id, songNumber);
+
+        editor.apply();
     }
 
     @Override

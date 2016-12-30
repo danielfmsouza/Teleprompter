@@ -6,6 +6,10 @@ package com.easyapps.teleprompter.domain.model.lyric;
  */
 
 public interface IConfigurationRepository {
+
     void updateId(String oldId, String newId);
+
+    void addOrUpdateSongNumber(String id, int songNumber);
+
     Configuration load(String id);
 }

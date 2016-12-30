@@ -8,12 +8,14 @@ package com.easyapps.teleprompter.application.command;
 public class UpdateLyricCommand {
     private final String newName;
     private final String newContent;
+    private final int newSongNumber;
     private final String oldName;
 
-    public UpdateLyricCommand(String newName, String newContent, String oldName){
+    public UpdateLyricCommand(String newName, String newContent, String newSongNumber, String oldName){
         this.newName = newName;
         this.newContent = newContent;
         this.oldName = oldName;
+        this.newSongNumber = Integer.parseInt(newSongNumber);
     }
 
     public String getNewName() {
@@ -26,5 +28,9 @@ public class UpdateLyricCommand {
 
     public String getOldName() {
         return oldName;
+    }
+
+    public int getNewSongNumber() {
+        return newSongNumber;
     }
 }

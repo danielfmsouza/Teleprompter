@@ -24,7 +24,9 @@ import com.easyapps.teleprompter.query.model.lyric.ConfigurationQueryModel;
 import com.easyapps.teleprompter.query.model.lyric.LyricQueryModel;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by daniel on 12/09/2016.
@@ -45,6 +47,20 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         this.checkedItems = new ArrayList<>();
 
         addAll(lyrics);
+        sortItemsBySongNumber();
+    }
+
+    private void sortItemsBySongNumber() {
+        sort(new Comparator<LyricQueryModel>() {
+            @Override
+            public int compare(LyricQueryModel firstObj, LyricQueryModel secondObj) {
+                if (firstObj.getOrder() > secondObj.getOrder())
+                    return 1;
+                else if (firstObj.getOrder() < secondObj.getOrder())
+                    return -1;
+                return 0;
+            }
+        });
     }
 
     @NonNull
@@ -58,6 +74,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         }
 
         String lyricName = getLyricName(position);
+        ConfigurationQueryModel config = getConfiguration(position);
 
         holder = new Holder();
         holder.text = (TextView) row.findViewById(R.id.tvFileName);
@@ -65,9 +82,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         holder.checkBox = (CheckBox) row.findViewById(R.id.cbDelete);
         holder.playButton = (ImageButton) row.findViewById(R.id.btnPlay);
         holder.settingsButton = (ImageButton) row.findViewById(R.id.btnSettings);
-        holder.text.setText(lyricName);
-
-        ConfigurationQueryModel config = getConfiguration(position);
+        holder.text.setText(getLyricTitle(lyricName, config));
         holder.configs.setText(getConfigurationMessage(config));
         row.setTag(holder);
 
@@ -109,6 +124,13 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         });
 
         return row;
+    }
+
+    @NonNull
+    private String getLyricTitle(String lyricName, ConfigurationQueryModel config) {
+        String songNumberFormatted = String.format(Locale.getDefault(), "%02d", config.getSongNumber());
+
+        return songNumberFormatted + " - " +  lyricName;
     }
 
     @Nullable
