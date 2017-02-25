@@ -11,6 +11,12 @@
         app:showAsAction="ifRoom"
         android:onClick="deleteSelectedFiles"/>
     <item
+        android:id="@+id/menu_backup"
+        android:title="@string/menu_item_backup_title"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:onClick="startBackup"/>
+    <item
         android:id="@+id/menu_about"
         android:title="@string/menu_item_about_title"
         android:orderInCategory="101"

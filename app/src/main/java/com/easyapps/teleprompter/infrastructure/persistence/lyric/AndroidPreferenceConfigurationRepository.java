@@ -2,12 +2,21 @@ package com.easyapps.teleprompter.infrastructure.persistence.lyric;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
 import com.easyapps.teleprompter.R;
 import com.easyapps.teleprompter.domain.model.lyric.Configuration;
 import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.Map;
 
 /**
  * Implementation of IConfigurationRepository specific for an Android Shared Preference.
@@ -18,6 +27,7 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
 
     private final Context androidApplicationContext;
     private final SharedPreferences preferences;
+    private final String FILE_EXTENSION = ".xml";
 
     private final String scrollSpeedPrefKey;
     private final String timeRunningPrefKey;
@@ -85,6 +95,17 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
                 fontSize, timeStopped, totalTimers, songNumber);
     }
 
+    @Override
+    public Uri getURIFromConfiguration() {
+        File workDirectory = androidApplicationContext.getFilesDir();
+        File[] files = workDirectory.listFiles(new ConfigurationFileNameFilter());
+
+        if (files != null && files.length > 0)
+            return Uri.fromFile(files[0]);
+
+        return null;
+    }
+
     private void renamePreferences(String oldFileName, String newFileName) {
         SharedPreferences.Editor editor = preferences.edit();
 
@@ -132,5 +153,12 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
 
     private int getResourcesInt(int resource) {
         return androidApplicationContext.getResources().getInteger(resource);
+    }
+
+    private class ConfigurationFileNameFilter implements FilenameFilter {
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.contains(FILE_EXTENSION);
+        }
     }
 }

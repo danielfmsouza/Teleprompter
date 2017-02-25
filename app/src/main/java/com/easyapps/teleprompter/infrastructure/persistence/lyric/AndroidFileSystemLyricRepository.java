@@ -1,6 +1,7 @@
 package com.easyapps.teleprompter.infrastructure.persistence.lyric;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.easyapps.teleprompter.R;
 import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
@@ -111,6 +112,22 @@ public class AndroidFileSystemLyricRepository implements ILyricRepository {
     public Lyric loadWithConfiguration(String name) throws Exception {
         String content = getFileContent(name);
         return Lyric.newCompleteInstance(name, content, configurationRepository.load(name));
+    }
+
+    @Override
+    public Uri[] getAllLyricsUri() {
+        File[] filesFiltered = androidApplicationContext.getFilesDir().
+                listFiles(new LyricFileNameFilter("*"));
+
+        if (filesFiltered != null && filesFiltered.length > 0) {
+            Uri[] uris = new Uri[filesFiltered.length];
+
+            for (int i = 0; i < filesFiltered.length ; i++) {
+                uris[i] = Uri.fromFile(filesFiltered[i]);
+            }
+            return uris;
+        }
+        return null;
     }
 
     private File getFileByName(final String name) throws FileNotFoundException {

@@ -30,6 +30,7 @@
     <string name="app_logo_description">App logo</string>
     <string name="menu_item_delete_files_title">Delete Files</string>
     <string name="menu_item_about_title">About</string>
+    <string name="menu_item_backup_title">Backup</string>
     <string name="copyright_developer">Singer Pro - version 1.0\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->

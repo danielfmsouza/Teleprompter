@@ -2,6 +2,7 @@ package com.easyapps.teleprompter.presentation;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,27 +15,33 @@ import android.widget.Toast;
 
 import com.easyapps.teleprompter.R;
 import com.easyapps.teleprompter.application.LyricApplicationService;
+import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
 import com.easyapps.teleprompter.domain.model.lyric.ILyricRepository;
 import com.easyapps.teleprompter.infrastructure.persistence.lyric.AndroidFileSystemLyricFinder;
 import com.easyapps.teleprompter.infrastructure.persistence.lyric.AndroidFileSystemLyricRepository;
+import com.easyapps.teleprompter.infrastructure.persistence.lyric.AndroidPreferenceConfigurationRepository;
 import com.easyapps.teleprompter.infrastructure.persistence.lyric.FileSystemException;
 import com.easyapps.teleprompter.presentation.components.PlayableCustomAdapter;
 import com.easyapps.teleprompter.query.model.lyric.ILyricFinder;
 
 import java.io.FileNotFoundException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ActivityCallback {
 
     private Menu mOptionsMenu;
     private LyricApplicationService mAppService;
+    private ILyricRepository mLyricRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ILyricRepository mLyricRepository = new AndroidFileSystemLyricRepository(getApplicationContext());
+        mLyricRepository = new AndroidFileSystemLyricRepository(getApplicationContext());
         ILyricFinder lyricFinder = new AndroidFileSystemLyricFinder(getApplicationContext());
         mAppService = new LyricApplicationService(mLyricRepository, lyricFinder, null);
 
@@ -65,7 +72,27 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     }
 
     public void startAbout(MenuItem item) {
-        Intent i = new Intent(this, AboutActivity.class);
+        startActivity(AboutActivity.class);
+    }
+
+    public void startBackup(MenuItem item) {
+        IConfigurationRepository configRepository =
+                new AndroidPreferenceConfigurationRepository(getApplicationContext());
+
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("vnd.android.cursor.dir/email");
+
+        DateFormat df = DateFormat.getDateInstance();
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Singer Pro Backup " + df.format(new Date()));
+        emailIntent.putExtra(Intent.EXTRA_STREAM, configRepository.getURIFromConfiguration());
+
+        for (Uri uri :mLyricRepository.getAllLyricsUri()) {
+            emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        }
+    }
+
+    private void startActivity(Class activity){
+        Intent i = new Intent(this, activity);
         startActivity(i);
 
         finish();
