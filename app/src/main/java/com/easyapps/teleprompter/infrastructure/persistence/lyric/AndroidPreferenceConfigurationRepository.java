@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 
+import com.easyapps.teleprompter.BuildConfig;
 import com.easyapps.teleprompter.R;
 import com.easyapps.teleprompter.domain.model.lyric.Configuration;
 import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
@@ -13,10 +15,8 @@ import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.Map;
 
 /**
  * Implementation of IConfigurationRepository specific for an Android Shared Preference.
@@ -27,7 +27,6 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
 
     private final Context androidApplicationContext;
     private final SharedPreferences preferences;
-    private final String FILE_EXTENSION = ".xml";
 
     private final String scrollSpeedPrefKey;
     private final String timeRunningPrefKey;
@@ -47,6 +46,8 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
         this.androidApplicationContext = androidApplicationContext;
         this.preferences =
                 PreferenceManager.getDefaultSharedPreferences(androidApplicationContext);
+
+//        packageName = androidApplicationContext.getPackageName();
 
         scrollSpeedPrefKey = getResourcesString(R.string.pref_key_scrollSpeed);
         timeRunningPrefKey = getResourcesString(R.string.pref_key_timeRunning);
@@ -97,13 +98,28 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
 
     @Override
     public Uri getURIFromConfiguration() {
-        File workDirectory = androidApplicationContext.getFilesDir();
-        File[] files = workDirectory.listFiles(new ConfigurationFileNameFilter());
 
-        if (files != null && files.length > 0)
-            return Uri.fromFile(files[0]);
-
-        return null;
+//        File root = null;
+//        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+//            root = androidApplicationContext.getDataDir();
+//        else
+//            root = new File("/data/data/com.easyapps.teleprompter/shared_prefs");
+//
+//        if (root.isDirectory()) {
+//            for (File child : root.listFiles()) {
+//                if (child.getPath().contains("shared_prefs")) {
+//                    File imagePath = new File(root, "settings");
+//                    File newFile = new File(imagePath, "final.mp4");
+//
+//                    Uri sharedPrefUri = FileProvider.getUriForFile(androidApplicationContext,
+//                            BuildConfig.APPLICATION_ID + ".provider", newFile);
+//
+//                    return sharedPrefUri;
+//                    return copyPreferences(root);
+//                }
+//            }
+//        }
+        return copyPreferences();
     }
 
     private void renamePreferences(String oldFileName, String newFileName) {
@@ -155,10 +171,28 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
         return androidApplicationContext.getResources().getInteger(resource);
     }
 
-    private class ConfigurationFileNameFilter implements FilenameFilter {
-        @Override
-        public boolean accept(File dir, String name) {
-            return name.contains(FILE_EXTENSION);
+    private Uri copyPreferences() {
+        ObjectOutputStream outputWriter = null;
+        String fileName = "settings.xml";
+        try {
+            FileOutputStream file = androidApplicationContext.openFileOutput(
+                    fileName, Context.MODE_PRIVATE);
+            outputWriter = new ObjectOutputStream(file);
+            outputWriter.writeObject(preferences.getAll());
+
+            return FileProvider.getUriForFile(androidApplicationContext,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    new File(androidApplicationContext.getFilesDir(), fileName));
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (outputWriter != null) {
+                try {
+                    outputWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

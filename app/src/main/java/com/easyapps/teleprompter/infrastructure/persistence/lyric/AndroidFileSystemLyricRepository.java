@@ -2,7 +2,9 @@ package com.easyapps.teleprompter.infrastructure.persistence.lyric;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
 
+import com.easyapps.teleprompter.BuildConfig;
 import com.easyapps.teleprompter.R;
 import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
 import com.easyapps.teleprompter.domain.model.lyric.ILyricRepository;
@@ -10,6 +12,7 @@ import com.easyapps.teleprompter.domain.model.lyric.Lyric;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -117,13 +120,20 @@ public class AndroidFileSystemLyricRepository implements ILyricRepository {
     @Override
     public Uri[] getAllLyricsUri() {
         File[] filesFiltered = androidApplicationContext.getFilesDir().
-                listFiles(new LyricFileNameFilter("*"));
+                listFiles(new FilenameFilter() {
+                              public boolean accept(File dir, String name) {
+                                  return name.toLowerCase().endsWith(FILE_EXTENSION);
+                              }
+                          }
+                );
 
         if (filesFiltered != null && filesFiltered.length > 0) {
             Uri[] uris = new Uri[filesFiltered.length];
 
-            for (int i = 0; i < filesFiltered.length ; i++) {
-                uris[i] = Uri.fromFile(filesFiltered[i]);
+            for (int i = 0; i < filesFiltered.length; i++) {
+
+                uris[i] = FileProvider.getUriForFile(androidApplicationContext,
+                        BuildConfig.APPLICATION_ID + ".provider", filesFiltered[i]);
             }
             return uris;
         }

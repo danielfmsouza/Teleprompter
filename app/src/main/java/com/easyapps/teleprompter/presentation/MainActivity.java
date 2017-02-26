@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -26,7 +27,7 @@ import com.easyapps.teleprompter.query.model.lyric.ILyricFinder;
 
 import java.io.FileNotFoundException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         mLyricRepository = new AndroidFileSystemLyricRepository(getApplicationContext());
         ILyricFinder lyricFinder = new AndroidFileSystemLyricFinder(getApplicationContext());
@@ -76,22 +78,35 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     }
 
     public void startBackup(MenuItem item) {
-        IConfigurationRepository configRepository =
+        IConfigurationRepository ConfigRepository =
                 new AndroidPreferenceConfigurationRepository(getApplicationContext());
 
-        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setType("vnd.android.cursor.dir/email");
+        Uri configUri = ConfigRepository.getURIFromConfiguration();
+        Uri[] lyricsUris = mLyricRepository.getAllLyricsUri();
 
-        DateFormat df = DateFormat.getDateInstance();
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Singer Pro Backup " + df.format(new Date()));
-        emailIntent.putExtra(Intent.EXTRA_STREAM, configRepository.getURIFromConfiguration());
+        ArrayList<Uri> allUris = new ArrayList<>();
+        allUris.add(configUri);
 
-        for (Uri uri :mLyricRepository.getAllLyricsUri()) {
-            emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        for (Uri uri : lyricsUris) {
+            allUris.add(uri);
+        }
+
+        if (!allUris.isEmpty()) {
+
+            Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            emailIntent.setType("vnd.android.cursor.dir/email");
+
+            DateFormat df = DateFormat.getDateInstance();
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Singer Pro Backup " + df.format(new Date()));
+
+            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, allUris);
+            startActivity(emailIntent);
+        } else {
+            Toast.makeText(getBaseContext(), "There is no file to backup.", Toast.LENGTH_LONG).show();
         }
     }
 
-    private void startActivity(Class activity){
+    private void startActivity(Class activity) {
         Intent i = new Intent(this, activity);
         startActivity(i);
 
