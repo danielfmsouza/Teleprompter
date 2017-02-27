@@ -10,89 +10,55 @@ import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
 import com.easyapps.teleprompter.domain.model.lyric.ILyricRepository;
 import com.easyapps.teleprompter.domain.model.lyric.Lyric;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.List;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Implementation of the ILyricRepository specific for the Android File System.
  * Created by daniel on 01/10/2016.
  */
 
-public class AndroidFileSystemLyricRepository implements ILyricRepository {
+public class AndroidFileSystemLyricRepository extends FileSystemRepository implements ILyricRepository {
 
     private static final String FILE_EXTENSION = ".mt";
-    private final Context androidApplicationContext;
+    private final Context androidContext;
     private final IConfigurationRepository configurationRepository;
 
-    public AndroidFileSystemLyricRepository(Context androidApplicationContext) {
-        this.androidApplicationContext = androidApplicationContext;
+    public AndroidFileSystemLyricRepository(Context androidContext) {
+        this.androidContext = androidContext;
 
         // TODO Do not instantiate it here. Use IoC and pass it as a parameter (improve testability).
         this.configurationRepository =
-                new AndroidPreferenceConfigurationRepository(androidApplicationContext);
+                new AndroidPreferenceConfigurationRepository(androidContext);
     }
 
     @Override
     public void add(Lyric lyric) throws FileSystemException {
-        saveFile(lyric.getName(), lyric.getContent());
-    }
-
-    private void saveFile(String fileName, String content) throws FileSystemException {
-        OutputStreamWriter outputWriter = null;
-        try {
-            FileOutputStream file = androidApplicationContext.openFileOutput(
-                    fileName + FILE_EXTENSION, MODE_PRIVATE);
-            outputWriter = new OutputStreamWriter(file);
-            outputWriter.write(content);
-
-        } catch (Exception e) {
-            throwNewFileSystemException(fileName, R.string.file_saving_error);
-        } finally {
-            if (outputWriter != null) {
-                try {
-                    outputWriter.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        saveFile(lyric.getName(), FILE_EXTENSION, lyric.getContent(), androidContext);
     }
 
     @Override
     public void update(Lyric lyric, String oldName) throws FileSystemException {
-        File dir = androidApplicationContext.getFilesDir();
+        File dir = androidContext.getFilesDir();
         File oldFile = new File(dir, oldName + FILE_EXTENSION);
         File newFile = new File(dir, lyric.getName() + FILE_EXTENSION);
 
         if (oldName.equals(lyric.getName())) {
-            saveFile(lyric.getName(), lyric.getContent());
-        } else if (fileExists(lyric.getName(), dir)) {
-            throwNewFileSystemException(lyric.getName(), R.string.file_exists_error);
+            saveFile(lyric.getName(), FILE_EXTENSION, lyric.getContent(), androidContext);
+        } else if (fileExists(dir, new LyricFileNameFilter(lyric.getName()))) {
+            throwNewFileSystemException(lyric.getName(), R.string.file_exists_error, androidContext);
         } else if (oldFile.exists()) {
             if (!oldFile.renameTo(newFile)) {
-                throwNewFileSystemException(oldName, R.string.file_rename_error);
+                throwNewFileSystemException(oldName, R.string.file_rename_error, androidContext);
             } else {
-                saveFile(lyric.getName(), lyric.getContent());
+                saveFile(lyric.getName(), FILE_EXTENSION, lyric.getContent(), androidContext);
                 configurationRepository.updateId(oldName, lyric.getName());
             }
         } else {
-            throwNewFileSystemException(oldName, R.string.file_not_found);
+            throwNewFileSystemException(oldName, R.string.file_not_found, androidContext);
         }
-    }
-
-    private boolean fileExists(String name, File dir) {
-        File[] filesFiltered = dir.listFiles(new LyricFileNameFilter(name));
-        return filesFiltered != null && filesFiltered.length > 0;
     }
 
     @Override
@@ -100,7 +66,8 @@ public class AndroidFileSystemLyricRepository implements ILyricRepository {
         for (String id : ids) {
             File fileToDelete = getFileByName(id);
             if (!fileToDelete.delete()) {
-                throwNewFileSystemException(id, R.string.delete_file_error);
+                throwNewFileSystemException(id, R.string.delete_file_error,
+                        androidContext);
             }
         }
     }
@@ -119,7 +86,7 @@ public class AndroidFileSystemLyricRepository implements ILyricRepository {
 
     @Override
     public Uri[] exportAllLyrics() {
-        File[] filesFiltered = androidApplicationContext.getFilesDir().
+        File[] filesFiltered = androidContext.getFilesDir().
                 listFiles(new FilenameFilter() {
                               public boolean accept(File dir, String name) {
                                   return name.toLowerCase().endsWith(FILE_EXTENSION);
@@ -132,7 +99,7 @@ public class AndroidFileSystemLyricRepository implements ILyricRepository {
 
             for (int i = 0; i < filesFiltered.length; i++) {
 
-                uris[i] = FileProvider.getUriForFile(androidApplicationContext,
+                uris[i] = FileProvider.getUriForFile(androidContext,
                         BuildConfig.APPLICATION_ID + ".provider", filesFiltered[i]);
             }
             return uris;
@@ -140,13 +107,8 @@ public class AndroidFileSystemLyricRepository implements ILyricRepository {
         return null;
     }
 
-    @Override
-    public void importLyric(Uri uri) {
-
-    }
-
     private File getFileByName(final String name) throws FileNotFoundException {
-        File workDirectory = androidApplicationContext.getFilesDir();
+        File workDirectory = androidContext.getFilesDir();
         File[] files = workDirectory.listFiles(new LyricFileNameFilter(name));
         if (files != null && files.length > 0) {
             return files[0];
@@ -157,43 +119,20 @@ public class AndroidFileSystemLyricRepository implements ILyricRepository {
     }
 
     private String getFileContent(String fileName) throws FileSystemException, FileNotFoundException {
-        File[] filesFiltered = androidApplicationContext.getFilesDir().
+        File[] filesFiltered = androidContext.getFilesDir().
                 listFiles(new LyricFileNameFilter(fileName));
 
         if (filesFiltered != null && filesFiltered.length > 0) {
-            try {
-                return readFile(filesFiltered[0]);
-            } catch (IOException e) {
-                throwNewFileSystemException(fileName, R.string.input_output_file_error);
-            }
+            return readFile(filesFiltered[0], androidContext);
         }
         throwNewFileNotFoundException(fileName);
         return null;
     }
 
-    private void throwNewFileSystemException(String fileName, int resource)
-            throws FileSystemException {
-        String message = androidApplicationContext.getResources().
-                getString(resource, fileName);
-
-        throw new FileSystemException(message);
-    }
-
     private void throwNewFileNotFoundException(String name) throws FileNotFoundException {
-        String message = androidApplicationContext.getResources().
+        String message = androidContext.getResources().
                 getString(R.string.file_not_found, name);
         throw new FileNotFoundException(message);
-    }
-
-    private static String readFile(File f) throws IOException {
-        StringBuilder text = new StringBuilder();
-        String line;
-        BufferedReader br = new BufferedReader((new FileReader(f)));
-        while ((line = br.readLine()) != null) {
-            text.append(line);
-            text.append('\n');
-        }
-        return text.toString();
     }
 
     private class LyricFileNameFilter implements FilenameFilter {

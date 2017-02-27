@@ -13,18 +13,21 @@ import com.easyapps.teleprompter.domain.model.lyric.Configuration;
 import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Map;
 
 /**
  * Implementation of IConfigurationRepository specific for an Android Shared Preference.
  * Created by daniel on 01/10/2016.
  */
 
-public class AndroidPreferenceConfigurationRepository implements IConfigurationRepository {
+public class AndroidPreferenceConfigurationRepository extends FileSystemRepository implements IConfigurationRepository {
 
-    private final Context androidApplicationContext;
+    private final Context androidContext;
     private final SharedPreferences preferences;
 
     private final String scrollSpeedPrefKey;
@@ -41,10 +44,9 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
     private final int fontSizeDefault;
     private final int songNumberDefault;
 
-    public AndroidPreferenceConfigurationRepository(Context androidApplicationContext) {
-        this.androidApplicationContext = androidApplicationContext;
-        this.preferences =
-                PreferenceManager.getDefaultSharedPreferences(androidApplicationContext);
+    public AndroidPreferenceConfigurationRepository(Context androidContext) {
+        this.androidContext = androidContext;
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(androidContext);
 
         scrollSpeedPrefKey = getResourcesString(R.string.pref_key_scrollSpeed);
         timeRunningPrefKey = getResourcesString(R.string.pref_key_timeRunning);
@@ -96,17 +98,17 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
     @Override
     public Uri getURIFromConfiguration() {
         ObjectOutputStream outputWriter = null;
-        String fileName = "settings.xml";
+        String fileName = "settings.config";
 
         try {
-            FileOutputStream file = androidApplicationContext.openFileOutput(
+            FileOutputStream file = androidContext.openFileOutput(
                     fileName, Context.MODE_PRIVATE);
             outputWriter = new ObjectOutputStream(file);
             outputWriter.writeObject(preferences.getAll());
 
-            return FileProvider.getUriForFile(androidApplicationContext,
+            return FileProvider.getUriForFile(androidContext,
                     BuildConfig.APPLICATION_ID + ".provider",
-                    new File(androidApplicationContext.getFilesDir(), fileName));
+                    new File(androidContext.getFilesDir(), fileName));
 
         } catch (Exception e) {
             return null;
@@ -119,6 +121,45 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
                 }
             }
         }
+    }
+
+    @Override
+    public String getConfigExtension() {
+        return ".config";
+    }
+
+    @Override
+    public void importFromFile(File configFile) throws FileSystemException {
+        Map<String, ?> configs = null;
+        ObjectInputStream ois = null;
+
+        try {
+            ois = new ObjectInputStream(new FileInputStream(configFile));
+            configs = (Map<String, ?>) ois.readObject();
+            addConfigurationsFromMap(configs);
+
+        } catch (Exception ioe) {
+            throwNewFileSystemException(configFile.getName(), R.string.input_output_file_error,
+                    androidContext);
+        } finally {
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void addConfigurationsFromMap(Map<String, ?> configs) {
+        SharedPreferences.Editor editor = preferences.edit();
+
+        for (Map.Entry<String, ?> config : configs.entrySet()) {
+            editor.putString(config.getKey(), (String) config.getValue());
+        }
+
+        editor.apply();
     }
 
     private void renamePreferences(String oldFileName, String newFileName) {
@@ -163,10 +204,10 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
 
     @NonNull
     private String getResourcesString(int resource) {
-        return androidApplicationContext.getResources().getString(resource);
+        return androidContext.getResources().getString(resource);
     }
 
     private int getResourcesInt(int resource) {
-        return androidApplicationContext.getResources().getInteger(resource);
+        return androidContext.getResources().getInteger(resource);
     }
 }
