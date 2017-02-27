@@ -13,7 +13,6 @@ import com.easyapps.teleprompter.domain.model.lyric.Configuration;
 import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -46,8 +45,6 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
         this.androidApplicationContext = androidApplicationContext;
         this.preferences =
                 PreferenceManager.getDefaultSharedPreferences(androidApplicationContext);
-
-//        packageName = androidApplicationContext.getPackageName();
 
         scrollSpeedPrefKey = getResourcesString(R.string.pref_key_scrollSpeed);
         timeRunningPrefKey = getResourcesString(R.string.pref_key_timeRunning);
@@ -98,28 +95,30 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
 
     @Override
     public Uri getURIFromConfiguration() {
+        ObjectOutputStream outputWriter = null;
+        String fileName = "settings.xml";
 
-//        File root = null;
-//        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-//            root = androidApplicationContext.getDataDir();
-//        else
-//            root = new File("/data/data/com.easyapps.teleprompter/shared_prefs");
-//
-//        if (root.isDirectory()) {
-//            for (File child : root.listFiles()) {
-//                if (child.getPath().contains("shared_prefs")) {
-//                    File imagePath = new File(root, "settings");
-//                    File newFile = new File(imagePath, "final.mp4");
-//
-//                    Uri sharedPrefUri = FileProvider.getUriForFile(androidApplicationContext,
-//                            BuildConfig.APPLICATION_ID + ".provider", newFile);
-//
-//                    return sharedPrefUri;
-//                    return copyPreferences(root);
-//                }
-//            }
-//        }
-        return copyPreferences();
+        try {
+            FileOutputStream file = androidApplicationContext.openFileOutput(
+                    fileName, Context.MODE_PRIVATE);
+            outputWriter = new ObjectOutputStream(file);
+            outputWriter.writeObject(preferences.getAll());
+
+            return FileProvider.getUriForFile(androidApplicationContext,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    new File(androidApplicationContext.getFilesDir(), fileName));
+
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (outputWriter != null) {
+                try {
+                    outputWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void renamePreferences(String oldFileName, String newFileName) {
@@ -169,30 +168,5 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
 
     private int getResourcesInt(int resource) {
         return androidApplicationContext.getResources().getInteger(resource);
-    }
-
-    private Uri copyPreferences() {
-        ObjectOutputStream outputWriter = null;
-        String fileName = "settings.xml";
-        try {
-            FileOutputStream file = androidApplicationContext.openFileOutput(
-                    fileName, Context.MODE_PRIVATE);
-            outputWriter = new ObjectOutputStream(file);
-            outputWriter.writeObject(preferences.getAll());
-
-            return FileProvider.getUriForFile(androidApplicationContext,
-                    BuildConfig.APPLICATION_ID + ".provider",
-                    new File(androidApplicationContext.getFilesDir(), fileName));
-        } catch (Exception e) {
-            return null;
-        } finally {
-            if (outputWriter != null) {
-                try {
-                    outputWriter.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 }

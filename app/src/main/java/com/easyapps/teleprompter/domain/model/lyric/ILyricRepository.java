@@ -20,5 +20,7 @@ public interface ILyricRepository {
 
     Lyric loadWithConfiguration(String name)throws Exception;
 
-    Uri[] getAllLyricsUri();
+    Uri[] exportAllLyrics();
+
+    void importLyric(Uri uri);
 }

@@ -17,9 +17,15 @@
         app:showAsAction="never"
         android:onClick="startBackup"/>
     <item
+        android:id="@+id/menu_restore"
+        android:title="@string/menu_item_restore_title"
+        android:orderInCategory="101"
+        app:showAsAction="never"
+        android:onClick="startRestore"/>
+    <item
         android:id="@+id/menu_about"
         android:title="@string/menu_item_about_title"
-        android:orderInCategory="101"
+        android:orderInCategory="102"
         app:showAsAction="never"
         android:onClick="startAbout"/>
 </menu>

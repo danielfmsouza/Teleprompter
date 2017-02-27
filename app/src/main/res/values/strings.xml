@@ -1,5 +1,8 @@
 <resources>
     <!--Java resources-->
+    <string name="backup_description">Singer Pro Backup</string>
+    <string name="backup_error_no_intent">You have to install a email (or a cloud) app to send a backup.</string>
+    <string name="backup_error_no_files">There is no file to backup.</string>
     <string name="file_not_found">File %1$2s not found.</string>
     <string name="input_output_file_error">An error occurred while reading the file.</string>
     <string name="file_saved">File saved successfully!</string>
@@ -31,7 +34,8 @@
     <string name="menu_item_delete_files_title">Delete Files</string>
     <string name="menu_item_about_title">About</string>
     <string name="menu_item_backup_title">Backup</string>
-    <string name="copyright_developer">Singer Pro - version 1.0\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
+    <string name="menu_item_restore_title">Restore</string>
+    <string name="copyright_developer">Singer Pro - version 1.1\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->
     <string name="pref_key_scrollSpeed">pref_scrollSpeed</string>

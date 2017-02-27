@@ -1,10 +1,11 @@
 package com.easyapps.teleprompter.presentation;
 
+import android.content.ActivityNotFoundException;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -28,10 +29,13 @@ import com.easyapps.teleprompter.query.model.lyric.ILyricFinder;
 import java.io.FileNotFoundException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ActivityCallback {
+
+    private static final int PICK_FILE_RESULT_CODE = 1;
 
     private Menu mOptionsMenu;
     private LyricApplicationService mAppService;
@@ -82,27 +86,68 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
                 new AndroidPreferenceConfigurationRepository(getApplicationContext());
 
         Uri configUri = ConfigRepository.getURIFromConfiguration();
-        Uri[] lyricsUris = mLyricRepository.getAllLyricsUri();
+        Uri[] lyricsUris = mLyricRepository.exportAllLyrics();
 
         ArrayList<Uri> allUris = new ArrayList<>();
-        allUris.add(configUri);
 
-        for (Uri uri : lyricsUris) {
-            allUris.add(uri);
-        }
+        if (lyricsUris != null)
+            allUris.addAll(Arrays.asList(lyricsUris));
+
+        if (configUri != null)
+            allUris.add(configUri);
 
         if (!allUris.isEmpty()) {
 
-            Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-            emailIntent.setType("vnd.android.cursor.dir/email");
+            Intent backupIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            backupIntent.setType("vnd.android.cursor.dir/email");
 
             DateFormat df = DateFormat.getDateInstance();
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Singer Pro Backup " + df.format(new Date()));
+            backupIntent.putExtra(Intent.EXTRA_SUBJECT, R.string.backup_description
+                    + df.format(new Date()));
 
-            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, allUris);
-            startActivity(emailIntent);
+            backupIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, allUris);
+
+            try {
+                startActivity(backupIntent);
+            }catch (ActivityNotFoundException ex){
+                Toast.makeText(getBaseContext(), R.string.backup_error_no_intent,
+                        Toast.LENGTH_LONG).show();
+            }
         } else {
-            Toast.makeText(getBaseContext(), "There is no file to backup.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), R.string.backup_error_no_files,
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void startRestore(MenuItem item) {
+
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        intent.setType("*/*");
+
+        startActivityForResult(intent, PICK_FILE_RESULT_CODE);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        switch(requestCode){
+            case PICK_FILE_RESULT_CODE:
+                if(resultCode==RESULT_OK){
+                    ClipData data = intent.getClipData();
+
+                    if (data != null){
+                        for (int i= 0; i < data.getItemCount(); i ++){
+                            ClipData.Item item = data.getItemAt(i);
+
+                            if (item !=  null){
+                                mLyricRepository.importLyric(item.getUri());
+                            }
+                        }
+                    }
+                }
+                break;
         }
     }
 

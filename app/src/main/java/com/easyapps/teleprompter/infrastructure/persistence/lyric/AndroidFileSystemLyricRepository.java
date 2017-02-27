@@ -118,7 +118,7 @@ public class AndroidFileSystemLyricRepository implements ILyricRepository {
     }
 
     @Override
-    public Uri[] getAllLyricsUri() {
+    public Uri[] exportAllLyrics() {
         File[] filesFiltered = androidApplicationContext.getFilesDir().
                 listFiles(new FilenameFilter() {
                               public boolean accept(File dir, String name) {
@@ -138,6 +138,11 @@ public class AndroidFileSystemLyricRepository implements ILyricRepository {
             return uris;
         }
         return null;
+    }
+
+    @Override
+    public void importLyric(Uri uri) {
+
     }
 
     private File getFileByName(final String name) throws FileNotFoundException {
