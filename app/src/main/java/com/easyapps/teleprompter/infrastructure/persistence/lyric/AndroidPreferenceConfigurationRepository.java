@@ -13,7 +13,6 @@ import com.easyapps.teleprompter.domain.model.lyric.Configuration;
 import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -43,6 +42,9 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
     private final int totalTimersDefault;
     private final int fontSizeDefault;
     private final int songNumberDefault;
+
+    private static final String FILE_NAME = "settings";
+    private static final String FILE_EXTENSION = ".cfg";
 
     public AndroidPreferenceConfigurationRepository(Context androidContext) {
         this.androidContext = androidContext;
@@ -98,7 +100,7 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
     @Override
     public Uri getURIFromConfiguration() {
         ObjectOutputStream outputWriter = null;
-        String fileName = "settings.config";
+        String fileName = FILE_NAME + FILE_EXTENSION;
 
         try {
             FileOutputStream file = androidContext.openFileOutput(
@@ -125,21 +127,23 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
 
     @Override
     public String getConfigExtension() {
-        return ".config";
+        return FILE_EXTENSION;
     }
 
     @Override
-    public void importFromFile(File configFile) throws FileSystemException {
-        Map<String, ?> configs = null;
+    public void importFromFileUri(Uri configFileUri) throws FileSystemException {
+        Map configs;
         ObjectInputStream ois = null;
-
         try {
-            ois = new ObjectInputStream(new FileInputStream(configFile));
-            configs = (Map<String, ?>) ois.readObject();
-            addConfigurationsFromMap(configs);
+            ois = new ObjectInputStream(androidContext.getContentResolver().openInputStream(configFileUri));
+            Object object = ois.readObject();
 
+            if (object instanceof Map) {
+                configs = (Map) object;
+                addConfigurationsFromMap(configs);
+            }
         } catch (Exception ioe) {
-            throwNewFileSystemException(configFile.getName(), R.string.input_output_file_error,
+            throwNewFileSystemException(FILE_NAME, R.string.input_output_file_error,
                     androidContext);
         } finally {
             if (ois != null) {
@@ -152,11 +156,11 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
         }
     }
 
-    private void addConfigurationsFromMap(Map<String, ?> configs) {
+    private void addConfigurationsFromMap(Map configs) {
         SharedPreferences.Editor editor = preferences.edit();
 
-        for (Map.Entry<String, ?> config : configs.entrySet()) {
-            editor.putString(config.getKey(), (String) config.getValue());
+        for (Map.Entry<String, ?> config : ((Map<String, ?>) configs).entrySet()) {
+            editor.putInt(config.getKey(), Integer.valueOf(config.getValue().toString()));
         }
 
         editor.apply();

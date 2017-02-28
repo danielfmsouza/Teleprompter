@@ -2,14 +2,10 @@ package com.easyapps.teleprompter.presentation;
 
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
-import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -32,11 +28,7 @@ import com.easyapps.teleprompter.infrastructure.persistence.lyric.FileSystemRepo
 import com.easyapps.teleprompter.presentation.components.PlayableCustomAdapter;
 import com.easyapps.teleprompter.query.model.lyric.ILyricFinder;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -148,68 +140,66 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
 
                     if (data != null) {
                         importFiles(data);
+                    } else {
+                        Uri uri = intent.getData();
+                        String fileName = FileSystemRepository.getFileName(uri, this);
+
+                        if (uri != null) {
+                            if (fileName.endsWith(mAppService.getConfigExtension()))
+                                importConfigurationFile(uri);
+                            else
+                                importLyricFile(1, uri, fileName);
+                        }
                     }
+
+                    ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
+                    listFiles(lvFiles);
                 }
                 break;
         }
     }
 
     private void importFiles(ClipData data) {
-        File configFile = null;
+        Uri configFileUri = null;
 
         for (int i = 0; i < data.getItemCount(); i++) {
             ClipData.Item item = data.getItemAt(i);
 
             if (item != null) {
-                try {
-                    InputStream is = getContentResolver().openInputStream(item.getUri());
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                String fileName = FileSystemRepository.getFileName(item.getUri(), this);
 
-                    int j;
-                    try {
-                        j = is.read();
-                        while (j != -1) {
-                            baos.write(j);
-                            j = is.read();
-                        }
-                        is.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    System.out.println(baos.toString());
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-//                if (file.getPath().endsWith(mAppService.getConfigExtension()))
-//                    configFile = file;
-//                else {
-//                    try {
-//                        mAppService.addLyric(importLyric(file, i));
-//                    } catch (Exception e) {
-//                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-//                    }
-//                }
+                if (fileName.endsWith(mAppService.getConfigExtension()))
+                    configFileUri = item.getUri();
+                else
+                    importLyricFile(i, item.getUri(), fileName);
             }
         }
+        importConfigurationFile(configFileUri);
+    }
 
-        try {
-            mAppService.importAllConfigurationsFromFile(configFile);
-        } catch (FileSystemException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+    private void importConfigurationFile(Uri configFileUri) {
+        if (configFileUri != null) {
+            try {
+                mAppService.importAllConfigurationsFromFileUri(configFileUri);
+            } catch (FileSystemException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
         }
     }
 
-    private AddLyricCommand importLyric(File f, int number) {
+    private void importLyricFile(int i, Uri uri, String fileName) {
         try {
-            String content = FileSystemRepository.readFile(f, this);
+            String content = FileSystemRepository.readFile(uri, this, fileName);
 
-            return new AddLyricCommand(f.getName(), content, String.valueOf(number));
-        } catch (FileSystemException e) {
+            if (fileName != null) {
+                String shortFileName = fileName.substring(0, fileName.indexOf("."));
+                AddLyricCommand cmd = new AddLyricCommand(shortFileName, content, String.valueOf(i));
+                mAppService.addLyric(cmd);
+            }
+
+        } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
-        return null;
     }
 
     private void startActivity(Class activity) {

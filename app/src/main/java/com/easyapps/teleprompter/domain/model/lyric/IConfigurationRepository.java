@@ -23,5 +23,5 @@ public interface IConfigurationRepository {
 
     String getConfigExtension();
 
-    void importFromFile(File configFile) throws FileSystemException;
+    void importFromFileUri(Uri configFileUri) throws FileSystemException;
 }

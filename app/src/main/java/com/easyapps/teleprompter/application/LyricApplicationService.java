@@ -72,7 +72,7 @@ public class LyricApplicationService {
         return configurationRepository.getConfigExtension();
     }
 
-    public void importAllConfigurationsFromFile(File configFile) throws FileSystemException {
-        configurationRepository.importFromFile(configFile);
+    public void importAllConfigurationsFromFileUri(Uri configFileUri) throws FileSystemException {
+        configurationRepository.importFromFileUri(configFileUri);
     }
 }

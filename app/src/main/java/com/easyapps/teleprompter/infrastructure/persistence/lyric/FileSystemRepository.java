@@ -1,17 +1,24 @@
 package com.easyapps.teleprompter.infrastructure.persistence.lyric;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.OpenableColumns;
+import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 
 import com.easyapps.teleprompter.R;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.util.Scanner;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -21,6 +28,50 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class FileSystemRepository {
+
+    public static String getFileName(Uri uri, Context context) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
+    }
+
+    @NonNull
+    public static String readFile(Uri uri, Context context, String fileName)
+            throws FileSystemException {
+        InputStream is = null;
+        String result = "";
+        try {
+            is = context.getContentResolver().openInputStream(uri);
+            Scanner s = new Scanner(is).useDelimiter("\\A");
+            result = s.hasNext() ? s.next() : "";
+        } catch (Exception e) {
+            throwNewFileSystemException(fileName, R.string.input_output_file_error, context);
+        } finally {
+            try {
+                if (is != null)
+                    is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
 
     @NonNull
     public static String readFile(File f, Context context) throws FileSystemException {
@@ -35,10 +86,11 @@ public class FileSystemRepository {
                 text.append('\n');
             }
         } catch (Exception e) {
-            throwNewFileSystemException(f.getName(), R.string.file_saving_error, context);
+            throwNewFileSystemException(f.getName(), R.string.input_output_file_error, context);
         } finally {
             try {
-                br.close();
+                if (br != null)
+                    br.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
