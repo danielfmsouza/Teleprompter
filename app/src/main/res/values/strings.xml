@@ -33,9 +33,9 @@
     <string name="app_logo_description">App logo</string>
     <string name="menu_item_delete_files_title">Delete Files</string>
     <string name="menu_item_about_title">About</string>
-    <string name="menu_item_export_title">Export</string>
-    <string name="menu_item_import_title">Import</string>
-    <string name="copyright_developer">Singer Pro - version 1.1\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
+    <string name="menu_item_export_title">Export Files</string>
+    <string name="menu_item_import_title">Import Files</string>
+    <string name="copyright_developer">Singer Pro - version 1.2\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->
     <string name="pref_key_scrollSpeed">pref_scrollSpeed</string>
