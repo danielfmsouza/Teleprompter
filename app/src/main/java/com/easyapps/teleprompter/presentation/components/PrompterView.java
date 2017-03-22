@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.view.animation.Animation;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +13,16 @@ import java.util.List;
  * View ready to hold a animated text on the screen. Besides that, it stills controls
  * CountDownTimerPrompter instances.
  */
-public class PrompterView extends TextView {
+public class PrompterView extends android.support.v7.widget.AppCompatTextView {
     private int animationId;
 
     private int scrollSpeed;
     private int[] timeRunning;
     private int[] timeWaiting;
     private int totalTimers;
+    private boolean animationInitialized = false;
 
+    private final CountDownTimerPrompter initialTimer = new CountDownTimerPrompter(1, -2);
     private final List<CountDownTimerPrompter> timers = new ArrayList<>();
 
     public PrompterView(Context context, AttributeSet attrs) {
@@ -36,16 +37,17 @@ public class PrompterView extends TextView {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 
-        if (changed) {
+        if (changed && !animationInitialized) {
             final Animation animation = PausablePrompterAnimation.loadAnimation(
                     getContext(), animationId, b, scrollSpeed);
             startAnimation(animation);
 
             // this is needed to make animation work
-            new CountDownTimerPrompter(1, -2).start();
+            initialTimer.start();
 
             createTimers();
             initializeTimers();
+            animationInitialized = true;
         }
     }
 
@@ -96,8 +98,9 @@ public class PrompterView extends TextView {
         this.totalTimers = totalTimers;
     }
 
-    class CountDownTimerPrompter extends CountDownTimer {
+    private class CountDownTimerPrompter extends CountDownTimer {
 
+        private boolean finished = false;
         private final int id;
 
         CountDownTimerPrompter(long timeToCount, int id) {
@@ -112,11 +115,14 @@ public class PrompterView extends TextView {
         @Override
         public void onFinish() {
             startStop();
-            startNextTimer(id + 1);
+            if (!finished)
+                startNextTimer(id + 1);
+
+            finished = true;
         }
     }
 
-    private void startNextTimer(int id) {
+    private synchronized void startNextTimer(int id) {
         if (id >= 0 && id < timers.size()) {
             timers.get(id).start();
         }

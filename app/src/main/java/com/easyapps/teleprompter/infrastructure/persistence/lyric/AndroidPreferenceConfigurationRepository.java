@@ -5,16 +5,17 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 
+import com.easyapps.teleprompter.BuildConfig;
 import com.easyapps.teleprompter.R;
 import com.easyapps.teleprompter.domain.model.lyric.Configuration;
 import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
@@ -23,11 +24,10 @@ import java.util.Map;
  * Created by daniel on 01/10/2016.
  */
 
-public class AndroidPreferenceConfigurationRepository implements IConfigurationRepository {
+public class AndroidPreferenceConfigurationRepository extends FileSystemRepository implements IConfigurationRepository {
 
-    private final Context androidApplicationContext;
+    private final Context androidContext;
     private final SharedPreferences preferences;
-    private final String FILE_EXTENSION = ".xml";
 
     private final String scrollSpeedPrefKey;
     private final String timeRunningPrefKey;
@@ -43,10 +43,12 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
     private final int fontSizeDefault;
     private final int songNumberDefault;
 
-    public AndroidPreferenceConfigurationRepository(Context androidApplicationContext) {
-        this.androidApplicationContext = androidApplicationContext;
-        this.preferences =
-                PreferenceManager.getDefaultSharedPreferences(androidApplicationContext);
+    private static final String FILE_NAME = "settings";
+    private static final String FILE_EXTENSION = ".cfg";
+
+    public AndroidPreferenceConfigurationRepository(Context androidContext) {
+        this.androidContext = androidContext;
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(androidContext);
 
         scrollSpeedPrefKey = getResourcesString(R.string.pref_key_scrollSpeed);
         timeRunningPrefKey = getResourcesString(R.string.pref_key_timeRunning);
@@ -97,13 +99,71 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
 
     @Override
     public Uri getURIFromConfiguration() {
-        File workDirectory = androidApplicationContext.getFilesDir();
-        File[] files = workDirectory.listFiles(new ConfigurationFileNameFilter());
+        ObjectOutputStream outputWriter = null;
+        String fileName = FILE_NAME + FILE_EXTENSION;
 
-        if (files != null && files.length > 0)
-            return Uri.fromFile(files[0]);
+        try {
+            FileOutputStream file = androidContext.openFileOutput(
+                    fileName, Context.MODE_PRIVATE);
+            outputWriter = new ObjectOutputStream(file);
+            outputWriter.writeObject(preferences.getAll());
 
-        return null;
+            return FileProvider.getUriForFile(androidContext,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    new File(androidContext.getFilesDir(), fileName));
+
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (outputWriter != null) {
+                try {
+                    outputWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public String getConfigExtension() {
+        return FILE_EXTENSION;
+    }
+
+    @Override
+    public void importFromFileUri(Uri configFileUri) throws FileSystemException {
+        Map configs;
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(androidContext.getContentResolver().openInputStream(configFileUri));
+            Object object = ois.readObject();
+
+            if (object instanceof Map) {
+                configs = (Map) object;
+                addConfigurationsFromMap(configs);
+            }
+        } catch (Exception ioe) {
+            throwNewFileSystemException(FILE_NAME, R.string.input_output_file_error,
+                    androidContext);
+        } finally {
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void addConfigurationsFromMap(Map configs) {
+        SharedPreferences.Editor editor = preferences.edit();
+
+        for (Map.Entry<String, ?> config : ((Map<String, ?>) configs).entrySet()) {
+            editor.putInt(config.getKey(), Integer.valueOf(config.getValue().toString()));
+        }
+
+        editor.apply();
     }
 
     private void renamePreferences(String oldFileName, String newFileName) {
@@ -148,17 +208,10 @@ public class AndroidPreferenceConfigurationRepository implements IConfigurationR
 
     @NonNull
     private String getResourcesString(int resource) {
-        return androidApplicationContext.getResources().getString(resource);
+        return androidContext.getResources().getString(resource);
     }
 
     private int getResourcesInt(int resource) {
-        return androidApplicationContext.getResources().getInteger(resource);
-    }
-
-    private class ConfigurationFileNameFilter implements FilenameFilter {
-        @Override
-        public boolean accept(File dir, String name) {
-            return name.contains(FILE_EXTENSION);
-        }
+        return androidContext.getResources().getInteger(resource);
     }
 }

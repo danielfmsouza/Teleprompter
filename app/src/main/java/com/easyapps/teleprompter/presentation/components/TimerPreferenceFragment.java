@@ -61,13 +61,12 @@ public class TimerPreferenceFragment extends PreferenceFragment {
         int totalTimers = getTotalTimers(fileName, preferences);
         int minValue = mContext.getResources().getInteger(R.integer.number_min_value_timer);
         int maxValue = mContext.getResources().getInteger(R.integer.number_max_value_timer);
-        final int orderWaiting = 99;
-        final int orderRunning = 100;
+        final int order = 99;
 
         // creating each timer configuration for each timer.
         for (int i = 0; i < totalTimers; i++) {
-            setTimerStopped(pScreen, orderWaiting, fileName, i, preferences, minValue, maxValue);
-            setTimerRunning(pScreen, orderRunning, fileName, i, preferences, minValue, maxValue);
+            setTimerStopped(pScreen, order + i, fileName, i, preferences, minValue, maxValue);
+            setTimerRunning(pScreen, order + i + 1, fileName, i, preferences, minValue, maxValue);
             setPreferenceScreen(pScreen);
         }
         if (totalTimers > 0)

@@ -11,15 +11,21 @@
         app:showAsAction="ifRoom"
         android:onClick="deleteSelectedFiles"/>
     <item
-        android:id="@+id/menu_backup"
-        android:title="@string/menu_item_backup_title"
+        android:id="@+id/menu_export"
+        android:title="@string/menu_item_export_title"
         android:orderInCategory="100"
         app:showAsAction="never"
-        android:onClick="startBackup"/>
+        android:onClick="startExport"/>
+    <item
+        android:id="@+id/menu_import"
+        android:title="@string/menu_item_import_title"
+        android:orderInCategory="101"
+        app:showAsAction="never"
+        android:onClick="startImport"/>
     <item
         android:id="@+id/menu_about"
         android:title="@string/menu_item_about_title"
-        android:orderInCategory="101"
+        android:orderInCategory="102"
         app:showAsAction="never"
         android:onClick="startAbout"/>
 </menu>

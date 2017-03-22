@@ -1,6 +1,5 @@
 package com.easyapps.teleprompter.presentation.components;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
@@ -36,17 +35,19 @@ class PausablePrompterAnimation extends AnimationSet {
     private PausablePrompterAnimation(final Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        setAnimationListener(new AnimationListener(){
+        setAnimationListener(new AnimationListener() {
 
             @Override
-            public void onAnimationStart(Animation animation){}
+            public void onAnimationStart(Animation animation) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animation animation){}
+            public void onAnimationRepeat(Animation animation) {
+            }
 
             @Override
-            public void onAnimationEnd(Animation animation){
-                ActivityUtils.backToMain((Activity) context);
+            public void onAnimationEnd(Animation animation) {
+                ActivityUtils.backToMain(ActivityUtils.getActivity(context));
                 String message = context.getResources().getString(R.string.prompting_finished);
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show();
             }
@@ -72,7 +73,7 @@ class PausablePrompterAnimation extends AnimationSet {
         isPaused = false;
     }
 
-    void startStop() {
+    synchronized void startStop() {
         if (isPaused) {
             resume();
         } else {

@@ -2,8 +2,9 @@ package com.easyapps.teleprompter.domain.model.lyric;
 
 import android.net.Uri;
 
+import com.easyapps.teleprompter.infrastructure.persistence.lyric.FileSystemException;
+
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Interface for configurations in a Lyric object.
@@ -19,4 +20,8 @@ public interface IConfigurationRepository {
     Configuration load(String id);
 
     Uri getURIFromConfiguration();
+
+    String getConfigExtension();
+
+    void importFromFileUri(Uri configFileUri) throws FileSystemException;
 }

@@ -1,5 +1,8 @@
 <resources>
     <!--Java resources-->
+    <string name="export_description">Singer Pro Export</string>
+    <string name="export_import_error_no_intent">You have to install a email (or a cloud) app to import/export files.</string>
+    <string name="export_error_no_files">There is no file to export.</string>
     <string name="file_not_found">File %1$2s not found.</string>
     <string name="input_output_file_error">An error occurred while reading the file.</string>
     <string name="file_saved">File saved successfully!</string>
@@ -30,8 +33,9 @@
     <string name="app_logo_description">App logo</string>
     <string name="menu_item_delete_files_title">Delete Files</string>
     <string name="menu_item_about_title">About</string>
-    <string name="menu_item_backup_title">Backup</string>
-    <string name="copyright_developer">Singer Pro - version 1.0\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
+    <string name="menu_item_export_title">Export Files</string>
+    <string name="menu_item_import_title">Import Files</string>
+    <string name="copyright_developer">Singer Pro - version 1.2\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->
     <string name="pref_key_scrollSpeed">pref_scrollSpeed</string>
