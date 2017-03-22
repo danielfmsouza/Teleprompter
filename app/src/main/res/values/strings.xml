@@ -1,7 +1,7 @@
 <resources>
     <!--Java resources-->
     <string name="export_description">Singer Pro Export</string>
-    <string name="export_error_no_intent">You have to install a email (or a cloud) app to export files.</string>
+    <string name="export_import_error_no_intent">You have to install a email (or a cloud) app to import/export files.</string>
     <string name="export_error_no_files">There is no file to export.</string>
     <string name="file_not_found">File %1$2s not found.</string>
     <string name="input_output_file_error">An error occurred while reading the file.</string>

@@ -9,8 +9,10 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginBottom="10dp"
+        android:layout_marginRight="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/skin"
         android:contentDescription="@string/btn_play_description"
@@ -27,8 +29,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="40dp"
+            android:layout_marginStart="@dimen/margin_left_song_texts"
+            android:layout_marginLeft="@dimen/margin_left_song_texts"
             android:clickable="true"
             android:longClickable="true"
             android:textColor="@android:color/black"
@@ -40,7 +44,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="40dp"
+            android:layout_marginStart="@dimen/margin_left_song_texts"
+            android:layout_marginLeft="@dimen/margin_left_song_texts"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
             android:clickable="true"
@@ -50,27 +55,40 @@
             android:textStyle="italic" />
     </RelativeLayout>
 
-    <ImageButton
-        android:id="@+id/btnSettings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/ic_settings"
-        android:contentDescription="@string/btn_config_description"
-        android:text="@string/btn_config_description" />
-
     <CheckBox
         android:id="@+id/cbDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:focusable="false"
         android:visibility="visible" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignBaseline="@id/btnPlay"
+        >
+
+        <ImageButton
+            android:id="@+id/btnSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/ic_settings"
+            android:contentDescription="@string/btn_config_description"
+            android:text="@string/btn_config_description" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
             try {
                 startActivity(backupIntent);
             } catch (ActivityNotFoundException ex) {
-                Toast.makeText(getBaseContext(), R.string.export_error_no_intent,
+                Toast.makeText(getBaseContext(), R.string.export_import_error_no_intent,
                         Toast.LENGTH_LONG).show();
             }
         } else {
@@ -122,13 +122,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     }
 
     public void startImport(MenuItem item) {
-
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         intent.setType("*/*");
 
-        startActivityForResult(intent, PICK_FILE_RESULT_CODE);
+        try {
+            startActivityForResult(intent, PICK_FILE_RESULT_CODE);
+        } catch (ActivityNotFoundException ex) {
+            Toast.makeText(getBaseContext(), R.string.export_import_error_no_intent,
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

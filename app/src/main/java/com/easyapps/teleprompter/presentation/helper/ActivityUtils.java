@@ -1,6 +1,8 @@
 package com.easyapps.teleprompter.presentation.helper;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -23,6 +25,16 @@ public class ActivityUtils {
         Bundle b = intent.getExtras();
         if (b != null)
             return b.getString(Constants.FILE_NAME_PARAM);
+        return null;
+    }
+
+    public static Activity getActivity(Context context) {
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity)context;
+            }
+            context = ((ContextWrapper)context).getBaseContext();
+        }
         return null;
     }
 

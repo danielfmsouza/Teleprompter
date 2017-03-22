@@ -8,10 +8,10 @@ android {
         }
     }
     compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.easyapps.teleprompter"
-        minSdkVersion 21
+        minSdkVersion 16
         targetSdkVersion 24
         versionCode 10
         versionName '1.2'
