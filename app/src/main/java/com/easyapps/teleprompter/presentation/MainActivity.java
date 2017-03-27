@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -47,14 +48,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         ILyricRepository lyricRepository = new AndroidFileSystemLyricRepository(getApplicationContext());
         IConfigurationRepository configRepository = new AndroidPreferenceConfigurationRepository(getApplicationContext());
         ILyricFinder lyricFinder = new AndroidFileSystemLyricFinder(getApplicationContext());
         mAppService = new LyricApplicationService(lyricRepository, lyricFinder, configRepository);
 
         ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
-        listFiles(lvFiles);
+        if (lvFiles != null)
+            listFiles(lvFiles);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         finish();
     }
 
-    private void listFiles(final ListView lvFiles) {
+    public void listFiles(final ListView lvFiles) {
         lvFiles.setAdapter(new PlayableCustomAdapter(this, this, mAppService.getAllLyrics()));
     }
 
@@ -122,9 +123,15 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     }
 
     public void startImport(MenuItem item) {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        Intent intent;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT){
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+        }
+        else{
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        }
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         intent.setType("*/*");
 
         try {
