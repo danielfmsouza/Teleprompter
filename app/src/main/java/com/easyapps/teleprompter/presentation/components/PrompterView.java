@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.view.animation.Animation;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * View ready to hold a animated text on the screen. Besides that, it stills controls
  * CountDownTimerPrompter instances.
  */
-public class PrompterView extends android.support.v7.widget.AppCompatTextView {
+public class PrompterView extends TextView {
     private int animationId;
 
     private int scrollSpeed;

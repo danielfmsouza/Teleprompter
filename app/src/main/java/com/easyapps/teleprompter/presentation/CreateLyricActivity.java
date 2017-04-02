@@ -88,16 +88,6 @@ public class CreateLyricActivity extends AppCompatActivity {
         ActivityUtils.backToMain(this);
     }
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-            return true;
-        } else
-            return super.dispatchKeyEvent(event);
-    }
-
     public void SaveFile(View v) {
         String fileName = getFileNameContent();
         String songNumber = getSongNumberContent();
