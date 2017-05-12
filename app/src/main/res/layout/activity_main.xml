@@ -22,7 +22,7 @@
             android:id="@+id/fabCreateLyric"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
+            android:layout_gravity="center|bottom"
             android:text="@string/btn_create_file_description"
             android:contentDescription="@string/btn_create_file_description"
             android:onClick="createLyric"

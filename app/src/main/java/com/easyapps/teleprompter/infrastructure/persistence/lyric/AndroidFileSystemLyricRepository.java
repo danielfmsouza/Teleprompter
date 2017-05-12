@@ -73,12 +73,6 @@ public class AndroidFileSystemLyricRepository extends FileSystemRepository imple
     }
 
     @Override
-    public Lyric load(String name) throws FileNotFoundException, FileSystemException {
-        String content = getFileContent(name);
-        return Lyric.newInstance(name, content);
-    }
-
-    @Override
     public Lyric loadWithConfiguration(String name) throws Exception {
         String content = getFileContent(name);
         return Lyric.newCompleteInstance(name, content, configurationRepository.load(name));

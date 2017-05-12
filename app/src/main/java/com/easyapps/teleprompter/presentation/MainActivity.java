@@ -1,5 +1,6 @@
 package com.easyapps.teleprompter.presentation;
 
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,13 +23,18 @@ import com.easyapps.teleprompter.application.LyricApplicationService;
 import com.easyapps.teleprompter.application.command.AddLyricCommand;
 import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
 import com.easyapps.teleprompter.domain.model.lyric.ILyricRepository;
+import com.easyapps.teleprompter.domain.model.lyric.ISetListRepository;
 import com.easyapps.teleprompter.infrastructure.persistence.lyric.AndroidFileSystemLyricFinder;
 import com.easyapps.teleprompter.infrastructure.persistence.lyric.AndroidFileSystemLyricRepository;
+import com.easyapps.teleprompter.infrastructure.persistence.lyric.AndroidFileSystemSetListFinder;
+import com.easyapps.teleprompter.infrastructure.persistence.lyric.AndroidFileSystemSetListRepository;
 import com.easyapps.teleprompter.infrastructure.persistence.lyric.AndroidPreferenceConfigurationRepository;
 import com.easyapps.teleprompter.infrastructure.persistence.lyric.FileSystemException;
 import com.easyapps.teleprompter.infrastructure.persistence.lyric.FileSystemRepository;
 import com.easyapps.teleprompter.presentation.components.PlayableCustomAdapter;
 import com.easyapps.teleprompter.query.model.lyric.ILyricFinder;
+import com.easyapps.teleprompter.query.model.lyric.ISetListFinder;
+import com.easyapps.teleprompter.query.model.lyric.LyricQueryModel;
 
 import java.io.FileNotFoundException;
 import java.text.DateFormat;
@@ -48,10 +55,16 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ILyricRepository lyricRepository = new AndroidFileSystemLyricRepository(getApplicationContext());
-        IConfigurationRepository configRepository = new AndroidPreferenceConfigurationRepository(getApplicationContext());
+        ILyricRepository lyricRepository
+                = new AndroidFileSystemLyricRepository(getApplicationContext());
+        IConfigurationRepository configRepository
+                = new AndroidPreferenceConfigurationRepository(getApplicationContext());
+        ISetListRepository setListRepository
+                = new AndroidFileSystemSetListRepository(getApplicationContext());
         ILyricFinder lyricFinder = new AndroidFileSystemLyricFinder(getApplicationContext());
-        mAppService = new LyricApplicationService(lyricRepository, lyricFinder, configRepository);
+        ISetListFinder setListFinder = new AndroidFileSystemSetListFinder(getApplicationContext());
+        mAppService = new LyricApplicationService(lyricRepository, lyricFinder, configRepository,
+                setListFinder, setListRepository);
 
         ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
         if (lvFiles != null)
@@ -124,10 +137,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
 
     public void startImport(MenuItem item) {
         Intent intent;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             intent = new Intent(Intent.ACTION_GET_CONTENT);
-        }
-        else{
+        } else {
             intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         }
@@ -224,6 +236,89 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         displayDecisionDialog();
     }
 
+    public void setListSelectedFiles(MenuItem item) {
+        String[] setListsNames = mAppService.getAllSetListsNames();
+        final String[] items = new String[setListsNames.length + 1];
+        items[0] = "New Set List";
+
+        System.arraycopy(setListsNames, 0, items, 1, setListsNames.length);
+
+        Dialog d = new AlertDialog.Builder(this)
+                .setTitle("Add Song(s) to Set List")
+                .setNegativeButton("Cancel", null)
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dlg, int position) {
+                        if (position == 0) {
+                            createNewSetList();
+                        } else {
+                            addLyricsToSetList(items[position]);
+                        }
+                    }
+                })
+                .create();
+        d.show();
+    }
+
+    public void loadSetList(MenuItem item){
+        String[] setListsNames = mAppService.getAllSetListsNames();
+        final String[] items = new String[setListsNames.length];
+        System.arraycopy(setListsNames, 0, items, 0, setListsNames.length);
+
+        Dialog d = new AlertDialog.Builder(this)
+                .setTitle("Load Existing Set List")
+                .setNegativeButton("Cancel", null)
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dlg, int position) {
+                        loadLyricsFromSetList(items[position]);
+                    }
+                })
+                .create();
+        d.show();
+    }
+
+    private void loadLyricsFromSetList(String setListName){
+        List<LyricQueryModel> lyrics = null;
+        try {
+            lyrics = mAppService.loadLyricsFromSetList(setListName);
+        } catch (FileSystemException e) {
+            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
+        lvFiles.setAdapter(new PlayableCustomAdapter(this, this, lyrics));
+    }
+
+    private void addLyricsToSetList(String setListName) {
+        try {
+            mAppService.addLyricToSetList(setListName, getAllCheckedFiles());
+        } catch (FileSystemException e) {
+            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void createNewSetList() {
+        final EditText input = new EditText(this);
+
+        Dialog d = new AlertDialog.Builder(this)
+                .setTitle("New Set List")
+                .setNegativeButton("Cancel", null)
+                .setView(input)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String value = input.getText().toString();
+                        try {
+                            mAppService.addSetList(value, getAllCheckedFiles());
+                        } catch (FileSystemException e) {
+                            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .create();
+        d.show();
+    }
+
     private void displayDecisionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.delete_files_question).
@@ -241,6 +336,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
             }
         }
     };
+
+    private List<String> getAllCheckedFiles(){
+        ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
+        PlayableCustomAdapter adapter = (PlayableCustomAdapter) lvFiles.getAdapter();
+
+        return adapter.getAllCheckedItems();
+    }
 
     private void deleteFiles() {
         ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
@@ -262,8 +364,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
      */
     @Override
     public void showContent() {
-        MenuItem deleteItemMenu = mOptionsMenu.getItem(0);
+        MenuItem setListItemMenu = mOptionsMenu.getItem(1);
+        MenuItem deleteItemMenu = mOptionsMenu.getItem(2);
         deleteItemMenu.setVisible(true);
+        setListItemMenu.setVisible(true);
     }
 
     /**
@@ -271,7 +375,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
      */
     @Override
     public void hideContent() {
-        MenuItem deleteItemMenu = mOptionsMenu.getItem(0);
+        MenuItem setListItemMenu = mOptionsMenu.getItem(1);
+        MenuItem deleteItemMenu = mOptionsMenu.getItem(2);
         deleteItemMenu.setVisible(false);
+        setListItemMenu.setVisible(false);
     }
 }

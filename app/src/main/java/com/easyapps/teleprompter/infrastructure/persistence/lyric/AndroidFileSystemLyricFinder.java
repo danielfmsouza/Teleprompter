@@ -1,9 +1,11 @@
 package com.easyapps.teleprompter.infrastructure.persistence.lyric;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.easyapps.teleprompter.domain.model.lyric.Configuration;
 import com.easyapps.teleprompter.domain.model.lyric.IConfigurationRepository;
+import com.easyapps.teleprompter.domain.model.lyric.ISetListRepository;
 import com.easyapps.teleprompter.query.model.lyric.ConfigurationQueryModel;
 import com.easyapps.teleprompter.query.model.lyric.ILyricFinder;
 import com.easyapps.teleprompter.query.model.lyric.LyricQueryModel;
@@ -24,6 +26,7 @@ public class AndroidFileSystemLyricFinder implements ILyricFinder {
 
     private final Context androidApplicationContext;
     private final IConfigurationRepository configurationRepository;
+    private final ISetListRepository setListRepository;
 
     public AndroidFileSystemLyricFinder(Context androidApplicationContext) {
         this.androidApplicationContext = androidApplicationContext;
@@ -31,6 +34,8 @@ public class AndroidFileSystemLyricFinder implements ILyricFinder {
         // TODO Do not instantiate it here. Use IoC and pass it as a parameter (improve testability).
         this.configurationRepository =
                 new AndroidPreferenceConfigurationRepository(androidApplicationContext);
+        this.setListRepository =
+                new AndroidFileSystemSetListRepository(androidApplicationContext);
     }
 
     @Override
@@ -42,6 +47,11 @@ public class AndroidFileSystemLyricFinder implements ILyricFinder {
             }
         });
 
+        return buildLyrics(files);
+    }
+
+    @NonNull
+    private List<LyricQueryModel> buildLyrics(File[] files) {
         List<LyricQueryModel> result = new ArrayList<>();
         if (files != null) {
             for (File f : files) {
@@ -56,6 +66,24 @@ public class AndroidFileSystemLyricFinder implements ILyricFinder {
             }
         }
         return result;
+    }
+
+    @Override
+    public List<LyricQueryModel> getFromSetList(String setListName) throws FileSystemException {
+        final List<String> lyrics = setListRepository.load(setListName);
+
+        File[] files = androidApplicationContext.getFilesDir().listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                for (String lyricName : lyrics) {
+                    if (name.equals(lyricName + FILE_EXTENSION))
+                        return true;
+                }
+                return false;
+            }
+        });
+
+        return buildLyrics(files);
     }
 
     private ConfigurationQueryModel MappingConfigurationToQueryModel(Configuration config) {

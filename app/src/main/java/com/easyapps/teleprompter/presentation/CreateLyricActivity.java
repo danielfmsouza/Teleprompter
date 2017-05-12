@@ -2,9 +2,7 @@ package com.easyapps.teleprompter.presentation;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -42,7 +40,7 @@ public class CreateLyricActivity extends AppCompatActivity {
         IConfigurationRepository mConfigRepository =
                 new AndroidPreferenceConfigurationRepository(getApplicationContext());
 
-        mAppService = new LyricApplicationService(mLyricRepository, null, mConfigRepository);
+        mAppService = new LyricApplicationService(mLyricRepository, null, mConfigRepository, null, null);
 
         mFileName = ActivityUtils.getFileNameParameter(getIntent());
 

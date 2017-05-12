@@ -16,9 +16,9 @@ public interface ILyricRepository {
 
     void remove(List<String> ids)throws Exception;
 
-    Lyric load(String name)throws Exception;
-
     Lyric loadWithConfiguration(String name)throws Exception;
 
     Uri[] exportAllLyrics();
+
+//    void addToSetList(String setListName);
 }

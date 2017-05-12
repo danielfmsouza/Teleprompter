@@ -1,5 +1,7 @@
 package com.easyapps.teleprompter.query.model.lyric;
 
+import com.easyapps.teleprompter.infrastructure.persistence.lyric.FileSystemException;
+
 import java.util.List;
 
 /**
@@ -9,4 +11,6 @@ import java.util.List;
 
 public interface ILyricFinder {
     List<LyricQueryModel> getAll();
+
+    List<LyricQueryModel> getFromSetList(String setListName) throws FileSystemException;
 }

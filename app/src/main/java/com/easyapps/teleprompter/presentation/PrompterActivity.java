@@ -42,7 +42,7 @@ public class PrompterActivity extends AppCompatActivity {
             ILyricRepository lyricRepository =
                     new AndroidFileSystemLyricRepository(getApplicationContext());
             LyricApplicationService appService =
-                    new LyricApplicationService(lyricRepository, null, null);
+                    new LyricApplicationService(lyricRepository, null, null, null, null);
 
             Lyric lyric = appService.loadLyricWithConfiguration(fileName);
             mPrompter.setText(lyric.getContent());

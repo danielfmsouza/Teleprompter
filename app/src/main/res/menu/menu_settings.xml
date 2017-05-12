@@ -4,6 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.easyapps.teleprompter.presentation.MainActivity">
     <item
+        android:icon="@drawable/ic_load_set_list"
+        android:id="@+id/menu_load_set_list"
+        android:title="@string/menu_item_load_set_list_title"
+        android:orderInCategory="97"
+        app:showAsAction="ifRoom"
+        android:onClick="loadSetList"/>
+    <item
+        android:icon="@drawable/ic_set_list"
+        android:id="@+id/menu_set_list"
+        android:title="@string/menu_item_set_list_title"
+        android:orderInCategory="98"
+        app:showAsAction="ifRoom"
+        android:onClick="setListSelectedFiles"/>
+    <item
         android:icon="@drawable/ic_delete"
         android:id="@+id/menu_delete"
         android:title="@string/menu_item_delete_files_title"
