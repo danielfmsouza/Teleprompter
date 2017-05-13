@@ -4,6 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.easyapps.teleprompter.presentation.MainActivity">
     <item
+        android:icon="@drawable/ic_show_all"
+        android:id="@+id/menu_show_all"
+        android:title="@string/menu_item_show_all_title"
+        android:orderInCategory="96"
+        app:showAsAction="ifRoom"
+        android:onClick="showAllLyrics"/>
+    <item
         android:icon="@drawable/ic_load_set_list"
         android:id="@+id/menu_load_set_list"
         android:title="@string/menu_item_load_set_list_title"

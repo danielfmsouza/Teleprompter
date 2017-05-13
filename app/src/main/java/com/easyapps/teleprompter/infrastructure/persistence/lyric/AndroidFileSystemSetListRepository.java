@@ -72,6 +72,13 @@ public class AndroidFileSystemSetListRepository extends FileSystemRepository imp
     }
 
     @Override
+    public void removeLyricFromSetList(String setListName, String lyricName) throws FileSystemException {
+        List<String> setList = loadSetListFromFile(setListName);
+        setList.remove(lyricName);
+        add(setListName, setList);
+    }
+
+    @Override
     public List<String> load(String setListName) throws FileSystemException {
         return loadSetListFromFile(setListName);
     }

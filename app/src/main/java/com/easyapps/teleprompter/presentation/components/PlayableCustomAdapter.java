@@ -82,6 +82,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         holder.checkBox = (CheckBox) row.findViewById(R.id.cbDelete);
         holder.playButton = (ImageButton) row.findViewById(R.id.btnPlay);
         holder.settingsButton = (ImageButton) row.findViewById(R.id.btnSettings);
+        holder.removeFromSetListButton = (ImageButton) row.findViewById(R.id.btnRemoveFromSetList);
         holder.text.setText(getLyricTitle(lyricName, config));
         holder.configs.setText(getConfigurationMessage(config));
         row.setTag(holder);
@@ -97,6 +98,13 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
             @Override
             public void onClick(View view) {
                 startSettings(position);
+            }
+        });
+
+        holder.removeFromSetListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                removeFromSetList(position);
             }
         });
 
@@ -124,6 +132,11 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         });
 
         return row;
+    }
+
+    private void removeFromSetList(int position) {
+        String lyricName = getLyricName(position);
+        activityCallback.removeItem(lyricName);
     }
 
     @NonNull
@@ -176,6 +189,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         ImageButton playButton;
         CheckBox checkBox;
         ImageButton settingsButton;
+        ImageButton removeFromSetListButton;
     }
 
     private void startPrompter(int position) {

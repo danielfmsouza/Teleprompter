@@ -7,4 +7,5 @@ package com.easyapps.teleprompter.presentation;
 public interface ActivityCallback {
     void showContent();
     void hideContent();
+    void removeItem(String itemName);
 }

@@ -12,5 +12,6 @@ import java.util.List;
 public interface ISetListRepository {
     void add(String name, List<String> lyricsNames) throws FileSystemException;
     void addLyricsToSetList(String setListName, List<String> lyricsNames)throws FileSystemException;
+    void removeLyricFromSetList(String setListName, String lyricName)throws FileSystemException;
     List<String> load(String setListName)throws FileSystemException;
 }

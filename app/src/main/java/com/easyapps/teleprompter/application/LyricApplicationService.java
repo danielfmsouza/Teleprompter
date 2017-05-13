@@ -94,4 +94,8 @@ public class LyricApplicationService {
     public List<LyricQueryModel> loadLyricsFromSetList(String setListName) throws FileSystemException {
         return lyricFinder.getFromSetList(setListName);
     }
+
+    public void removeLyricFromSetList(String setListName, String lyricName) throws FileSystemException {
+        setListRepository.removeLyricFromSetList(setListName, lyricName);
+    }
 }

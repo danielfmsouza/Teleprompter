@@ -49,11 +49,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
 
     private Menu mOptionsMenu;
     private LyricApplicationService mAppService;
+    private String currentSetList = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle(getString(R.string.app_name) + " - " + getString(R.string.app_name_all_songs));
 
         ILyricRepository lyricRepository
                 = new AndroidFileSystemLyricRepository(getApplicationContext());
@@ -66,9 +68,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         mAppService = new LyricApplicationService(lyricRepository, lyricFinder, configRepository,
                 setListFinder, setListRepository);
 
-        ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
-        if (lvFiles != null)
-            listFiles(lvFiles);
+        showAllLyrics(null);
     }
 
     @Override
@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         d.show();
     }
 
-    public void loadSetList(MenuItem item){
+    public void loadSetList(MenuItem item) {
         String[] setListsNames = mAppService.getAllSetListsNames();
         final String[] items = new String[setListsNames.length];
         System.arraycopy(setListsNames, 0, items, 0, setListsNames.length);
@@ -278,7 +278,15 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         d.show();
     }
 
-    private void loadLyricsFromSetList(String setListName){
+    public void showAllLyrics(MenuItem item) {
+        ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
+        if (lvFiles != null)
+            listFiles(lvFiles);
+        setTitle(getString(R.string.app_name) + " - " + getString(R.string.app_name_all_songs));
+        currentSetList = "";
+    }
+
+    private void loadLyricsFromSetList(String setListName) {
         List<LyricQueryModel> lyrics = null;
         try {
             lyrics = mAppService.loadLyricsFromSetList(setListName);
@@ -288,6 +296,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
 
         ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
         lvFiles.setAdapter(new PlayableCustomAdapter(this, this, lyrics));
+        setTitle(getString(R.string.app_name) + " - " + setListName);
+        currentSetList = setListName;
     }
 
     private void addLyricsToSetList(String setListName) {
@@ -300,7 +310,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
 
     private void createNewSetList() {
         final EditText input = new EditText(this);
-
         Dialog d = new AlertDialog.Builder(this)
                 .setTitle("New Set List")
                 .setNegativeButton("Cancel", null)
@@ -308,10 +317,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         String value = input.getText().toString();
-                        try {
-                            mAppService.addSetList(value, getAllCheckedFiles());
-                        } catch (FileSystemException e) {
-                            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        if (value.trim().isEmpty())
+                            input.setError(getString(R.string.set_list_name_required));
+                        else {
+                            try {
+                                mAppService.addSetList(value, getAllCheckedFiles());
+                            } catch (FileSystemException e) {
+                                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 })
@@ -337,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         }
     };
 
-    private List<String> getAllCheckedFiles(){
+    private List<String> getAllCheckedFiles() {
         ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
         PlayableCustomAdapter adapter = (PlayableCustomAdapter) lvFiles.getAdapter();
 
@@ -364,8 +377,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
      */
     @Override
     public void showContent() {
-        MenuItem setListItemMenu = mOptionsMenu.getItem(1);
-        MenuItem deleteItemMenu = mOptionsMenu.getItem(2);
+        MenuItem setListItemMenu = mOptionsMenu.getItem(2);
+        MenuItem deleteItemMenu = mOptionsMenu.getItem(3);
         deleteItemMenu.setVisible(true);
         setListItemMenu.setVisible(true);
     }
@@ -375,9 +388,25 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
      */
     @Override
     public void hideContent() {
-        MenuItem setListItemMenu = mOptionsMenu.getItem(1);
-        MenuItem deleteItemMenu = mOptionsMenu.getItem(2);
+        MenuItem setListItemMenu = mOptionsMenu.getItem(2);
+        MenuItem deleteItemMenu = mOptionsMenu.getItem(3);
         deleteItemMenu.setVisible(false);
         setListItemMenu.setVisible(false);
+    }
+
+    @Override
+    public void removeItem(String itemName) {
+        if (currentSetList != null && !currentSetList.isEmpty()) {
+            try {
+                mAppService.removeLyricFromSetList(currentSetList, itemName);
+                Toast.makeText(getBaseContext(), R.string.btn_remove_from_playlist_successful, Toast.LENGTH_LONG).show();
+                loadLyricsFromSetList(currentSetList);
+            } catch (FileSystemException e) {
+                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+        else{
+            Toast.makeText(getBaseContext(), R.string.set_list_not_loaded, Toast.LENGTH_LONG).show();
+        }
     }
 }
