@@ -21,6 +21,7 @@ public class PrompterView extends TextView {
     private int[] timeRunning;
     private int[] timeWaiting;
     private int totalTimers;
+    private String setListName;
     private boolean animationInitialized = false;
 
     private final CountDownTimerPrompter initialTimer = new CountDownTimerPrompter(1, -2);
@@ -40,7 +41,7 @@ public class PrompterView extends TextView {
 
         if (changed && !animationInitialized) {
             final Animation animation = PausablePrompterAnimation.loadAnimation(
-                    getContext(), animationId, b, scrollSpeed);
+                    getContext(), animationId, b, scrollSpeed, setListName);
             startAnimation(animation);
 
             // this is needed to make animation work
@@ -97,6 +98,10 @@ public class PrompterView extends TextView {
 
     public void setTotalTimers(int totalTimers) {
         this.totalTimers = totalTimers;
+    }
+
+    public void setSetListName(String setListName) {
+        this.setListName = setListName;
     }
 
     private class CountDownTimerPrompter extends CountDownTimer {

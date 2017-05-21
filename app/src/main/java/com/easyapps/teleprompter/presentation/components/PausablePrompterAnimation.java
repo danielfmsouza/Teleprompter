@@ -28,6 +28,7 @@ class PausablePrompterAnimation extends AnimationSet {
 
     private static final String ANIMATION_NAME_SET = "set";
     private static final String ANIMATION_NAME_TRANSLATE = "translate";
+    private static String mSetListName = "";
 
     private long mElapsedAtPause = 0;
     private boolean isPaused = false;
@@ -47,7 +48,7 @@ class PausablePrompterAnimation extends AnimationSet {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                ActivityUtils.backToMain(ActivityUtils.getActivity(context));
+                ActivityUtils.backToMain(ActivityUtils.getActivity(context), mSetListName);
                 String message = context.getResources().getString(R.string.prompting_finished);
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show();
             }
@@ -87,9 +88,10 @@ class PausablePrompterAnimation extends AnimationSet {
         return createAnimationFromXml(c, parser, null, Xml.asAttributeSet(parser), toYDelta, scrollSpeed);
     }
 
-    static Animation loadAnimation(Context context, int id, int toYDelta, int scrollSpeed)
+    static Animation loadAnimation(Context context, int id, int toYDelta, int scrollSpeed,
+                                   String setListName)
             throws Resources.NotFoundException {
-
+        mSetListName = setListName;
         XmlResourceParser parser = null;
         try {
             parser = context.getResources().getAnimation(id);

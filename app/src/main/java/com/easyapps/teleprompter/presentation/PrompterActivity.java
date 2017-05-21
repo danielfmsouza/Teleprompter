@@ -18,6 +18,7 @@ import com.easyapps.teleprompter.presentation.helper.ActivityUtils;
 public class PrompterActivity extends AppCompatActivity {
 
     private PrompterView mPrompter;
+    private String setListName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +30,16 @@ public class PrompterActivity extends AppCompatActivity {
         mPrompter = (PrompterView) findViewById(R.id.fullscreen_content);
 
         String fileName = ActivityUtils.getFileNameParameter(getIntent());
+        setListName = ActivityUtils.getSetListNameParameter(getIntent());
         if (fileName != null) {
-            loadFileIntoPrompter(fileName);
+            loadFileIntoPrompter(fileName, setListName);
         } else {
             String message = getResources().getString(R.string.file_not_found);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
     }
 
-    private void loadFileIntoPrompter(String fileName) {
+    private void loadFileIntoPrompter(String fileName, String setListName) {
         try {
             ILyricRepository lyricRepository =
                     new AndroidFileSystemLyricRepository(getApplicationContext());
@@ -46,19 +48,20 @@ public class PrompterActivity extends AppCompatActivity {
 
             Lyric lyric = appService.loadLyricWithConfiguration(fileName);
             mPrompter.setText(lyric.getContent());
-            setPrompterDefinitions(lyric.getConfiguration());
+            setPrompterDefinitions(lyric.getConfiguration(), setListName);
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
-    private void setPrompterDefinitions(Configuration config) {
+    private void setPrompterDefinitions(Configuration config, String setListName) {
         mPrompter.setAnimationId(R.anim.text_prompter);
         mPrompter.setTextSize(config.getFontSize());
         mPrompter.setScrollSpeed(config.getScrollSpeed());
         mPrompter.setTimeRunning(config.getTimerRunning());
         mPrompter.setTimeStopped(config.getTimerStopped());
         mPrompter.setTotalTimers(config.getTimersCount());
+        mPrompter.setSetListName(setListName);
     }
 
     public void startStop(View view) {
@@ -78,7 +81,7 @@ public class PrompterActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        ActivityUtils.backToMain(this);
+        ActivityUtils.backToMain(this, setListName);
         String message = getResources().getString(R.string.prompting_canceled);
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }

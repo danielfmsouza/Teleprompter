@@ -7,4 +7,5 @@ package com.easyapps.teleprompter.presentation.messages;
  */
 public class Constants {
     public static final String FILE_NAME_PARAM = "fileName";
+    public static final String SET_LIST_NAME_PARAM = "setListName";
 }

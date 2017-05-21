@@ -14,10 +14,10 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.easyapps.teleprompter.R;
 import com.easyapps.teleprompter.presentation.ActivityCallback;
 import com.easyapps.teleprompter.presentation.CreateLyricActivity;
 import com.easyapps.teleprompter.presentation.PrompterActivity;
-import com.easyapps.teleprompter.R;
 import com.easyapps.teleprompter.presentation.SettingsActivity;
 import com.easyapps.teleprompter.presentation.helper.ActivityUtils;
 import com.easyapps.teleprompter.query.model.lyric.ConfigurationQueryModel;
@@ -36,14 +36,16 @@ import java.util.Locale;
 public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     private final List<String> checkedItems;
     private final LayoutInflater mInflater;
+    private String setListName;
     private final ActivityCallback activityCallback;
 
     public PlayableCustomAdapter(Context context, ActivityCallback activityCallback,
-                                 List<LyricQueryModel> lyrics) {
+                                 List<LyricQueryModel> lyrics, String setListName) {
         super(context, NO_SELECTION);
 
         this.activityCallback = activityCallback;
         this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.setListName = setListName;
         this.checkedItems = new ArrayList<>();
 
         addAll(lyrics);
@@ -143,7 +145,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     private String getLyricTitle(String lyricName, ConfigurationQueryModel config) {
         String songNumberFormatted = String.format(Locale.getDefault(), "%02d", config.getSongNumber());
 
-        return songNumberFormatted + " - " +  lyricName;
+        return songNumberFormatted + " - " + lyricName;
     }
 
     @Nullable
@@ -173,14 +175,18 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         return checkedItems;
     }
 
+    public void unCheckAllItems() {
+        checkedItems.clear();
+        activityCallback.hideContent();
+        notifyDataSetChanged();
+    }
+
     public void removeAllCheckedItems() {
         for (String lyricName : checkedItems) {
             LyricQueryModel lyricQueryModel = new LyricQueryModel(lyricName, null);
             super.remove(lyricQueryModel);
         }
-        checkedItems.clear();
-        activityCallback.hideContent();
-        notifyDataSetChanged();
+        unCheckAllItems();
     }
 
     private static class Holder {
@@ -208,7 +214,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         Intent i = new Intent(getContext(), clazz);
 
         ActivityUtils.setFileNameParameter(getLyricName(position), i);
-
+        ActivityUtils.setSetListNameParameter(setListName, i);
         getContext().startActivity(i);
 
         ((AppCompatActivity) getContext()).finish();

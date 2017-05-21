@@ -32,6 +32,7 @@ import com.easyapps.teleprompter.infrastructure.persistence.lyric.AndroidPrefere
 import com.easyapps.teleprompter.infrastructure.persistence.lyric.FileSystemException;
 import com.easyapps.teleprompter.infrastructure.persistence.lyric.FileSystemRepository;
 import com.easyapps.teleprompter.presentation.components.PlayableCustomAdapter;
+import com.easyapps.teleprompter.presentation.helper.ActivityUtils;
 import com.easyapps.teleprompter.query.model.lyric.ILyricFinder;
 import com.easyapps.teleprompter.query.model.lyric.ISetListFinder;
 import com.easyapps.teleprompter.query.model.lyric.LyricQueryModel;
@@ -55,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle(getString(R.string.app_name) + " - " + getString(R.string.app_name_all_songs));
 
         ILyricRepository lyricRepository
                 = new AndroidFileSystemLyricRepository(getApplicationContext());
@@ -68,7 +68,21 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         mAppService = new LyricApplicationService(lyricRepository, lyricFinder, configRepository,
                 setListFinder, setListRepository);
 
-        showAllLyrics(null);
+        currentSetList = ActivityUtils.getSetListNameParameter(this.getIntent());
+        loadLyricsFromSetList(currentSetList);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("CurrentSetList", currentSetList);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        currentSetList = savedInstanceState.getString("CurrentSetList");
+        loadLyricsFromSetList(currentSetList);
     }
 
     @Override
@@ -90,7 +104,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     }
 
     public void listFiles(final ListView lvFiles) {
-        lvFiles.setAdapter(new PlayableCustomAdapter(this, this, mAppService.getAllLyrics()));
+        lvFiles.setAdapter(new PlayableCustomAdapter(this, this, mAppService.getAllLyrics(),
+                currentSetList));
     }
 
     public void startAbout(MenuItem item) {
@@ -251,13 +266,22 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
                     public void onClick(DialogInterface dlg, int position) {
                         if (position == 0) {
                             createNewSetList();
+                            unCheckAllSelectedItems();
+
                         } else {
                             addLyricsToSetList(items[position]);
+                            unCheckAllSelectedItems();
                         }
                     }
                 })
                 .create();
         d.show();
+    }
+
+    private void unCheckAllSelectedItems() {
+        ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
+        PlayableCustomAdapter adapter = (PlayableCustomAdapter) lvFiles.getAdapter();
+        adapter.unCheckAllItems();
     }
 
     public void loadSetList(MenuItem item) {
@@ -279,25 +303,30 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     }
 
     public void showAllLyrics(MenuItem item) {
+        currentSetList = "";
         ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
         if (lvFiles != null)
             listFiles(lvFiles);
         setTitle(getString(R.string.app_name) + " - " + getString(R.string.app_name_all_songs));
-        currentSetList = "";
     }
 
     private void loadLyricsFromSetList(String setListName) {
-        List<LyricQueryModel> lyrics = null;
-        try {
-            lyrics = mAppService.loadLyricsFromSetList(setListName);
-        } catch (FileSystemException e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        if (setListName == null || setListName.isEmpty())
+            showAllLyrics(null);
 
-        ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
-        lvFiles.setAdapter(new PlayableCustomAdapter(this, this, lyrics));
-        setTitle(getString(R.string.app_name) + " - " + setListName);
-        currentSetList = setListName;
+        else {
+            List<LyricQueryModel> lyrics = null;
+            try {
+                lyrics = mAppService.loadLyricsFromSetList(setListName);
+            } catch (FileSystemException e) {
+                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+            ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
+            lvFiles.setAdapter(new PlayableCustomAdapter(this, this, lyrics, setListName));
+            setTitle(getString(R.string.app_name) + " - " + setListName);
+            currentSetList = setListName;
+        }
     }
 
     private void addLyricsToSetList(String setListName) {
@@ -404,8 +433,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
             } catch (FileSystemException e) {
                 Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             }
-        }
-        else{
+        } else {
             Toast.makeText(getBaseContext(), R.string.set_list_not_loaded, Toast.LENGTH_LONG).show();
         }
     }
