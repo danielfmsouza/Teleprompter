@@ -73,19 +73,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putString("CurrentSetList", currentSetList);
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        currentSetList = savedInstanceState.getString("CurrentSetList");
-        loadLyricsFromSetList(currentSetList);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_settings, menu);
@@ -266,8 +253,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
                     public void onClick(DialogInterface dlg, int position) {
                         if (position == 0) {
                             createNewSetList();
-                            unCheckAllSelectedItems();
-
                         } else {
                             addLyricsToSetList(items[position]);
                             unCheckAllSelectedItems();
@@ -351,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
                         else {
                             try {
                                 mAppService.addSetList(value, getAllCheckedFiles());
+                                unCheckAllSelectedItems();
                             } catch (FileSystemException e) {
                                 Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                             }
