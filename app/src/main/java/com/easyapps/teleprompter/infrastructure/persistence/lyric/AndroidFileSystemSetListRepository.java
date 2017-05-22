@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -76,6 +77,31 @@ public class AndroidFileSystemSetListRepository extends FileSystemRepository imp
         List<String> setList = loadSetListFromFile(setListName);
         setList.remove(lyricName);
         add(setListName, setList);
+    }
+
+    @Override
+    public void remove(final String setListName) throws FileSystemException, FileNotFoundException {
+        File fileToDelete = getFileByName(setListName, new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.equals(setListName + FILE_EXTENSION);
+            }
+        });
+        if (!fileToDelete.delete()) {
+            throwNewFileSystemException(setListName, R.string.delete_file_error,
+                    androidContext);
+        }
+    }
+
+    private File getFileByName(final String name, FilenameFilter filter) throws FileNotFoundException {
+        File workDirectory = androidContext.getFilesDir();
+        File[] files = workDirectory.listFiles(filter);
+        if (files != null && files.length > 0) {
+            return files[0];
+        }
+
+        throwNewFileNotFoundException(name, androidContext);
+        return new File(name);
     }
 
     @Override

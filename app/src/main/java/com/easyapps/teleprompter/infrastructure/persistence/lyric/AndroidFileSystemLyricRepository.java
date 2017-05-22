@@ -108,7 +108,7 @@ public class AndroidFileSystemLyricRepository extends FileSystemRepository imple
             return files[0];
         }
 
-        throwNewFileNotFoundException(name);
+        throwNewFileNotFoundException(name, androidContext);
         return new File(name);
     }
 
@@ -119,14 +119,8 @@ public class AndroidFileSystemLyricRepository extends FileSystemRepository imple
         if (filesFiltered != null && filesFiltered.length > 0) {
             return readFile(filesFiltered[0], androidContext);
         }
-        throwNewFileNotFoundException(fileName);
+        throwNewFileNotFoundException(fileName, androidContext);
         return null;
-    }
-
-    private void throwNewFileNotFoundException(String name) throws FileNotFoundException {
-        String message = androidContext.getResources().
-                getString(R.string.file_not_found, name);
-        throw new FileNotFoundException(message);
     }
 
     private class LyricFileNameFilter implements FilenameFilter {

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
-import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 
 import com.easyapps.teleprompter.R;
@@ -38,7 +37,8 @@ public class FileSystemRepository {
                     result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 }
             } finally {
-                cursor.close();
+                if (cursor != null)
+                    cursor.close();
             }
         }
         if (result == null) {
@@ -74,7 +74,7 @@ public class FileSystemRepository {
     }
 
     @NonNull
-    public static String readFile(File f, Context context) throws FileSystemException {
+    static String readFile(File f, Context context) throws FileSystemException {
         StringBuilder text = new StringBuilder();
         String line;
         BufferedReader br = null;
@@ -99,12 +99,12 @@ public class FileSystemRepository {
         return text.toString();
     }
 
-    public static boolean fileExists(File dir, FilenameFilter filter) {
+    static boolean fileExists(File dir, FilenameFilter filter) {
         File[] filesFiltered = dir.listFiles(filter);
         return filesFiltered != null && filesFiltered.length > 0;
     }
 
-    public static void saveFile(String fileName, String extension, String content, Context context)
+    static void saveFile(String fileName, String extension, String content, Context context)
             throws FileSystemException {
         OutputStreamWriter outputWriter = null;
         try {
@@ -125,9 +125,15 @@ public class FileSystemRepository {
         }
     }
 
-    public static void throwNewFileSystemException(String fileName, int resource, Context context)
+    static void throwNewFileSystemException(String fileName, int resource, Context context)
             throws FileSystemException {
         String message = context.getResources().getString(resource, fileName);
         throw new FileSystemException(message);
+    }
+
+    static void throwNewFileNotFoundException(String name, Context context)
+            throws FileNotFoundException {
+        String message = context.getResources().getString(R.string.file_not_found, name);
+        throw new FileNotFoundException(message);
     }
 }

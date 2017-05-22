@@ -18,6 +18,7 @@
     <string name="lyric_configuration_timers">Time stopped (%1$d): %2$ds; Time running (%1$d): %3$ds</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="cancel">Cancel</string>
     <string name="prompting_finished">Prompting finished successfully.</string>
     <string name="prompting_canceled">Prompting cancelled by user.</string>
     <string name="set_list_not_loaded">Set List not loaded.</string>
@@ -43,6 +44,9 @@
     <string name="menu_item_about_title">About</string>
     <string name="menu_item_export_title">Export Files</string>
     <string name="menu_item_import_title">Import Files</string>
+    <string name="new_set_list">New Set List</string>
+    <string name="load_existing_set_list">Load Existing Set List</string>
+    <string name="add_song_set_list">Add Song(s) to Set List</string>
     <string name="copyright_developer">Singer Pro - version 1.2\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->

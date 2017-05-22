@@ -241,13 +241,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     public void setListSelectedFiles(MenuItem item) {
         String[] setListsNames = mAppService.getAllSetListsNames();
         final String[] items = new String[setListsNames.length + 1];
-        items[0] = "New Set List";
+        items[0] = getResources().getString(R.string.new_set_list);
 
         System.arraycopy(setListsNames, 0, items, 1, setListsNames.length);
 
         Dialog d = new AlertDialog.Builder(this)
-                .setTitle("Add Song(s) to Set List")
-                .setNegativeButton("Cancel", null)
+                .setTitle(getResources().getString(R.string.add_song_set_list))
+                .setNegativeButton(getResources().getString(R.string.cancel), null)
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dlg, int position) {
@@ -275,8 +275,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         System.arraycopy(setListsNames, 0, items, 0, setListsNames.length);
 
         Dialog d = new AlertDialog.Builder(this)
-                .setTitle("Load Existing Set List")
-                .setNegativeButton("Cancel", null)
+                .setTitle(getResources().getString(R.string.load_existing_set_list))
+                .setNegativeButton(getResources().getString(R.string.cancel), null)
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dlg, int position) {
@@ -307,10 +307,23 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
                 Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             }
 
-            ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
-            lvFiles.setAdapter(new PlayableCustomAdapter(this, this, lyrics, setListName));
-            setTitle(getString(R.string.app_name) + " - " + setListName);
-            currentSetList = setListName;
+            if (lyrics == null || lyrics.isEmpty()) {
+                removeSetList(setListName);
+                showAllLyrics(null);
+            } else {
+                ListView lvFiles = (ListView) findViewById(R.id.lvFiles);
+                lvFiles.setAdapter(new PlayableCustomAdapter(this, this, lyrics, setListName));
+                setTitle(getString(R.string.app_name) + " - " + setListName);
+                currentSetList = setListName;
+            }
+        }
+    }
+
+    private void removeSetList(String setListName) {
+        try {
+            mAppService.removeSetList(setListName);
+        } catch (FileNotFoundException | FileSystemException e) {
+            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -325,8 +338,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
     private void createNewSetList() {
         final EditText input = new EditText(this);
         Dialog d = new AlertDialog.Builder(this)
-                .setTitle("New Set List")
-                .setNegativeButton("Cancel", null)
+                .setTitle(getResources().getString(R.string.new_set_list))
+                .setNegativeButton(getResources().getString(R.string.cancel), null)
                 .setView(input)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -380,6 +393,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         try {
             mAppService.removeLyrics(lyricsToDelete);
             adapter.removeAllCheckedItems();
+            if (adapter.getCount() == 0) {
+                removeSetList(currentSetList);
+                showAllLyrics(null);
+            }
         } catch (FileNotFoundException | FileSystemException e) {
             Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         } catch (Exception e) {

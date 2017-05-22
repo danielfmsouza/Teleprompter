@@ -13,6 +13,7 @@ import com.easyapps.teleprompter.query.model.lyric.ILyricFinder;
 import com.easyapps.teleprompter.query.model.lyric.ISetListFinder;
 import com.easyapps.teleprompter.query.model.lyric.LyricQueryModel;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -97,5 +98,9 @@ public class LyricApplicationService {
 
     public void removeLyricFromSetList(String setListName, String lyricName) throws FileSystemException {
         setListRepository.removeLyricFromSetList(setListName, lyricName);
+    }
+
+    public void removeSetList(String setListName) throws FileNotFoundException, FileSystemException {
+        setListRepository.remove(setListName);
     }
 }
