@@ -1,0 +1,17 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="pref_backgroundColor"
+        android:title="@string/pref_backgroundColor"
+        android:dialogTitle="@string/pref_backgroundColor"
+        android:entries="@array/pref_color_entries"
+        android:entryValues="@array/pref_backgroundColor_values"
+        android:defaultValue="@string/pref_backgroundColor_default" />
+
+    <ListPreference
+        android:key="pref_textColor"
+        android:title="@string/pref_textColor"
+        android:dialogTitle="@string/pref_textColor"
+        android:entries="@array/pref_color_entries"
+        android:entryValues="@array/pref_textColor_values"
+        android:defaultValue="@string/pref_textColor_default" />
+</PreferenceScreen>

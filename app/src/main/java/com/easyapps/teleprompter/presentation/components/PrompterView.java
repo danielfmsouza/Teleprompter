@@ -1,10 +1,14 @@
 package com.easyapps.teleprompter.presentation.components;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.animation.Animation;
 import android.widget.TextView;
+
+import com.easyapps.teleprompter.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,23 @@ public class PrompterView extends TextView {
 
     public PrompterView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        formatPrompter(context);
+    }
+
+    private void formatPrompter(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        String backgroundColorDefault =
+                getResources().getString(R.string.pref_backgroundColor_default);
+        String textColorDefault = getResources().getString(R.string.pref_textColor_default);
+
+        int backgroundColor = Integer.parseInt(sharedPref.getString(
+                getResources().getString(R.string.pref_key_backgroundColor), backgroundColorDefault));
+        int textColor = Integer.parseInt(sharedPref.getString(
+                getResources().getString(R.string.pref_key_textColor), textColorDefault));
+
+        setTextColor(textColor);
+        setBackgroundColor(backgroundColor);
     }
 
     public PrompterView(Context context) {

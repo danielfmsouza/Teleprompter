@@ -1,9 +1,12 @@
 package com.easyapps.teleprompter.presentation;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.easyapps.teleprompter.R;
@@ -37,6 +40,20 @@ public class PrompterActivity extends AppCompatActivity {
             String message = getResources().getString(R.string.file_not_found);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
+        setScrollViewBackgroundColor();
+    }
+
+    private void setScrollViewBackgroundColor() {
+        SharedPreferences sharedPref =
+                PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+        String backgroundColorDefault =
+                getResources().getString(R.string.pref_backgroundColor_default);
+        int backgroundColor = Integer.parseInt(sharedPref.getString(
+                getResources().getString(R.string.pref_key_backgroundColor), backgroundColorDefault));
+
+        ScrollView scrollView = (ScrollView) findViewById(R.id.svText);
+        scrollView.setBackgroundColor(backgroundColor);
     }
 
     private void loadFileIntoPrompter(String fileName, String setListName) {

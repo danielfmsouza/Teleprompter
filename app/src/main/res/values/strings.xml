@@ -44,6 +44,7 @@
     <string name="menu_item_about_title">About</string>
     <string name="menu_item_export_title">Export Files</string>
     <string name="menu_item_import_title">Import Files</string>
+    <string name="menu_item_global_options_title">Global Options</string>
     <string name="new_set_list">New Set List</string>
     <string name="load_existing_set_list">Load Existing Set List</string>
     <string name="add_song_set_list">Add Song(s) to Set List</string>
@@ -66,4 +67,10 @@
     <string name="pref_title_totalTimers">Timers to execute</string>
     <string name="pref_title_timeWaiting">Time stopped (%1$d)</string>
     <string name="pref_title_timeRunning">Time running (%1$d)</string>
+    <string name="pref_key_backgroundColor">pref_backgroundColor</string>
+    <string name="pref_backgroundColor">Background Prompter Color</string>
+    <string name="pref_backgroundColor_default">-16777216</string>
+    <string name="pref_key_textColor">pref_textColor</string>
+    <string name="pref_textColor">Text Prompter Color</string>
+    <string name="pref_textColor_default">-1</string>
 </resources>

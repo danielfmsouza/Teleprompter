@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_color_entries">
+        <item>Black</item>
+        <item>Blue</item>
+        <item>Green</item>
+        <item>Red</item>
+        <item>White</item>
+        <item>Yellow</item>
+    </string-array>
+
+    <string-array name="pref_backgroundColor_values">
+        <item>-16777216</item>
+        <item>-16776961</item>
+        <item>-16711936</item>
+        <item>-65536</item>
+        <item>-1</item>
+        <item>-256</item>
+    </string-array>
+
+    <string-array name="pref_textColor_values">
+        <item>-16777216</item>
+        <item>-16776961</item>
+        <item>-16711936</item>
+        <item>-65536</item>
+        <item>-1</item>
+        <item>-256</item>
+    </string-array>
+</resources>

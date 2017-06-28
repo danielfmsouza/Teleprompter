@@ -44,6 +44,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static java.security.AccessController.getContext;
+
 public class MainActivity extends AppCompatActivity implements ActivityCallback {
 
     private static final int PICK_FILE_RESULT_CODE = 1;
@@ -97,6 +99,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
 
     public void startAbout(MenuItem item) {
         startActivity(AboutActivity.class);
+    }
+
+    public void startGlobalSettings(MenuItem item){
+        Intent i = new Intent(getBaseContext(), GlobalSettingsActivity.class);
+        ActivityUtils.setSetListNameParameter(currentSetList, i);
+
+        startActivity(i);
     }
 
     public void startExport(MenuItem item) {

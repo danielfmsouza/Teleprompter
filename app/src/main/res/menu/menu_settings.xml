@@ -44,9 +44,15 @@
         app:showAsAction="never"
         android:onClick="startImport"/>
     <item
+        android:id="@+id/menu_general_options"
+        android:title="@string/menu_item_global_options_title"
+        android:orderInCategory="102"
+        app:showAsAction="never"
+        android:onClick="startGlobalSettings"/>
+    <item
         android:id="@+id/menu_about"
         android:title="@string/menu_item_about_title"
-        android:orderInCategory="102"
+        android:orderInCategory="103"
         app:showAsAction="never"
         android:onClick="startAbout"/>
 </menu>
