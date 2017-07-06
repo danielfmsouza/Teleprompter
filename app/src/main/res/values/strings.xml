@@ -48,7 +48,7 @@
     <string name="new_set_list">New Set List</string>
     <string name="load_existing_set_list">Load Existing Set List</string>
     <string name="add_song_set_list">Add Song(s) to Set List</string>
-    <string name="copyright_developer">Singer Pro - version 1.2\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
+    <string name="copyright_developer">Singer Pro - version 1.7\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->
     <string name="pref_key_scrollSpeed">pref_scrollSpeed</string>
@@ -73,4 +73,12 @@
     <string name="pref_key_textColor">pref_textColor</string>
     <string name="pref_textColor">Text Prompter Color</string>
     <string name="pref_textColor_default">-1</string>
+    <string name="pref_isBluetoothEnabled">Enabled</string>
+    <string name="pref_bluetooth">Bluetooth</string>
+    <string name="pref_bluetoothPairedDevices">Paired Devices</string>
+    <string name="pref_bluetoothAvailableDevices">Available Devices</string>
+    <string name="pref_pairedDevices">Available Devices</string>
+    <string name="pref_prompterColors">Prompter Colors</string>
+
+
 </resources>

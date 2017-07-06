@@ -1,17 +1,29 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference
-        android:key="pref_backgroundColor"
-        android:title="@string/pref_backgroundColor"
-        android:dialogTitle="@string/pref_backgroundColor"
-        android:entries="@array/pref_color_entries"
-        android:entryValues="@array/pref_backgroundColor_values"
-        android:defaultValue="@string/pref_backgroundColor_default" />
+    <PreferenceCategory android:title="@string/pref_prompterColors">
 
-    <ListPreference
-        android:key="pref_textColor"
-        android:title="@string/pref_textColor"
-        android:dialogTitle="@string/pref_textColor"
-        android:entries="@array/pref_color_entries"
-        android:entryValues="@array/pref_textColor_values"
-        android:defaultValue="@string/pref_textColor_default" />
+        <ListPreference
+            android:defaultValue="@string/pref_backgroundColor_default"
+            android:dialogTitle="@string/pref_backgroundColor"
+            android:entries="@array/pref_color_entries"
+            android:entryValues="@array/pref_backgroundColor_values"
+            android:key="pref_backgroundColor"
+            android:title="@string/pref_backgroundColor" />
+
+        <ListPreference
+            android:defaultValue="@string/pref_textColor_default"
+            android:dialogTitle="@string/pref_textColor"
+            android:entries="@array/pref_color_entries"
+            android:entryValues="@array/pref_textColor_values"
+            android:key="pref_textColor"
+            android:title="@string/pref_textColor" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_bluetooth">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_isBluetoothEnabled"
+            android:title="@string/pref_isBluetoothEnabled" />
+    </PreferenceCategory>
 </PreferenceScreen>
