@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <PreferenceCategory android:title="@string/pref_prompterColors">
 
         <ListPreference
@@ -19,11 +20,11 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/pref_bluetooth">
+    <!--<PreferenceCategory android:title="@string/pref_bluetooth">-->
 
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="pref_isBluetoothEnabled"
-            android:title="@string/pref_isBluetoothEnabled" />
-    </PreferenceCategory>
+    <!--<CheckBoxPreference-->
+    <!--android:defaultValue="false"-->
+    <!--android:key="pref_isBluetoothEnabled"-->
+    <!--android:title="@string/pref_isBluetoothEnabled" />-->
+    <!--</PreferenceCategory>-->
 </PreferenceScreen>

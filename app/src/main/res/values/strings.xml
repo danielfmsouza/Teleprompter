@@ -23,6 +23,8 @@
     <string name="prompting_canceled">Prompting cancelled by user.</string>
     <string name="set_list_not_loaded">Set List not loaded.</string>
     <string name="btn_remove_from_playlist_successful">Song removed from set list successfully.</string>
+    <string name="bluetooth_enabled_successfully">Bluetooth activated.</string>
+    <string name="bluetooth_enabled_denied">Bluetooth access denied.</string>
 
     <!--UI components resources-->
     <string name="app_name_all_songs">All Songs</string>
@@ -79,6 +81,4 @@
     <string name="pref_bluetoothAvailableDevices">Available Devices</string>
     <string name="pref_pairedDevices">Available Devices</string>
     <string name="pref_prompterColors">Prompter Colors</string>
-
-
 </resources>
