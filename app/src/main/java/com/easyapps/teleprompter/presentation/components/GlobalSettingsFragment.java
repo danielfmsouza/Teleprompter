@@ -8,13 +8,13 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.view.View;
 import android.widget.Toast;
 
 import com.easyapps.teleprompter.R;
 import com.easyapps.teleprompter.infrastructure.communication.bluetooth.BluetoothScreenShareServer;
 import com.easyapps.teleprompter.presentation.helper.PresentationConstants;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static com.easyapps.teleprompter.R.xml.global_preferences;
 
@@ -49,12 +49,14 @@ public class GlobalSettingsFragment extends PreferenceFragment {
         cbpBluetoothEnabled.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                if (cbpBluetoothEnabled.isChecked()){
+                if (cbpBluetoothEnabled.isChecked()) {
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBtIntent, PresentationConstants.REQUEST_ENABLE_BT);
-                }
-                else{
+                } else {
                     screenShareServer.disable();
+                    Toast.makeText(getActivity().getBaseContext(),
+                            R.string.bluetooth_disabled_successfully,
+                            Toast.LENGTH_LONG).show();
                 }
                 return true;
             }
@@ -62,13 +64,32 @@ public class GlobalSettingsFragment extends PreferenceFragment {
         pcBluetooth.addPreference(cbpBluetoothEnabled);
     }
 
-    public void clickOnBluetoothCheckbox(){
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case PresentationConstants.REQUEST_ENABLE_BT:
+                if (resultCode == RESULT_OK) {
+                    Toast.makeText(getActivity().getBaseContext(),
+                            R.string.bluetooth_enabled_successfully,
+                            Toast.LENGTH_LONG).show();
+                } else if (resultCode == RESULT_CANCELED) {
+                    Toast.makeText(getActivity().getBaseContext(),
+                            R.string.bluetooth_enabled_denied, Toast.LENGTH_LONG).show();
+                    GlobalSettingsFragment fragment = (GlobalSettingsFragment)
+                            getFragmentManager().findFragmentById(android.R.id.content);
+                    fragment.clickOnBluetoothCheckbox();
+                }
+                break;
+        }
+    }
+
+    public void clickOnBluetoothCheckbox() {
         PreferenceScreen preferenceScreen = this.getPreferenceScreen();
         CheckBoxPreference cbpBluetooth = (CheckBoxPreference)
                 preferenceScreen.findPreference(
                         getResources().getString(R.string.pref_isBluetoothEnabled));
 
-        if (cbpBluetooth != null){
+        if (cbpBluetooth != null) {
             cbpBluetooth.setChecked(!cbpBluetooth.isChecked());
         }
     }

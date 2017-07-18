@@ -24,6 +24,7 @@
     <string name="set_list_not_loaded">Set List not loaded.</string>
     <string name="btn_remove_from_playlist_successful">Song removed from set list successfully.</string>
     <string name="bluetooth_enabled_successfully">Bluetooth activated.</string>
+    <string name="bluetooth_disabled_successfully">Bluetooth disabled.</string>
     <string name="bluetooth_enabled_denied">Bluetooth access denied.</string>
 
     <!--UI components resources-->

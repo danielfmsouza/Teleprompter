@@ -4,7 +4,7 @@ android {
     signingConfigs {
         config {
             keyAlias 'AndroidKey'
-            storeFile file('D:/Android/keystores/android.jks')
+            storeFile file('C:/Android/keystores/android.jks')
         }
     }
     compileSdkVersion 25
