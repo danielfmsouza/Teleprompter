@@ -7,14 +7,14 @@ android {
             storeFile file('C:/Android/keystores/android.jks')
         }
     }
-    compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.1'
     defaultConfig {
         applicationId "com.easyapps.teleprompter"
         minSdkVersion 16
-        targetSdkVersion 25
-        versionCode 14
-        versionName '1.6'
+        targetSdkVersion 26
+        versionCode 15
+        versionName '1.7'
     }
     buildTypes {
         release {
@@ -32,9 +32,9 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:support-v4:24.2.1'
-    compile 'com.android.support:palette-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:support-v4:25.0.0'
+    compile 'com.android.support:palette-v7:25.0.0'
+    compile 'com.android.support:design:25.0.0'
 }
 

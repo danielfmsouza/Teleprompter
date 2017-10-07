@@ -17,22 +17,22 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".presentation.MainActivity">
+        <activity android:name="com.easyapps.singerpro.presentation.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.CreateLyricActivity" />
-        <activity android:name=".presentation.PrompterActivity" />
+        <activity android:name="com.easyapps.singerpro.presentation.CreateLyricActivity" />
+        <activity android:name="com.easyapps.singerpro.presentation.PrompterActivity" />
         <activity
-            android:name=".presentation.SettingsActivity"
+            android:name="com.easyapps.singerpro.presentation.SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name=".presentation.GlobalSettingsActivity"
+            android:name="com.easyapps.singerpro.presentation.GlobalSettingsActivity"
             android:label="@string/menu_item_global_options_title" />
-        <activity android:name=".presentation.AboutActivity"/>
+        <activity android:name="com.easyapps.singerpro.presentation.AboutActivity"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

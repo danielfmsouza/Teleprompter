@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:padding="15dp"
-    tools:context="com.easyapps.teleprompter.presentation.MainActivity">
+    tools:context="com.easyapps.singerpro.presentation.MainActivity">
 
     <ListView
         android:id="@+id/lvFiles"
@@ -23,11 +23,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
-            android:text="@string/btn_create_file_description"
             android:contentDescription="@string/btn_create_file_description"
             android:onClick="createLyric"
-            app:backgroundTint="@color/purplePrimary"
-            android:src="@drawable/ic_action_add"/>
+            android:src="@drawable/ic_action_add"
+            android:text="@string/btn_create_file_description"
+            app:backgroundTint="@color/purplePrimary" />
     </android.support.design.widget.CoordinatorLayout>
 
 </FrameLayout>

@@ -42,6 +42,7 @@
     <string name="app_logo_description">App logo</string>
     <string name="menu_item_delete_files_title">Delete Files</string>
     <string name="menu_item_add_lyric_set_list_title">Add Song(s) to Set List</string>
+    <string name="menu_item_rename_set_list_title">Rename Set List</string>
     <string name="menu_item_show_all_title">Show All Songs</string>
     <string name="menu_item_load_set_list_title">Load Set List</string>
     <string name="menu_item_about_title">About</string>
@@ -49,6 +50,7 @@
     <string name="menu_item_import_title">Import Files</string>
     <string name="menu_item_global_options_title">Global Options</string>
     <string name="new_set_list">New Set List</string>
+    <string name="rename_set_list">Rename Set List</string>
     <string name="load_existing_set_list">Load Existing Set List</string>
     <string name="add_song_set_list">Add Song(s) to Set List</string>
     <string name="copyright_developer">Singer Pro - version 1.7\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>

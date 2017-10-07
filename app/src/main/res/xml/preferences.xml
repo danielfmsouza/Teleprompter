@@ -18,7 +18,7 @@
         preference:minValue="@integer/number_min_value_text_size"
         preference:wrapSelectorWheel="false"/>
 
-    <com.easyapps.teleprompter.presentation.components.TimersCountPickerPreference
+    <com.easyapps.singerpro.presentation.components.TimersCountPickerPreference
         android:key="@string/pref_key_totalTimers"
         android:title="@string/pref_title_totalTimers"
         android:summary="@string/pref_summary_totalTimers"

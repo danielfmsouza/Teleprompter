@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.easyapps.teleprompter.presentation.MainActivity">
+    tools:context="com.easyapps.singerpro.presentation.MainActivity">
     <item
         android:icon="@drawable/ic_show_all"
         android:id="@+id/menu_show_all"
@@ -19,40 +19,48 @@
         android:onClick="loadSetList"/>
     <item
         android:icon="@drawable/ic_set_list"
+        android:id="@+id/menu_rename_set_list"
+        android:title="@string/menu_item_rename_set_list_title"
+        android:orderInCategory="98"
+        app:showAsAction="never"
+        android:visible="false"
+        android:onClick="renameSetList"/>
+    <item
+        android:icon="@drawable/ic_set_list"
         android:id="@+id/menu_set_list"
         android:title="@string/menu_item_add_lyric_set_list_title"
-        android:orderInCategory="98"
+        android:orderInCategory="99"
         app:showAsAction="never"
         android:onClick="setListSelectedFiles"/>
     <item
         android:icon="@drawable/ic_delete"
         android:id="@+id/menu_delete"
         android:title="@string/menu_item_delete_files_title"
-        android:orderInCategory="99"
+        android:orderInCategory="100"
         app:showAsAction="ifRoom"
         android:onClick="deleteSelectedFiles"/>
     <item
         android:id="@+id/menu_export"
         android:title="@string/menu_item_export_title"
-        android:orderInCategory="100"
+        android:orderInCategory="101"
         app:showAsAction="never"
         android:onClick="startExport"/>
     <item
         android:id="@+id/menu_import"
         android:title="@string/menu_item_import_title"
-        android:orderInCategory="101"
+        android:orderInCategory="102"
         app:showAsAction="never"
         android:onClick="startImport"/>
     <item
         android:id="@+id/menu_general_options"
         android:title="@string/menu_item_global_options_title"
-        android:orderInCategory="102"
+        android:orderInCategory="103"
         app:showAsAction="never"
         android:onClick="startGlobalSettings"/>
     <item
         android:id="@+id/menu_about"
         android:title="@string/menu_item_about_title"
-        android:orderInCategory="103"
+        android:orderInCategory="104"
         app:showAsAction="never"
         android:onClick="startAbout"/>
 </menu>
