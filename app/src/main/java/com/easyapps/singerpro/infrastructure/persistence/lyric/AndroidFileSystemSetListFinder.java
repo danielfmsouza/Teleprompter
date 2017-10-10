@@ -32,7 +32,7 @@ public class AndroidFileSystemSetListFinder implements ISetListFinder {
         });
 
         String[] result;
-        if (files != null) {
+        if (files != null && files.length > 0) {
             result = new String[files.length];
             int pos = 0;
             for (File f : files) {
@@ -41,9 +41,9 @@ public class AndroidFileSystemSetListFinder implements ISetListFinder {
 
                 result[pos++] = name;
             }
-        } else
+        } else {
             result = new String[]{};
-
+        }
         return result;
     }
 }

@@ -55,6 +55,9 @@
         android:id="@+id/etSongNumber"
         android:inputType="number"
         android:hint="@string/et_song_number_hint"
+        android:focusable="true"
+        android:nextFocusLeft="@+id/etFileName"
+        android:focusableInTouchMode="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"/>

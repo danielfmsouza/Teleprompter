@@ -33,6 +33,7 @@ public class CreateLyricActivity extends AppCompatActivity {
         EditText etTextFile = (EditText) findViewById(R.id.etTextFile);
         EditText etFileName = (EditText) findViewById(R.id.etFileName);
         EditText etSongNumber = (EditText) findViewById(R.id.etSongNumber);
+        etSongNumber.requestFocus();
 
         // TODO these have to be injected (IoC).
         ILyricRepository mLyricRepository =

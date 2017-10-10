@@ -263,7 +263,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
                         } else {
                             addLyricsToSetList(items[position]);
                         }
-                        unCheckAllSelectedItems();
                     }
                 })
                 .create();
@@ -434,7 +433,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         try {
             mAppService.removeLyrics(lyricsToDelete);
             adapter.removeAllCheckedItems();
-            if (adapter.getCount() == 0) {
+            if (adapter.getCount() == 0 && currentSetList != null && !currentSetList.equals("")) {
                 removeSetList(currentSetList);
                 showAllLyrics(null);
             }
