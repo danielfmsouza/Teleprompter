@@ -4,7 +4,7 @@ android {
     signingConfigs {
         config {
             keyAlias 'AndroidKey'
-            storeFile file('C:/Android/keystores/android.jks')
+            storeFile file('C:/Android/keystores/android-new.jks')
         }
     }
     compileSdkVersion 25
@@ -13,8 +13,8 @@ android {
         applicationId 'com.easyapps.singerpro'
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 14
-        versionName '1.7'
+        versionCode 15
+        versionName '1.8'
     }
     buildTypes {
         release {
