@@ -17,4 +17,6 @@
     <integer name="number_song">0</integer>
 
     <integer name="number_max_song_name_size">50</integer>
+
+    <integer name="number_default_value_timeBeforeNext">3</integer>
 </resources>

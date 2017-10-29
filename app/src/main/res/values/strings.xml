@@ -84,4 +84,10 @@
     <string name="pref_bluetoothAvailableDevices">Available Devices</string>
     <string name="pref_pairedDevices">Available Devices</string>
     <string name="pref_prompterColors">Prompter Colors</string>
+    <string name="pref_title_playNext">Play Next Automatically</string>
+    <string name="pref_key_playNext">pref_playNext</string>
+    <string name="pref_title_timeBeforeNext">Time Before Next Song</string>
+    <string name="pref_summary_timeBeforeNext">How much time (in seconds) the app must wait before start prompting the next song in the current set list.</string>
+    <string name="pref_key_timeBeforeNext">pref_timeBeforeNext</string>
+
 </resources>

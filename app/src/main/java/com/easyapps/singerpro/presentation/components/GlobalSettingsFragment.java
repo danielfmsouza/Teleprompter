@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.widget.Toast;
@@ -33,7 +34,9 @@ public class GlobalSettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(global_preferences);
         screenShareServer = new BluetoothScreenShareServer(BluetoothAdapter.getDefaultAdapter());
 
-        PreferenceScreen preferenceScreen = this.getPreferenceScreen();
+        final PreferenceScreen preferenceScreen = this.getPreferenceScreen();
+        setPlayNextCheckboxBehavior(preferenceScreen);
+        verifyPlayNextActivated();
 
 //        PreferenceCategory pcBluetooth = new PreferenceCategory(preferenceScreen.getContext());
 //        pcBluetooth.setTitle(getResources().getString(R.string.pref_bluetooth));
@@ -60,6 +63,24 @@ public class GlobalSettingsFragment extends PreferenceFragment {
 //            }
 //        });
 //        pcBluetooth.addPreference(cbpBluetoothEnabled);
+    }
+
+    private void setPlayNextCheckboxBehavior(final PreferenceScreen preferenceScreen) {
+        final CheckBoxPreference cpbPlayNext = (CheckBoxPreference)
+                preferenceScreen.findPreference(
+                        getResources().getString(R.string.pref_key_playNext));
+
+        cpbPlayNext.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                if (cpbPlayNext.isChecked()) {
+                    activateTimeBeforeNextOption(preferenceScreen);
+                } else {
+                    deactivateTimeBeforeNextOption(preferenceScreen);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -90,5 +111,35 @@ public class GlobalSettingsFragment extends PreferenceFragment {
         if (cbpBluetooth != null) {
             cbpBluetooth.setChecked(!cbpBluetooth.isChecked());
         }
+    }
+
+    public void verifyPlayNextActivated(){
+        PreferenceScreen preferenceScreen = this.getPreferenceScreen();
+        CheckBoxPreference cpbPlayNext = (CheckBoxPreference)
+                preferenceScreen.findPreference(
+                        getResources().getString(R.string.pref_key_playNext));
+
+        if (cpbPlayNext.isChecked()){
+            activateTimeBeforeNextOption(preferenceScreen);
+        }
+        else{
+            deactivateTimeBeforeNextOption(preferenceScreen);
+        }
+    }
+
+    private void activateTimeBeforeNextOption(PreferenceScreen preferenceScreen) {
+        NumberPickerPreference nppTimeBeforeNext = (NumberPickerPreference)
+                preferenceScreen.findPreference(
+                        getResources().getString(R.string.pref_key_timeBeforeNext));
+
+        nppTimeBeforeNext.setEnabled(true);
+    }
+
+    private void deactivateTimeBeforeNextOption(PreferenceScreen preferenceScreen) {
+        NumberPickerPreference nppTimeBeforeNext = (NumberPickerPreference)
+                preferenceScreen.findPreference(
+                        getResources().getString(R.string.pref_key_timeBeforeNext));
+
+        nppTimeBeforeNext.setEnabled(false);
     }
 }
