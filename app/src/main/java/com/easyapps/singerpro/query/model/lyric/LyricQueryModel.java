@@ -1,5 +1,7 @@
 package com.easyapps.singerpro.query.model.lyric;
 
+import java.util.Comparator;
+
 /**
  * Query model for Lyric.
  * Created by daniel on 04/10/2016.

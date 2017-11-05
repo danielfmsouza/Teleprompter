@@ -2,6 +2,8 @@ package com.easyapps.singerpro.domain.model.lyric;
 
 import android.net.Uri;
 
+import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
+
 import java.util.List;
 
 /**
@@ -19,6 +21,4 @@ public interface ILyricRepository {
     Lyric loadWithConfiguration(String name)throws Exception;
 
     Uri[] exportAllLyrics();
-
-//    void addToSetList(String setListName);
 }

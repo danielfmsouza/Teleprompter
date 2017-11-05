@@ -2,45 +2,142 @@ package com.easyapps.singerpro.presentation;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.easyapps.singerpro.application.AutomaticPlayingApplicationService;
 import com.easyapps.singerpro.application.LyricApplicationService;
 import com.easyapps.singerpro.domain.model.lyric.Configuration;
-import com.easyapps.singerpro.domain.model.lyric.Lyric;
-import com.easyapps.teleprompter.R;
 import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
+import com.easyapps.singerpro.domain.model.lyric.Lyric;
+import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricFinder;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricRepository;
 import com.easyapps.singerpro.presentation.components.PrompterView;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
+import com.easyapps.singerpro.query.model.lyric.ILyricFinder;
+import com.easyapps.teleprompter.R;
 
 public class PrompterActivity extends AppCompatActivity {
 
     private PrompterView mPrompter;
     private String setListName;
+    private boolean playNext;
+    private int timeBeforeStart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        hideUI();
+        boolean hasFinishedAnimationParameter =
+                ActivityUtils.getHasFinishedAnimationParameter(getIntent());
 
-        setContentView(R.layout.activity_prompter);
-        mPrompter = (PrompterView) findViewById(R.id.fullscreen_content);
+        SharedPreferences sharedPref =
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        int timeBeforeStartDefault = 0;
+        playNext = sharedPref.getBoolean(
+                getResources().getString(R.string.pref_key_playNext), false);
+        timeBeforeStart = sharedPref.getInt(
+                getResources().getString(R.string.pref_key_timeBeforeStart), timeBeforeStartDefault);
+        setListName = ActivityUtils.getSetListNameParameter(getIntent());
+
+        boolean automaticPlaying = playNext && hasFinishedAnimationParameter;
+        if (automaticPlaying) {
+            setNextFileNameToPrompt(setListName);
+        }
+        if (playNext || !hasFinishedAnimationParameter) {
+
+            hideUI();
+
+            setContentView(R.layout.activity_prompter);
+            mPrompter = (PrompterView) findViewById(R.id.fullscreen_content);
+            String fileName = ActivityUtils.getFileNameParameter(getIntent());
+            if (fileName != null) {
+                loadFileIntoPrompter(fileName, setListName);
+            } else {
+                if (automaticPlaying) {
+                    ActivityUtils.backToMain(this, setListName);
+                    showToastMessage(R.string.prompting_finished);
+                } else {
+                    ActivityUtils.backToMain(this, setListName);
+                    showToastMessage(R.string.file_not_found);
+                }
+            }
+            setScrollViewBackgroundColor();
+            VerifyTimeBeforeStartAnimation();
+        } else {
+            ActivityUtils.backToMain(this, setListName);
+            showToastMessage(R.string.prompting_finished);
+        }
+    }
+
+    private void showToastMessage(int resourceId) {
+        String message = getResources().getString(resourceId);
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    private void setNextFileNameToPrompt(String setListName) {
+        ILyricFinder lyricFinder
+                = new AndroidFileSystemLyricFinder(getApplicationContext());
+
+        AutomaticPlayingApplicationService appService =
+                new AutomaticPlayingApplicationService(lyricFinder);
 
         String fileName = ActivityUtils.getFileNameParameter(getIntent());
-        setListName = ActivityUtils.getSetListNameParameter(getIntent());
-        if (fileName != null) {
-            loadFileIntoPrompter(fileName, setListName);
-        } else {
-            String message = getResources().getString(R.string.file_not_found);
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        String newLyricToPlay = null;
+        try {
+            newLyricToPlay = appService.loadNextLyricNameFromSetList(setListName, fileName);
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            ;
         }
-        setScrollViewBackgroundColor();
+
+        ActivityUtils.setFileNameParameter(newLyricToPlay, getIntent());
+    }
+
+    private void VerifyTimeBeforeStartAnimation() {
+        ViewTreeObserver vto = mPrompter.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                CountDownTimeBeforeStartAnimation(timeBeforeStart, playNext);
+                mPrompter.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+    }
+
+    private void CountDownTimeBeforeStartAnimation(final int timeBeforeStart, boolean playNext) {
+        if (playNext) {
+            new CountDownTimer(timeBeforeStart * 1000, 1000) {
+                int aux = timeBeforeStart;
+                boolean isShowingPreviousToast = false;
+                Toast toast = Toast.makeText(getApplicationContext(), aux-- + "...",
+                        Toast.LENGTH_SHORT);
+
+                public void onTick(long millisUntilFinished) {
+                    if (isShowingPreviousToast) {
+                        toast.cancel();
+                        toast = Toast.makeText(getApplicationContext(), aux-- + "...",
+                                Toast.LENGTH_SHORT);
+                    }
+                    toast.show();
+                    isShowingPreviousToast = true;
+                }
+
+                public void onFinish() {
+                    toast.cancel();
+                    mPrompter.startAnimation();
+                }
+            }.start();
+
+        } else
+            mPrompter.startAnimation();
     }
 
     private void setScrollViewBackgroundColor() {
@@ -65,13 +162,13 @@ public class PrompterActivity extends AppCompatActivity {
 
             Lyric lyric = appService.loadLyricWithConfiguration(fileName);
             mPrompter.setText(lyric.getContent());
-            setPrompterDefinitions(lyric.getConfiguration(), setListName);
+            setPrompterDefinitions(lyric.getConfiguration(), setListName, fileName);
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
-    private void setPrompterDefinitions(Configuration config, String setListName) {
+    private void setPrompterDefinitions(Configuration config, String setListName, String fileName) {
         mPrompter.setAnimationId(R.anim.text_prompter);
         mPrompter.setTextSize(config.getFontSize());
         mPrompter.setScrollSpeed(config.getScrollSpeed());
@@ -79,6 +176,7 @@ public class PrompterActivity extends AppCompatActivity {
         mPrompter.setTimeStopped(config.getTimerStopped());
         mPrompter.setTotalTimers(config.getTimersCount());
         mPrompter.setSetListName(setListName);
+        mPrompter.setFileName(fileName);
     }
 
     public void startStop(View view) {
@@ -99,7 +197,6 @@ public class PrompterActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         ActivityUtils.backToMain(this, setListName);
-        String message = getResources().getString(R.string.prompting_canceled);
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        showToastMessage(R.string.prompting_canceled);
     }
 }

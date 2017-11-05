@@ -130,7 +130,7 @@ public class GlobalSettingsFragment extends PreferenceFragment {
     private void activateTimeBeforeNextOption(PreferenceScreen preferenceScreen) {
         NumberPickerPreference nppTimeBeforeNext = (NumberPickerPreference)
                 preferenceScreen.findPreference(
-                        getResources().getString(R.string.pref_key_timeBeforeNext));
+                        getResources().getString(R.string.pref_key_timeBeforeStart));
 
         nppTimeBeforeNext.setEnabled(true);
     }
@@ -138,7 +138,7 @@ public class GlobalSettingsFragment extends PreferenceFragment {
     private void deactivateTimeBeforeNextOption(PreferenceScreen preferenceScreen) {
         NumberPickerPreference nppTimeBeforeNext = (NumberPickerPreference)
                 preferenceScreen.findPreference(
-                        getResources().getString(R.string.pref_key_timeBeforeNext));
+                        getResources().getString(R.string.pref_key_timeBeforeStart));
 
         nppTimeBeforeNext.setEnabled(false);
     }

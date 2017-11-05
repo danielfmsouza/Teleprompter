@@ -3,16 +3,18 @@ package com.easyapps.singerpro.infrastructure.persistence.lyric;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.easyapps.singerpro.domain.model.lyric.Configuration;
+import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
 import com.easyapps.singerpro.domain.model.lyric.ISetListRepository;
 import com.easyapps.singerpro.query.model.lyric.ConfigurationQueryModel;
 import com.easyapps.singerpro.query.model.lyric.ILyricFinder;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;
-import com.easyapps.singerpro.domain.model.lyric.Configuration;
-import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
+import com.easyapps.singerpro.query.model.lyric.LyricQueryModelComparator;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -84,6 +86,24 @@ public class AndroidFileSystemLyricFinder implements ILyricFinder {
         });
 
         return buildLyrics(files);
+    }
+
+    @Override
+    public String getNextLyricNameFromSetList(String setListName, String currentLyricName) throws FileSystemException {
+        List<LyricQueryModel> allLyricsFromSetList;
+        if (setListName == null || setListName.isEmpty()) {
+            allLyricsFromSetList = getAll();
+        } else {
+            allLyricsFromSetList = getFromSetList(setListName);
+        }
+
+        Collections.sort(allLyricsFromSetList, new LyricQueryModelComparator());
+
+        int currentIndex = allLyricsFromSetList.indexOf(new LyricQueryModel(currentLyricName, null));
+        if (currentIndex != -1 && currentIndex != allLyricsFromSetList.size() - 1)
+            return allLyricsFromSetList.get(currentIndex + 1).getName();
+
+        return null;
     }
 
     private ConfigurationQueryModel MappingConfigurationToQueryModel(Configuration config) {

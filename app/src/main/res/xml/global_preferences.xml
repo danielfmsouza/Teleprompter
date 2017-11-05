@@ -27,9 +27,9 @@
 
         <com.easyapps.singerpro.presentation.components.NumberPickerPreference
             android:enabled="false"
-            android:key="@string/pref_key_timeBeforeNext"
-            android:title="@string/pref_title_timeBeforeNext"
-            android:summary="@string/pref_summary_timeBeforeNext"
+            android:key="@string/pref_key_timeBeforeStart"
+            android:title="@string/pref_title_timeBeforeStart"
+            android:summary="@string/pref_summary_timeBeforeStart"
             android:defaultValue="@integer/number_default_value_timeBeforeNext"
             preference:maxValue="@integer/number_max_value_scroll_speed"
             preference:minValue="@integer/number_min_value_scroll_speed"

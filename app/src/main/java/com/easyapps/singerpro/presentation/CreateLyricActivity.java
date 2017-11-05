@@ -23,6 +23,7 @@ public class CreateLyricActivity extends AppCompatActivity {
     private static final String SONG_NUMBER = "SONG_NUMBER";
     private static final String FILE_NAME = "FILE_NAME";
     private String mFileName = null;
+    private String mSetListName = "";
     private LyricApplicationService mAppService;
 
     @Override
@@ -44,6 +45,7 @@ public class CreateLyricActivity extends AppCompatActivity {
         mAppService = new LyricApplicationService(mLyricRepository, null, mConfigRepository, null, null);
 
         mFileName = ActivityUtils.getFileNameParameter(getIntent());
+        mSetListName = ActivityUtils.getSetListNameParameter(getIntent());
 
         if (savedInstanceState != null) {
             // Restore value of members from saved state
@@ -84,7 +86,7 @@ public class CreateLyricActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        ActivityUtils.backToMain(this);
+        ActivityUtils.backToMain(this, mSetListName);
     }
 
     public void SaveFile(View v) {
@@ -109,7 +111,7 @@ public class CreateLyricActivity extends AppCompatActivity {
 
                 String message = getResources().getString(R.string.file_saved);
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-                ActivityUtils.backToMain(this);
+                ActivityUtils.backToMain(this, mSetListName);
             } catch (Exception e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }

@@ -1,6 +1,7 @@
 package com.easyapps.singerpro.presentation.components;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.util.AttributeSet;
@@ -9,10 +10,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
-import android.widget.Toast;
 
+import com.easyapps.singerpro.presentation.PrompterActivity;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
-import com.easyapps.teleprompter.R;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -29,6 +29,7 @@ class PausablePrompterAnimation extends AnimationSet {
     private static final String ANIMATION_NAME_SET = "set";
     private static final String ANIMATION_NAME_TRANSLATE = "translate";
     private static String mSetListName = "";
+    private static String mFileName;
 
     private long mElapsedAtPause = 0;
     private boolean isPaused = false;
@@ -48,9 +49,8 @@ class PausablePrompterAnimation extends AnimationSet {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                ActivityUtils.backToMain(ActivityUtils.getActivity(context), mSetListName);
-                String message = context.getResources().getString(R.string.prompting_finished);
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                ActivityUtils.backToPrompter(ActivityUtils.getActivity(context), mSetListName,
+                        mFileName);
             }
         });
     }
@@ -89,9 +89,10 @@ class PausablePrompterAnimation extends AnimationSet {
     }
 
     static Animation loadAnimation(Context context, int id, int toYDelta, int scrollSpeed,
-                                   String setListName)
+                                   String setListName, String fileName)
             throws Resources.NotFoundException {
         mSetListName = setListName;
+        mFileName = fileName;
         XmlResourceParser parser = null;
         try {
             parser = context.getResources().getAnimation(id);

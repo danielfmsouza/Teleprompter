@@ -53,7 +53,7 @@
     <string name="rename_set_list">Rename Set List</string>
     <string name="load_existing_set_list">Load Existing Set List</string>
     <string name="add_song_set_list">Add Song(s) to Set List</string>
-    <string name="copyright_developer">Singer Pro - version 1.7\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
+    <string name="copyright_developer">Singer Pro - version 1.9\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->
     <string name="pref_key_scrollSpeed">pref_scrollSpeed</string>
@@ -86,8 +86,8 @@
     <string name="pref_prompterColors">Prompter Colors</string>
     <string name="pref_title_playNext">Play Next Automatically</string>
     <string name="pref_key_playNext">pref_playNext</string>
-    <string name="pref_title_timeBeforeNext">Time Before Next Song</string>
-    <string name="pref_summary_timeBeforeNext">How much time (in seconds) the app must wait before start prompting the next song in the current set list.</string>
-    <string name="pref_key_timeBeforeNext">pref_timeBeforeNext</string>
+    <string name="pref_title_timeBeforeStart">Time Before Start Prompting</string>
+    <string name="pref_summary_timeBeforeStart">How much time (in seconds) the app must wait before start prompting the next song in the current set list.</string>
+    <string name="pref_key_timeBeforeStart">pref_timeBeforeStart</string>
 
 </resources>

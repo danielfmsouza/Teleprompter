@@ -19,6 +19,7 @@ import com.easyapps.singerpro.presentation.PrompterActivity;
 import com.easyapps.singerpro.presentation.SettingsActivity;
 import com.easyapps.singerpro.query.model.lyric.ConfigurationQueryModel;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;
+import com.easyapps.singerpro.query.model.lyric.LyricQueryModelComparator;
 import com.easyapps.teleprompter.R;
 import com.easyapps.singerpro.presentation.CreateLyricActivity;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
@@ -54,16 +55,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     }
 
     private void sortItemsBySongNumber() {
-        sort(new Comparator<LyricQueryModel>() {
-            @Override
-            public int compare(LyricQueryModel firstObj, LyricQueryModel secondObj) {
-                if (firstObj.getOrder() > secondObj.getOrder())
-                    return 1;
-                else if (firstObj.getOrder() < secondObj.getOrder())
-                    return -1;
-                return 0;
-            }
-        });
+        sort(new LyricQueryModelComparator());
     }
 
     @NonNull

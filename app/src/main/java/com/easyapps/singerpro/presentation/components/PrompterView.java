@@ -26,10 +26,13 @@ public class PrompterView extends TextView {
     private int[] timeWaiting;
     private int totalTimers;
     private String setListName;
-    private boolean animationInitialized = false;
-
+    private String fileName;
+    private boolean animationPrepared = false;
+    private boolean playNext = false;
+    private int timeBeforeNextSong;
     private final CountDownTimerPrompter initialTimer = new CountDownTimerPrompter(1, -2);
     private final List<CountDownTimerPrompter> timers = new ArrayList<>();
+    Animation animation;
 
     public PrompterView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -48,8 +51,21 @@ public class PrompterView extends TextView {
         int textColor = Integer.parseInt(sharedPref.getString(
                 getResources().getString(R.string.pref_key_textColor), textColorDefault));
 
+
         setTextColor(textColor);
         setBackgroundColor(backgroundColor);
+    }
+
+    public void startAnimation() {
+        if (animationPrepared) {
+            startAnimation(animation);
+
+            // this is needed to make animation work
+            initialTimer.start();
+
+            createTimers();
+            initializeTimers();
+        }
     }
 
     public PrompterView(Context context) {
@@ -60,17 +76,13 @@ public class PrompterView extends TextView {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 
-        if (changed && !animationInitialized) {
-            final Animation animation = PausablePrompterAnimation.loadAnimation(
-                    getContext(), animationId, b, scrollSpeed, setListName);
-            startAnimation(animation);
+        if (changed && !animationPrepared) {
+            animation = PausablePrompterAnimation.loadAnimation(
+                    getContext(), animationId, b, scrollSpeed, setListName, fileName);
 
             // this is needed to make animation work
-            initialTimer.start();
 
-            createTimers();
-            initializeTimers();
-            animationInitialized = true;
+            animationPrepared = true;
         }
     }
 
@@ -123,6 +135,10 @@ public class PrompterView extends TextView {
 
     public void setSetListName(String setListName) {
         this.setListName = setListName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     private class CountDownTimerPrompter extends CountDownTimer {
