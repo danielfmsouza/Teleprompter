@@ -74,7 +74,7 @@ class PausablePrompterAnimation extends AnimationSet {
         isPaused = false;
     }
 
-    public void startStop() {
+    void startStop() {
         if (isPaused) {
             resume();
         } else {

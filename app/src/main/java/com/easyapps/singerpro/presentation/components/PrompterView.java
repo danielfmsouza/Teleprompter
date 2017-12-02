@@ -6,7 +6,6 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.animation.Animation;
-import android.widget.TextView;
 
 import com.easyapps.teleprompter.R;
 
@@ -18,7 +17,7 @@ import java.util.List;
  * View ready to hold a animated text on the screen. Besides that, it stills controls
  * CountDownTimerPrompter instances.
  */
-public class PrompterView extends TextView {
+public class PrompterView extends android.support.v7.widget.AppCompatTextView {
     private int animationId;
 
     private int scrollSpeed;
@@ -28,8 +27,6 @@ public class PrompterView extends TextView {
     private String setListName;
     private String fileName;
     private boolean animationPrepared = false;
-    private boolean playNext = false;
-    private int timeBeforeNextSong;
     private final CountDownTimerPrompter initialTimer = new CountDownTimerPrompter(1, -2);
     private final List<CountDownTimerPrompter> timers = new ArrayList<>();
     Animation animation;
@@ -147,7 +144,7 @@ public class PrompterView extends TextView {
         private final int id;
 
         CountDownTimerPrompter(long timeToCount, int id) {
-            super(timeToCount, timeToCount);
+            super(timeToCount, 1000);
             this.id = id;
         }
 

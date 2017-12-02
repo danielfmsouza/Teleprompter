@@ -5,27 +5,27 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.easyapps.singerpro.presentation.ActivityCallback;
+import com.easyapps.singerpro.presentation.CreateLyricActivity;
 import com.easyapps.singerpro.presentation.PrompterActivity;
 import com.easyapps.singerpro.presentation.SettingsActivity;
+import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 import com.easyapps.singerpro.query.model.lyric.ConfigurationQueryModel;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModelComparator;
 import com.easyapps.teleprompter.R;
-import com.easyapps.singerpro.presentation.CreateLyricActivity;
-import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,6 +36,7 @@ import java.util.Locale;
  */
 public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     private final List<String> checkedItems;
+    private boolean multipleSelectionEnabled = false;
     private final LayoutInflater mInflater;
     private String setListName;
     private final ActivityCallback activityCallback;
@@ -62,33 +63,61 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     @Override
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         View row = convertView;
-        Holder holder;
+        final Holder holder;
 
         if (row == null) {
             row = mInflater.inflate(R.layout.list_view_row_song, null);
         }
 
-        String lyricName = getLyricName(position);
+        TypedValue outValue = new TypedValue();
+        getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue,
+                true);
+        row.setBackgroundResource(outValue.resourceId);
+
+        final String lyricName = getLyricName(position);
         ConfigurationQueryModel config = getConfiguration(position);
 
         holder = new Holder();
-        holder.text = (TextView) row.findViewById(R.id.tvFileName);
-        holder.configs = (TextView) row.findViewById(R.id.tvFileConfiguration);
-        holder.checkBox = (CheckBox) row.findViewById(R.id.cbDelete);
-        holder.playButton = (ImageButton) row.findViewById(R.id.btnPlay);
-        holder.settingsButton = (ImageButton) row.findViewById(R.id.btnSettings);
-        holder.removeFromSetListButton = (ImageButton) row.findViewById(R.id.btnRemoveFromSetList);
+        holder.text = row.findViewById(R.id.tvFileName);
+        holder.configs = row.findViewById(R.id.tvFileConfiguration);
+        holder.playButton = row.findViewById(R.id.btnPlay);
+        holder.playButton.setSelected(false);
+        holder.settingsButton = row.findViewById(R.id.btnSettings);
+        holder.removeFromSetListButton = row.findViewById(R.id.btnRemoveFromSetList);
         holder.text.setText(getLyricTitle(lyricName, config));
         holder.configs.setText(getConfigurationMessage(config));
+
         row.setTag(holder);
 
+        final Animation animation = getPlayButtonAnimation(holder, lyricName);
+
+        row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setRowClickAction(position, holder, animation, CreateLyricActivity.class);
+            }
+        });
+        row.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                holder.playButton.startAnimation(animation);
+                return true;
+            }
+        });
         holder.playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startPrompter(position);
+                setRowClickAction(position, holder, animation, PrompterActivity.class);
             }
         });
 
+        holder.playButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                holder.playButton.startAnimation(animation);
+                return true;
+            }
+        });
         holder.settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,30 +131,44 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
                 removeFromSetList(position);
             }
         });
-
-        holder.text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startEditFile(position);
-            }
-        });
-
-        final String finalLyricName = lyricName;
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    checkedItems.add(finalLyricName);
-                    activityCallback.showContent();
-                } else {
-                    checkedItems.remove(finalLyricName);
-                    verifySelectedItems();
-                }
-            }
-        });
-
         return row;
+    }
+
+    @NonNull
+    private Animation getPlayButtonAnimation(final Holder holder, final String lyricName) {
+        final Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.scale_out);
+
+        animation.setAnimationListener(new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Animation animation2 = AnimationUtils.loadAnimation(getContext(), R.anim.scale_in);
+                holder.playButton.startAnimation(animation2);
+                checkOrUnCheckItem(lyricName, holder);
+            }
+        });
+        return animation;
+    }
+
+    private void checkOrUnCheckItem(String lyricName, Holder holder) {
+        if (checkedItems.contains(lyricName)) {
+            checkedItems.remove(lyricName);
+            holder.playButton.setSelected(false);
+            verifySelectedItems();
+        } else {
+            activityCallback.showContent();
+            holder.playButton.setSelected(true);
+            checkedItems.add(lyricName);
+            multipleSelectionEnabled = true;
+        }
     }
 
     private void removeFromSetList(int position) {
@@ -160,6 +203,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     private void verifySelectedItems() {
         if (checkedItems.isEmpty()) {
             activityCallback.hideContent();
+            multipleSelectionEnabled = false;
         }
     }
 
@@ -185,21 +229,20 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         TextView text;
         TextView configs;
         ImageButton playButton;
-        CheckBox checkBox;
         ImageButton settingsButton;
         ImageButton removeFromSetListButton;
-    }
-
-    private void startPrompter(int position) {
-        startActivity(PrompterActivity.class, position);
     }
 
     private void startSettings(int position) {
         startActivity(SettingsActivity.class, position);
     }
 
-    private void startEditFile(int position) {
-        startActivity(CreateLyricActivity.class, position);
+    private void setRowClickAction(int position, Holder holder, Animation animation, Class clazz) {
+        if (multipleSelectionEnabled) {
+            holder.playButton.startAnimation(animation);
+        } else {
+            startActivity(clazz, position);
+        }
     }
 
     private void startActivity(Class clazz, int position) {

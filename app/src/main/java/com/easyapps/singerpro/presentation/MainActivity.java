@@ -14,28 +14,31 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.easyapps.singerpro.application.LyricApplicationService;
+import com.easyapps.singerpro.application.command.AddLyricCommand;
 import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
 import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
 import com.easyapps.singerpro.domain.model.lyric.ISetListRepository;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricFinder;
+import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricRepository;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemSetListFinder;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemSetListRepository;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidPreferenceConfigurationRepository;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemRepository;
 import com.easyapps.singerpro.presentation.components.PlayableCustomAdapter;
+import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 import com.easyapps.singerpro.query.model.lyric.ILyricFinder;
 import com.easyapps.singerpro.query.model.lyric.ISetListFinder;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;
 import com.easyapps.teleprompter.R;
-import com.easyapps.singerpro.application.LyricApplicationService;
-import com.easyapps.singerpro.application.command.AddLyricCommand;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricRepository;
-import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
 import java.io.FileNotFoundException;
 import java.text.DateFormat;
@@ -90,9 +93,16 @@ public class MainActivity extends AppCompatActivity implements ActivityCallback 
         finish();
     }
 
-    public void listFiles(final ListView lvFiles) {
+    private void listFiles(final ListView lvFiles) {
         lvFiles.setAdapter(new PlayableCustomAdapter(this, this, mAppService.getAllLyrics(),
                 currentSetList));
+        lvFiles.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                view.setSelected(true);
+                return true;
+            }
+        });
     }
 
     public void startAbout(MenuItem item) {

@@ -95,7 +95,6 @@ public class PrompterActivity extends AppCompatActivity {
             newLyricToPlay = appService.loadNextLyricNameFromSetList(setListName, fileName);
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            ;
         }
 
         ActivityUtils.setFileNameParameter(newLyricToPlay, getIntent());
@@ -114,20 +113,17 @@ public class PrompterActivity extends AppCompatActivity {
 
     private void CountDownTimeBeforeStartAnimation(final int timeBeforeStart, boolean playNext) {
         if (playNext) {
-            new CountDownTimer(timeBeforeStart * 1000, 1000) {
+            final int leftover = 500; // I need to add a half second so the toast is shown correctly
+            new CountDownTimer(timeBeforeStart * 1000 + leftover, 1000) {
                 int aux = timeBeforeStart;
-                boolean isShowingPreviousToast = false;
-                Toast toast = Toast.makeText(getApplicationContext(), aux-- + "...",
+                Toast toast = Toast.makeText(getApplicationContext(), "...",
                         Toast.LENGTH_SHORT);
 
                 public void onTick(long millisUntilFinished) {
-                    if (isShowingPreviousToast) {
-                        toast.cancel();
-                        toast = Toast.makeText(getApplicationContext(), aux-- + "...",
-                                Toast.LENGTH_SHORT);
-                    }
+                    toast.cancel();
+                    toast = Toast.makeText(getApplicationContext(), aux-- + "...",
+                            Toast.LENGTH_SHORT);
                     toast.show();
-                    isShowingPreviousToast = true;
                 }
 
                 public void onFinish() {

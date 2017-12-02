@@ -11,7 +11,10 @@
         android:id="@+id/svText"
         android:layout_width="match_parent"
         android:background="@android:color/black"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animationCache="true"
+        android:isScrollContainer="true"
+        android:overScrollMode="always">
 
         <com.easyapps.singerpro.presentation.components.PrompterView
             android:id="@+id/fullscreen_content"

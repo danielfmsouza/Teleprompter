@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    >
 
     <ImageButton
         android:id="@+id/btnPlay"
@@ -14,14 +15,19 @@
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/skin"
+        android:src="@drawable/skin"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:contentDescription="@string/btn_play_description"
-        android:text="@string/btn_play_description" />
+        android:text="@string/btn_play_description"
+        android:focusable="true" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/btnPlay"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         >
 
         <TextView
@@ -33,8 +39,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="@dimen/margin_left_song_texts"
             android:layout_marginLeft="@dimen/margin_left_song_texts"
-            android:clickable="true"
-            android:longClickable="true"
+            android:focusable="false"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="normal" />
@@ -48,22 +53,10 @@
             android:layout_marginLeft="@dimen/margin_left_song_texts"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
-            android:clickable="true"
-            android:longClickable="true"
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp"
             android:textStyle="italic" />
     </RelativeLayout>
-
-    <CheckBox
-        android:id="@+id/cbDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:focusable="false"
-        android:visibility="visible" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
