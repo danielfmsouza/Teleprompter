@@ -1,0 +1,405 @@
+package com.easyapps.singerpro.presentation.fragments;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.Fragment;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.easyapps.singerpro.application.LyricApplicationService;
+import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
+import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
+import com.easyapps.singerpro.domain.model.lyric.ISetListRepository;
+import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricFinder;
+import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricRepository;
+import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemSetListFinder;
+import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemSetListRepository;
+import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidPreferenceConfigurationRepository;
+import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
+import com.easyapps.singerpro.presentation.components.PlayableCustomAdapter;
+import com.easyapps.singerpro.presentation.messages.Constants;
+import com.easyapps.singerpro.query.model.lyric.ILyricFinder;
+import com.easyapps.singerpro.query.model.lyric.ISetListFinder;
+import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;
+import com.easyapps.teleprompter.R;
+
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * A simple {@link Fragment} subclass that holds the main list of the app.
+ */
+public class MainListFragment extends Fragment {
+    private static final String SELECTED_ITEMS = "SELECTED_ITEMS";
+    private ArrayList<Integer> selectedItems = new ArrayList<>();
+    private PlayableCustomAdapter mAdapter;
+    private ListView mListView;
+    private OnListChangeListener mListener;
+    private LyricApplicationService mAppService;
+    private String mCurrentSetList = "";
+
+    public MainListFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            selectedItems = getArguments().getIntegerArrayList(SELECTED_ITEMS);
+        }
+
+        ILyricRepository lyricRepository
+                = new AndroidFileSystemLyricRepository(getActivity());
+        IConfigurationRepository configRepository
+                = new AndroidPreferenceConfigurationRepository(getActivity());
+        ISetListRepository setListRepository
+                = new AndroidFileSystemSetListRepository(getActivity());
+        ILyricFinder lyricFinder = new AndroidFileSystemLyricFinder(getActivity());
+        ISetListFinder setListFinder = new AndroidFileSystemSetListFinder(getActivity());
+        mAppService = new LyricApplicationService(lyricRepository, lyricFinder, configRepository,
+                setListFinder, setListRepository);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        final View v = inflater.inflate(R.layout.fragment_list, container, false);
+
+        mListView = v.findViewById(R.id.list);
+        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        mListView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+
+        loadLyricsFromPlaylist(mCurrentSetList);
+
+        AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View container, int position, long id) {
+                mListener.onItemSelected(mAdapter.getLyricName(position));
+            }
+        };
+
+        mListView.setOnItemClickListener(itemClickListener);
+        mListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                setSelectedStatusBarColor();
+                mAdapter.enableMultiSelection();
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                mAdapter.clearSelection();
+                selectedItems.clear();
+                setPrimaryStatusBarColor();
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                mode.setTitle(String.valueOf(selectedItems.size()));
+                mode.getMenuInflater().inflate(R.menu.menu_contextual_selection, menu);
+                mAdapter.setSelectedItems(selectedItems);
+                return true;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_delete:
+                        displayDecisionDialogForDeletion(mode);
+                        break;
+                    case R.id.menu_add_to_playlist:
+                        displayDialogToAddLyricsToPlaylist(mode);
+                        break;
+                    case R.id.menu_remove_from_playlist:
+                        displayDialogToRemoveLyricsFromPlaylist(mode);
+                        break;
+                }
+                return true;
+            }
+
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position,
+                                                  long id, boolean checked) {
+                if (checked) {
+                    mAdapter.setNewSelection(position);
+                    selectedItems.add(position);
+                } else {
+                    selectedItems.remove(Integer.valueOf(position));
+                    mAdapter.removeSelection(position);
+                }
+                mode.setTitle(String.valueOf(selectedItems.size()));
+            }
+        });
+
+        return v;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        attachListener(context);
+    }
+
+    private void attachListener(Context context) {
+        if (context instanceof OnListChangeListener) {
+            mListener = (OnListChangeListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListChangeListener");
+        }
+    }
+
+    /**
+     * This method is here only to support older versions (before API 23).
+     *
+     * @param activity Activity to be attached to this fragment
+     */
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        attachListener(activity);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            selectedItems = savedInstanceState.getIntegerArrayList(SELECTED_ITEMS);
+            mCurrentSetList = savedInstanceState.getString(Constants.PLAYLIST_NAME_PARAM);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        selectedItems.clear();
+        selectedItems.addAll(mAdapter.getCurrentCheckedPositions());
+        outState.putIntegerArrayList(SELECTED_ITEMS, selectedItems);
+        outState.putString(Constants.PLAYLIST_NAME_PARAM, mCurrentSetList);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public void showAllLyrics() {
+        mCurrentSetList = "";
+        listAllLyrics();
+        getActivity().setTitle(getString(R.string.app_name) + " - " + getString(R.string.app_name_all_songs));
+    }
+
+    private void setPrimaryStatusBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (getActivity() != null && getActivity().getWindow() != null)
+                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
+    }
+
+    private void setSelectedStatusBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (getActivity() != null && getActivity().getWindow() != null)
+                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.colorSelectedItemDark));
+        }
+    }
+
+    public void loadLyricsFromPlaylist(String setListName) {
+        if (setListName == null || setListName.isEmpty()) {
+            showAllLyrics();
+        } else {
+            List<LyricQueryModel> lyrics = null;
+            try {
+                lyrics = mAppService.loadLyricsFromSetList(setListName);
+            } catch (FileSystemException e) {
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+            if (lyrics == null || lyrics.isEmpty()) {
+                removeSetList(setListName);
+                showAllLyrics();
+            } else {
+                mAdapter = new PlayableCustomAdapter(getActivity(),
+                        R.layout.row_list_item, lyrics, setListName, R.id.tvFileName);
+                mListView.setAdapter(mAdapter);
+                getActivity().setTitle(getString(R.string.app_name) + " - " + setListName);
+                mCurrentSetList = setListName;
+            }
+        }
+    }
+
+    private void removeSetList(String setListName) {
+        try {
+            mAppService.removeSetList(setListName);
+        } catch (FileNotFoundException | FileSystemException e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void displayDialogToRemoveLyricsFromPlaylist(final ActionMode mode) {
+        Dialog d = new AlertDialog.Builder(getActivity())
+                .setTitle(getResources().getString(R.string.remove_from_playlist_question))
+                .setNegativeButton(getResources().getString(R.string.cancel), null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            mAppService.removeLyricsFromSetList(mCurrentSetList, mAdapter.getCurrentCheckedLyrics());
+                            mAdapter.removeAllCheckedItems();
+                            Toast.makeText(getActivity(), R.string.btn_remove_from_playlist_successful, Toast.LENGTH_LONG).show();
+                        } catch (FileSystemException e) {
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                        mode.finish();
+                        selectedItems.clear();
+
+                        if (mAdapter.isEmpty()){
+                            showAllLyrics();
+                        }
+                    }
+                })
+                .create();
+        d.show();
+    }
+
+    private void displayDialogToAddLyricsToPlaylist(final ActionMode mode) {
+        String[] playlistNames = mAppService.getAllPlaylistNames();
+        final String[] items = new String[playlistNames.length + 1];
+        items[0] = getResources().getString(R.string.new_playlist);
+
+        System.arraycopy(playlistNames, 0, items, 1, playlistNames.length);
+
+        Dialog d = new AlertDialog.Builder(getActivity())
+                .setTitle(getResources().getString(R.string.add_song_playlist))
+                .setNegativeButton(getResources().getString(R.string.cancel), null)
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dlg, int position) {
+                        if (position == 0) {
+                            createPlaylist(mode);
+                        } else {
+                            addLyricsToPlaylist(items[position], mode);
+                        }
+                    }
+                })
+                .create();
+        d.show();
+    }
+
+    private void addLyricsToPlaylist(String setListName, final ActionMode mode) {
+        try {
+            mAppService.addLyricToSetList(setListName, mAdapter.getCurrentCheckedLyrics());
+        } catch (FileSystemException e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        mode.finish();
+        selectedItems.clear();
+    }
+
+    private void createPlaylist(final ActionMode mode) {
+        final EditText input = new EditText(getActivity());
+
+        Dialog d = new AlertDialog.Builder(getActivity())
+                .setTitle(getResources().getString(R.string.new_playlist))
+                .setNegativeButton(getResources().getString(R.string.cancel), null)
+                .setView(input)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String value = input.getText().toString();
+                        if (value.trim().isEmpty())
+                            input.setError(getString(R.string.set_list_name_required));
+                        else {
+                            try {
+                                mAppService.addSetList(value, mAdapter.getCurrentCheckedLyrics());
+                            } catch (FileSystemException e) {
+                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                            mode.finish();
+                            selectedItems.clear();
+                        }
+                    }
+                })
+                .create();
+        d.show();
+    }
+
+    private void displayDecisionDialogForDeletion(final ActionMode mode) {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        deleteFiles();
+                        mode.finish();
+                        selectedItems.clear();
+                        break;
+                }
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.delete_files_question).
+                setPositiveButton(getResources().getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(getResources().getString(R.string.no), dialogClickListener).show();
+    }
+
+    private void deleteFiles() {
+        List<String> lyricsToDelete = mAdapter.getCurrentCheckedLyrics();
+        try {
+            mAppService.removeLyrics(lyricsToDelete);
+            mAdapter.removeAllCheckedItems();
+            if (mAdapter.getCount() == 0 && mCurrentSetList != null && !mCurrentSetList.equals("")) {
+                removeSetList(mCurrentSetList);
+                showAllLyrics();
+            }
+        } catch (FileNotFoundException | FileSystemException e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (mAdapter.isEmpty()) {
+            mListener.onRemovedAllItems();
+        }
+    }
+
+    private void listAllLyrics() {
+        mAdapter = new PlayableCustomAdapter(getActivity(),
+                R.layout.row_list_item, mAppService.getAllLyrics(),
+                mCurrentSetList, R.id.tvFileName);
+        mListView.setAdapter(mAdapter);
+    }
+
+    public boolean selectFirstItem() {
+        if (mAdapter != null && !mAdapter.isEmpty()) {
+            mListener.onItemSelected(mAdapter.getLyricName(0));
+            return true;
+        }
+        return false;
+    }
+
+    public void refresh() {
+        loadLyricsFromPlaylist(mCurrentSetList);
+    }
+
+    public interface OnListChangeListener {
+        void onItemSelected(String lyricName);
+
+        void onRemovedAllItems();
+    }
+}

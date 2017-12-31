@@ -5,7 +5,5 @@ package com.easyapps.singerpro.presentation;
  * Defines callback methods used by Activities
  */
 public interface ActivityCallback {
-    void showContent();
-    void hideContent();
     void removeItem(String itemName);
 }

@@ -160,7 +160,11 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
         SharedPreferences.Editor editor = preferences.edit();
 
         for (Map.Entry<String, ?> config : ((Map<String, ?>) configs).entrySet()) {
-            editor.putInt(config.getKey(), Integer.valueOf(config.getValue().toString()));
+            String value = config.getValue().toString();
+            if(value.matches("\\d+")) {
+                int parsedInt = Integer.parseInt(value);
+                editor.putInt(config.getKey(), parsedInt);
+            }
         }
 
         editor.apply();

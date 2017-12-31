@@ -45,7 +45,7 @@ public class PrompterActivity extends AppCompatActivity {
                 getResources().getString(R.string.pref_key_playNext), false);
         timeBeforeStart = sharedPref.getInt(
                 getResources().getString(R.string.pref_key_timeBeforeStart), timeBeforeStartDefault);
-        setListName = ActivityUtils.getSetListNameParameter(getIntent());
+        setListName = ActivityUtils.getPlaylistNameParameter(getIntent());
 
         boolean automaticPlaying = playNext && hasFinishedAnimationParameter;
         if (automaticPlaying) {
@@ -97,7 +97,7 @@ public class PrompterActivity extends AppCompatActivity {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
-        ActivityUtils.setFileNameParameter(newLyricToPlay, getIntent());
+        ActivityUtils.setLyricFileNameParameter(newLyricToPlay, getIntent());
     }
 
     private void VerifyTimeBeforeStartAnimation() {

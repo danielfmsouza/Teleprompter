@@ -1,5 +1,7 @@
 package com.easyapps.singerpro.domain.model.lyric;
 
+import android.support.annotation.NonNull;
+
 /**
  * Represents each configuration that a Lyric holds.
  * Created by daniel on 01/10/2016.
@@ -12,6 +14,10 @@ public class Configuration {
     private int songNumber;
     private int[] timerRunning;
     private int[] timerStopped;
+
+    private Configuration(int songNumber) {
+        this.songNumber = songNumber;
+    }
 
     public static Configuration newCompleteInstance(int scrollSpeed, int[] timerRunning,
                                                     int fontSize, int[] timerStopped,
@@ -59,5 +65,10 @@ public class Configuration {
 
     public int getSongNumber() {
         return songNumber;
+    }
+
+    @NonNull
+    public static Configuration newLightInstance(int songNumber) {
+        return new Configuration(songNumber);
     }
 }

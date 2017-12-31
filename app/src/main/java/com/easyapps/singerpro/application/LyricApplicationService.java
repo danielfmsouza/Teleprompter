@@ -80,7 +80,7 @@ public class LyricApplicationService {
         configurationRepository.importFromFileUri(configFileUri);
     }
 
-    public String[] getAllSetListsNames() {
+    public String[] getAllPlaylistNames() {
         return setListFinder.getAllSetListsNames();
     }
 
@@ -101,8 +101,8 @@ public class LyricApplicationService {
         return lyricFinder.getFromSetList(setListName);
     }
 
-    public void removeLyricFromSetList(String setListName, String lyricName) throws FileSystemException {
-        setListRepository.removeLyricFromSetList(setListName, lyricName);
+    public void removeLyricsFromSetList(String setListName, List<String> lyricsName) throws FileSystemException {
+        setListRepository.removeLyricsFromSetList(setListName, lyricsName);
     }
 
     public void removeSetList(String setListName) throws FileNotFoundException, FileSystemException {

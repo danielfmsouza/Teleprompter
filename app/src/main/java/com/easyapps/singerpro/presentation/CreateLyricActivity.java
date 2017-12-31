@@ -30,7 +30,7 @@ public class CreateLyricActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_create_file);
+//        setContentView(R.layout.activity_create_file);
         EditText etTextFile = (EditText) findViewById(R.id.etTextFile);
         EditText etFileName = (EditText) findViewById(R.id.etFileName);
         EditText etSongNumber = (EditText) findViewById(R.id.etSongNumber);
@@ -45,7 +45,7 @@ public class CreateLyricActivity extends AppCompatActivity {
         mAppService = new LyricApplicationService(mLyricRepository, null, mConfigRepository, null, null);
 
         mFileName = ActivityUtils.getFileNameParameter(getIntent());
-        mSetListName = ActivityUtils.getSetListNameParameter(getIntent());
+        mSetListName = ActivityUtils.getPlaylistNameParameter(getIntent());
 
         if (savedInstanceState != null) {
             // Restore value of members from saved state

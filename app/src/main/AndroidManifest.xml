@@ -17,14 +17,15 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.easyapps.singerpro.presentation.MainActivity">
+        <activity android:name="com.easyapps.singerpro.presentation.MainActivity"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.easyapps.singerpro.presentation.CreateLyricActivity" />
+        <activity android:name="com.easyapps.singerpro.presentation.MaintainLyricActivity" />
         <activity android:name="com.easyapps.singerpro.presentation.PrompterActivity" />
         <activity
             android:name="com.easyapps.singerpro.presentation.SettingsActivity"

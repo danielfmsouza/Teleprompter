@@ -18,7 +18,7 @@ public class GlobalSettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setList = ActivityUtils.getSetListNameParameter(getIntent());
+        setList = ActivityUtils.getPlaylistNameParameter(getIntent());
 
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction()

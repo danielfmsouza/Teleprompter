@@ -5,6 +5,7 @@ import android.net.Uri;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Repository for Lyric.

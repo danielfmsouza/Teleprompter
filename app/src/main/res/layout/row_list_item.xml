@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:gravity="start"
+    android:padding="12dp">
+
+    <ImageView
+        android:id="@+id/btnPlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/btn_play_description"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/skin" />
+
+    <ImageView
+        android:id="@+id/btnSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/btn_config_description"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginLeft="38dp"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/ic_settings"
+        android:text="@string/btn_config_description" />
+
+    <TextView
+        android:id="@+id/tvFileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:layout_marginEnd="0dp"
+        android:layout_marginLeft="@dimen/margin_left_song_texts"
+        android:layout_marginStart="@dimen/margin_left_song_texts"
+        android:layout_marginRight="0dp"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvFileConfiguration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvFileName"
+        android:focusable="false"
+        android:layout_marginEnd="0dp"
+        android:layout_marginLeft="@dimen/margin_left_song_texts"
+        android:layout_marginStart="@dimen/margin_left_song_texts"
+        android:layout_marginRight="0dp"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="14sp"
+        android:textStyle="italic" />
+
+</RelativeLayout>

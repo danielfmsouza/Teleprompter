@@ -16,12 +16,12 @@ import com.easyapps.singerpro.presentation.messages.Constants;
  */
 public class ActivityUtils {
 
-    public static void setFileNameParameter(String value, Intent intent) {
+    public static void setLyricFileNameParameter(String value, Intent intent) {
         setParameter(value, intent, Constants.FILE_NAME_PARAM);
     }
 
-    public static void setSetListNameParameter(String value, Intent intent) {
-        setParameter(value, intent, Constants.SET_LIST_NAME_PARAM);
+    public static void setPlaylistNameParameter(String value, Intent intent) {
+        setParameter(value, intent, Constants.PLAYLIST_NAME_PARAM);
     }
 
     public static void setHasFinishedAnimationParameter(boolean value, Intent intent) {
@@ -36,8 +36,8 @@ public class ActivityUtils {
         return getStringParameter(intent, Constants.FILE_NAME_PARAM);
     }
 
-    public static String getSetListNameParameter(Intent intent) {
-        String setList = getStringParameter(intent, Constants.SET_LIST_NAME_PARAM);
+    public static String getPlaylistNameParameter(Intent intent) {
+        String setList = getStringParameter(intent, Constants.PLAYLIST_NAME_PARAM);
         return setList == null ? "" : setList;
     }
 
@@ -81,9 +81,9 @@ public class ActivityUtils {
         backToMain(currentActivity, null);
     }
 
-    public static void backToMain(Activity currentActivity, String setListName) {
+    public static void backToMain(Activity currentActivity, String playlistName) {
         Intent i = new Intent(currentActivity, MainActivity.class);
-        setSetListNameParameter(setListName, i);
+        setPlaylistNameParameter(playlistName, i);
         currentActivity.startActivity(i);
         currentActivity.finish();
     }
@@ -91,8 +91,8 @@ public class ActivityUtils {
     public static void backToPrompter(Activity currentActivity, String setListName, String fileName) {
         Intent i = new Intent(currentActivity, PrompterActivity.class);
         setHasFinishedAnimationParameter(true, i);
-        setSetListNameParameter(setListName, i);
-        setFileNameParameter(fileName, i);
+        setPlaylistNameParameter(setListName, i);
+        setLyricFileNameParameter(fileName, i);
         currentActivity.startActivity(i);
         currentActivity.finish();
     }

@@ -4,6 +4,7 @@ import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemExcepti
 
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Repository for set lists.
@@ -13,7 +14,7 @@ import java.util.List;
 public interface ISetListRepository {
     void add(String name, List<String> lyricsNames) throws FileSystemException;
     void addLyricsToSetList(String setListName, List<String> lyricsNames)throws FileSystemException;
-    void removeLyricFromSetList(String setListName, String lyricName)throws FileSystemException;
+    void removeLyricsFromSetList(String setListName, List<String> lyricsName)throws FileSystemException;
     void remove(String setListName) throws FileSystemException, FileNotFoundException;
     List<String> load(String setListName)throws FileSystemException;
     void updateSetListName(String oldSetListName, String newSetListName) throws FileSystemException, FileNotFoundException;

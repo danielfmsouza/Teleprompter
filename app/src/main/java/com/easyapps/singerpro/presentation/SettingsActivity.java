@@ -17,7 +17,7 @@ public class SettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setList = ActivityUtils.getSetListNameParameter(getIntent());
+        setList = ActivityUtils.getPlaylistNameParameter(getIntent());
         String fileName = ActivityUtils.getFileNameParameter(getIntent());
         if (fileName == null)
             throw new RuntimeException("File not found.");
