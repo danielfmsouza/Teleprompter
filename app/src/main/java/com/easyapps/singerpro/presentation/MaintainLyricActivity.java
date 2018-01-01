@@ -21,7 +21,7 @@ public class MaintainLyricActivity extends AppCompatActivity implements Maintain
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maintain_lyric);
 
-        mCurrentPlaylist = ActivityUtils.getPlaylistNameParameter(this.getIntent());
+        mCurrentPlaylist = ActivityUtils.getPlaylistNameParameter(getIntent());
     }
 
     @Override

@@ -43,6 +43,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+
 public class MainActivity extends AppCompatActivity implements
         MainListFragment.OnListChangeListener,
         MaintainLyricFragment.OnSaveItemListener {
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private LyricApplicationService mAppService;
     private String mCurrentSetList = "";
+    private Menu mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements
         if (contentFragment != null) {
             MainListFragment listFragment = getMainListFragment();
 
-            if (!listFragment.selectFirstItem()) {
+            if (!listFragment.selectCurrentItem()) {
                 createLyric();
             }
         }
@@ -98,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_settings, menu);
+        mMenu = menu;
         return true;
     }
 
@@ -122,10 +126,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void startGlobalSettings(MenuItem item) {
-        Intent i = new Intent(getBaseContext(), GlobalSettingsActivity.class);
-        ActivityUtils.setPlaylistNameParameter(mCurrentSetList, i);
-
-        startActivity(i);
+        startActivity(GlobalSettingsActivity.class);
     }
 
     public void startExport(MenuItem item) {
@@ -254,11 +255,16 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void startActivity(Class activity) {
+    private void startActivity(Class activity, String lyricName) {
         Intent i = new Intent(this, activity);
+        ActivityUtils.setPlaylistNameParameter(mCurrentSetList, i);
+        ActivityUtils.setLyricFileNameParameter(lyricName, i);
         startActivity(i);
-
         finish();
+    }
+
+    private void startActivity(Class activity) {
+        startActivity(activity, null);
     }
 
     public void renameSetList(MenuItem item) {
@@ -278,7 +284,6 @@ public class MainActivity extends AppCompatActivity implements
                         else {
                             try {
                                 mAppService.updateSetListName(mCurrentSetList, value);
-//                                unCheckAllSelectedItems();
                                 mCurrentSetList = value;
                                 setTitle(getString(R.string.app_name) + " - " + mCurrentSetList);
                             } catch (FileSystemException | FileNotFoundException e) {
@@ -291,24 +296,14 @@ public class MainActivity extends AppCompatActivity implements
         d.show();
     }
 
-    private void removeSetList(String setListName) {
-        try {
-            mAppService.removeSetList(setListName);
-        } catch (FileNotFoundException | FileSystemException e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
     private void createLyric() {
         MaintainLyricFragment contentFragment = (MaintainLyricFragment) getFragmentManager()
                 .findFragmentById(R.id.details_frag);
 
-        if (contentFragment == null) {
-            Intent intent = new Intent(this, MaintainLyricActivity.class);
-            ActivityUtils.setPlaylistNameParameter(mCurrentSetList, intent);
-            startActivity(intent);
-        } else {
+        if (contentFragment != null && getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
             contentFragment.newContent();
+        } else {
+            startActivity(MaintainLyricActivity.class);
         }
     }
 
@@ -317,13 +312,10 @@ public class MainActivity extends AppCompatActivity implements
         MaintainLyricFragment contentFragment = (MaintainLyricFragment) getFragmentManager()
                 .findFragmentById(R.id.details_frag);
 
-        if (contentFragment == null) {
-            Intent intent = new Intent(this, MaintainLyricActivity.class);
-            ActivityUtils.setPlaylistNameParameter(mCurrentSetList, intent);
-            ActivityUtils.setLyricFileNameParameter(lyricName, intent);
-            startActivity(intent);
-        } else {
+        if (contentFragment != null && getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
             contentFragment.updateContent(lyricName);
+        } else {
+            startActivity(MaintainLyricActivity.class, lyricName);
         }
     }
 
@@ -353,6 +345,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public void showAllLyrics(MenuItem item) {
         getMainListFragment().showAllLyrics();
+        MenuItem menuRenamePlaylist = mMenu.findItem(R.id.menu_rename_playlist);
+        menuRenamePlaylist.setVisible(false);
     }
 
     public void loadPlaylist(MenuItem item) {
@@ -361,6 +355,7 @@ public class MainActivity extends AppCompatActivity implements
         System.arraycopy(playlistNames, 0, items, 0, playlistNames.length);
 
         final MainListFragment listFragment = getMainListFragment();
+        final MenuItem menuRenamePlaylist = mMenu.findItem(R.id.menu_rename_playlist);
 
         Dialog d = new AlertDialog.Builder(this)
                 .setTitle(getResources().getString(R.string.load_existing_playlist))
@@ -369,6 +364,8 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onClick(DialogInterface dlg, int position) {
                         listFragment.loadLyricsFromPlaylist(items[position]);
+                        mCurrentSetList = items[position];
+                        menuRenamePlaylist.setVisible(true);
                     }
                 })
                 .create();

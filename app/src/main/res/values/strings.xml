@@ -54,7 +54,7 @@
     <string name="new_playlist">New Playlist</string>
     <string name="rename_playlist">Rename Playlist</string>
     <string name="load_existing_playlist">Load Existing Playlist</string>
-    <string name="add_song_playlist">Add Song(s) to Playlist</string>
+    <string name="add_song_playlist">Add Lyric(s) to Playlist</string>
     <string name="copyright_developer">Singer Pro - version 2.0\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->

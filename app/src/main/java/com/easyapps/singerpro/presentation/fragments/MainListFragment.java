@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -31,6 +32,7 @@ import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystem
 import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidPreferenceConfigurationRepository;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
 import com.easyapps.singerpro.presentation.components.PlayableCustomAdapter;
+import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 import com.easyapps.singerpro.presentation.messages.Constants;
 import com.easyapps.singerpro.query.model.lyric.ILyricFinder;
 import com.easyapps.singerpro.query.model.lyric.ISetListFinder;
@@ -47,12 +49,15 @@ import java.util.List;
  */
 public class MainListFragment extends Fragment {
     private static final String SELECTED_ITEMS = "SELECTED_ITEMS";
+    private static final String POSITION_CLICKED = "POSITION_CLICKED";
+
     private ArrayList<Integer> selectedItems = new ArrayList<>();
+    private int mPositionClicked;
     private PlayableCustomAdapter mAdapter;
     private ListView mListView;
     private OnListChangeListener mListener;
     private LyricApplicationService mAppService;
-    private String mCurrentSetList = "";
+    private String mCurrentPlaylist = "";
 
     public MainListFragment() {
     }
@@ -60,8 +65,12 @@ public class MainListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            selectedItems = getArguments().getIntegerArrayList(SELECTED_ITEMS);
+        if (savedInstanceState != null) {
+            selectedItems = savedInstanceState.getIntegerArrayList(SELECTED_ITEMS);
+            mCurrentPlaylist = savedInstanceState.getString(Constants.PLAYLIST_NAME_PARAM);
+            mPositionClicked = savedInstanceState.getInt(POSITION_CLICKED);
+        } else {
+            mCurrentPlaylist = ActivityUtils.getPlaylistNameParameter(getActivity().getIntent());
         }
 
         ILyricRepository lyricRepository
@@ -85,11 +94,12 @@ public class MainListFragment extends Fragment {
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         mListView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
-        loadLyricsFromPlaylist(mCurrentSetList);
+        loadLyricsFromPlaylist(mCurrentPlaylist);
 
         AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View container, int position, long id) {
+                mPositionClicked = position;
                 mListener.onItemSelected(mAdapter.getLyricName(position));
             }
         };
@@ -103,6 +113,10 @@ public class MainListFragment extends Fragment {
                 return true;
             }
 
+            private boolean isPlaylistLoaded() {
+                return mCurrentPlaylist != null && !mCurrentPlaylist.equals("");
+            }
+
             @Override
             public void onDestroyActionMode(ActionMode mode) {
                 mAdapter.clearSelection();
@@ -114,6 +128,9 @@ public class MainListFragment extends Fragment {
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 mode.setTitle(String.valueOf(selectedItems.size()));
                 mode.getMenuInflater().inflate(R.menu.menu_contextual_selection, menu);
+
+                MenuItem removeFromPlaylistButton = menu.findItem(R.id.menu_remove_from_playlist);
+                removeFromPlaylistButton.setVisible(isPlaylistLoaded());
                 mAdapter.setSelectedItems(selectedItems);
                 return true;
             }
@@ -178,21 +195,13 @@ public class MainListFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            selectedItems = savedInstanceState.getIntegerArrayList(SELECTED_ITEMS);
-            mCurrentSetList = savedInstanceState.getString(Constants.PLAYLIST_NAME_PARAM);
-        }
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         selectedItems.clear();
         selectedItems.addAll(mAdapter.getCurrentCheckedPositions());
         outState.putIntegerArrayList(SELECTED_ITEMS, selectedItems);
-        outState.putString(Constants.PLAYLIST_NAME_PARAM, mCurrentSetList);
+        outState.putString(Constants.PLAYLIST_NAME_PARAM, mCurrentPlaylist);
+        outState.putInt(POSITION_CLICKED, mPositionClicked);
     }
 
     @Override
@@ -202,7 +211,7 @@ public class MainListFragment extends Fragment {
     }
 
     public void showAllLyrics() {
-        mCurrentSetList = "";
+        mCurrentPlaylist = "";
         listAllLyrics();
         getActivity().setTitle(getString(R.string.app_name) + " - " + getString(R.string.app_name_all_songs));
     }
@@ -240,7 +249,7 @@ public class MainListFragment extends Fragment {
                         R.layout.row_list_item, lyrics, setListName, R.id.tvFileName);
                 mListView.setAdapter(mAdapter);
                 getActivity().setTitle(getString(R.string.app_name) + " - " + setListName);
-                mCurrentSetList = setListName;
+                mCurrentPlaylist = setListName;
             }
         }
     }
@@ -260,7 +269,7 @@ public class MainListFragment extends Fragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         try {
-                            mAppService.removeLyricsFromSetList(mCurrentSetList, mAdapter.getCurrentCheckedLyrics());
+                            mAppService.removeLyricsFromSetList(mCurrentPlaylist, mAdapter.getCurrentCheckedLyrics());
                             mAdapter.removeAllCheckedItems();
                             Toast.makeText(getActivity(), R.string.btn_remove_from_playlist_successful, Toast.LENGTH_LONG).show();
                         } catch (FileSystemException e) {
@@ -269,7 +278,7 @@ public class MainListFragment extends Fragment {
                         mode.finish();
                         selectedItems.clear();
 
-                        if (mAdapter.isEmpty()){
+                        if (mAdapter.isEmpty()) {
                             showAllLyrics();
                         }
                     }
@@ -363,8 +372,8 @@ public class MainListFragment extends Fragment {
         try {
             mAppService.removeLyrics(lyricsToDelete);
             mAdapter.removeAllCheckedItems();
-            if (mAdapter.getCount() == 0 && mCurrentSetList != null && !mCurrentSetList.equals("")) {
-                removeSetList(mCurrentSetList);
+            if (mAdapter.getCount() == 0 && mCurrentPlaylist != null && !mCurrentPlaylist.equals("")) {
+                removeSetList(mCurrentPlaylist);
                 showAllLyrics();
             }
         } catch (FileNotFoundException | FileSystemException e) {
@@ -381,20 +390,20 @@ public class MainListFragment extends Fragment {
     private void listAllLyrics() {
         mAdapter = new PlayableCustomAdapter(getActivity(),
                 R.layout.row_list_item, mAppService.getAllLyrics(),
-                mCurrentSetList, R.id.tvFileName);
+                mCurrentPlaylist, R.id.tvFileName);
         mListView.setAdapter(mAdapter);
     }
 
-    public boolean selectFirstItem() {
+    public boolean selectCurrentItem() {
         if (mAdapter != null && !mAdapter.isEmpty()) {
-            mListener.onItemSelected(mAdapter.getLyricName(0));
+            mListener.onItemSelected(mAdapter.getLyricName(mPositionClicked));
             return true;
         }
         return false;
     }
 
     public void refresh() {
-        loadLyricsFromPlaylist(mCurrentSetList);
+        loadLyricsFromPlaylist(mCurrentPlaylist);
     }
 
     public interface OnListChangeListener {

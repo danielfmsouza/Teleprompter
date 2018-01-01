@@ -11,9 +11,16 @@
         app:showAsAction="ifRoom"
         android:onClick="loadPlaylist"/>
     <item
+        android:id="@+id/menu_rename_playlist"
+        android:title="@string/menu_item_rename_playlist_title"
+        android:orderInCategory="96"
+        app:showAsAction="never"
+        android:visible="false"
+        android:onClick="renameSetList"/>
+    <item
         android:id="@+id/menu_show_all"
         android:title="@string/menu_item_show_all_title"
-        android:orderInCategory="96"
+        android:orderInCategory="97"
         app:showAsAction="never"
         android:onClick="showAllLyrics"/>
     <item
