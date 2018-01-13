@@ -9,12 +9,12 @@ public class AddLyricCommand {
 
     private final String name;
     private final String content;
-    private final int songNumber;
+    private final String songNumber;
 
-    public AddLyricCommand(String name, String content, String songNumber){
+    public AddLyricCommand(String name, String content, String songNumber) {
         this.name = name;
         this.content = content;
-        this.songNumber = Integer.parseInt(songNumber);
+        this.songNumber = songNumber;
     }
 
     public String getName() {
@@ -25,7 +25,7 @@ public class AddLyricCommand {
         return content;
     }
 
-    public int getSongNumber() {
+    public String getSongNumber() {
         return songNumber;
     }
 }

@@ -60,7 +60,7 @@ public class AndroidFileSystemSetListRepository extends FileSystemRepository imp
     }
 
     @Override
-    public void addLyricsToSetList(String setListName, List<String> lyricsNames)
+    public void addLyricsToPlaylist(String setListName, List<String> lyricsNames)
             throws FileSystemException {
         List<String> setList = loadSetListFromFile(setListName);
 
@@ -73,7 +73,7 @@ public class AndroidFileSystemSetListRepository extends FileSystemRepository imp
     }
 
     @Override
-    public void removeLyricsFromSetList(String setListName, List<String> lyricsNames) throws FileSystemException {
+    public void removeLyricsFromPlaylist(String setListName, List<String> lyricsNames) throws FileSystemException {
         List<String> setList = loadSetListFromFile(setListName);
         setList.removeAll(lyricsNames);
         if (setList.isEmpty())
@@ -117,7 +117,7 @@ public class AndroidFileSystemSetListRepository extends FileSystemRepository imp
     }
 
     @Override
-    public void updateSetListName(String oldSetListName, final String newSetListName)
+    public void updatePlaylistName(String oldSetListName, final String newSetListName)
             throws FileSystemException, FileNotFoundException {
         if (oldSetListName.equals(newSetListName)) return;
 

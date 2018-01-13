@@ -91,5 +91,7 @@
     <string name="pref_title_timeBeforeStart">Time Before Start Prompting</string>
     <string name="pref_summary_timeBeforeStart">How much time (in seconds) the app must wait before start prompting the next song in the current set list.</string>
     <string name="pref_key_timeBeforeStart">pref_timeBeforeStart</string>
-
+    <string name="pref_key_currentPlaylistName">pref_currentPlaylistName</string>
+    <string name="pref_key_currentSelectedLyric">pref_currentSelectedLyric</string>
+    <string name="pref_key_isNewLyric">pref_isNewLyric</string>
 </resources>

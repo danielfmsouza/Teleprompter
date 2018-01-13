@@ -206,7 +206,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         Intent i = new Intent(getContext(), clazz);
 
         ActivityUtils.setLyricFileNameParameter(getLyricName(position), i);
-        ActivityUtils.setPlaylistNameParameter(playListName, i);
+        ActivityUtils.setCurrentPlaylistName(playListName, getContext());
         getContext().startActivity(i);
 
         ((AppCompatActivity) getContext()).finish();

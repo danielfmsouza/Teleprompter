@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.easyapps.singerpro.presentation.components.GlobalSettingsFragment;
+import com.easyapps.singerpro.presentation.fragments.GlobalSettingsFragment;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
 /**
@@ -18,7 +18,7 @@ public class GlobalSettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setList = ActivityUtils.getPlaylistNameParameter(getIntent());
+        setList = ActivityUtils.getCurrentPlaylistName(this);
 
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction()

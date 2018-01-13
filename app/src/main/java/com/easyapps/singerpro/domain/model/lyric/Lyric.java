@@ -43,4 +43,8 @@ public class Lyric {
     public Configuration getConfiguration() {
         return configuration;
     }
+
+    public void removeNameSufix(String tempLyricName) {
+        name = name.replace(tempLyricName, "");
+    }
 }

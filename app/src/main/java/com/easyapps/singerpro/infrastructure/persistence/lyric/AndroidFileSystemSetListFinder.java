@@ -23,7 +23,7 @@ public class AndroidFileSystemSetListFinder implements ISetListFinder {
     }
 
     @Override
-    public String[] getAllSetListsNames() {
+    public String[] getAllPlaylistNames() {
         File[] files = androidApplicationContext.getFilesDir().listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {

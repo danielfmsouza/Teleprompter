@@ -45,6 +45,6 @@ public class ConfigurationQueryModel {
     }
 
     public int getSongNumber() {
-        return songNumber;
+        return songNumber == Integer.MIN_VALUE ? 0 : songNumber;
     }
 }

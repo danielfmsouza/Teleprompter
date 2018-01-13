@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ISetListFinder {
 
-    String[] getAllSetListsNames();
+    String[] getAllPlaylistNames();
 }

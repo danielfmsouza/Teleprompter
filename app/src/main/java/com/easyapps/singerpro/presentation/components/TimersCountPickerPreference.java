@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
+import com.easyapps.singerpro.presentation.fragments.TimerPreferenceFragment;
 import com.easyapps.teleprompter.R;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 

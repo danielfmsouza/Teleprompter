@@ -14,6 +14,8 @@ import com.easyapps.singerpro.query.model.lyric.ISetListFinder;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,20 +26,24 @@ import java.util.List;
 public class LyricApplicationService {
 
     private final ILyricRepository lyricRepository;
-    private final ISetListFinder setListFinder;
-    private final ISetListRepository setListRepository;
+    private final ISetListFinder playlistFinder;
+    private final ISetListRepository playlistRepository;
     private final ILyricFinder lyricFinder;
     private final IConfigurationRepository configurationRepository;
 
     public LyricApplicationService(ILyricRepository lyricRepository, ILyricFinder lyricFinder,
                                    IConfigurationRepository configurationRepository,
-                                   ISetListFinder setListFinder,
-                                   ISetListRepository setListRepository) {
+                                   ISetListFinder playlistFinder,
+                                   ISetListRepository playlistRepository) {
         this.lyricRepository = lyricRepository;
         this.lyricFinder = lyricFinder;
         this.configurationRepository = configurationRepository;
-        this.setListFinder = setListFinder;
-        this.setListRepository = setListRepository;
+        this.playlistFinder = playlistFinder;
+        this.playlistRepository = playlistRepository;
+    }
+
+    public String getTempLyricName() {
+        return ILyricRepository.TEMP_LYRIC_NAME;
     }
 
     public void addLyric(AddLyricCommand cmd) throws Exception {
@@ -56,12 +62,25 @@ public class LyricApplicationService {
         lyricRepository.update(lyric, cmd.getOldName());
     }
 
-    public Uri[] exportAllLyrics() {
-        return lyricRepository.exportAllLyrics();
+    public ArrayList<Uri> exportAllLyrics() {
+        Uri[] lyricsUris = lyricRepository.exportAllLyrics();
+
+        ArrayList<Uri> allUris = new ArrayList<>();
+
+        if (lyricsUris != null)
+            allUris.addAll(Arrays.asList(lyricsUris));
+
+        Uri configUri = configurationRepository.getURIFromConfiguration();
+
+        if (configUri != null)
+            allUris.add(configUri);
+
+        return allUris;
     }
 
-    public Lyric loadLyricWithConfiguration(String lyricName) throws Exception {
-        return lyricRepository.loadWithConfiguration(lyricName);
+    public Lyric loadLyricWithConfiguration(String lyricName, boolean partialNameMatch) throws Exception {
+        return partialNameMatch ? lyricRepository.loadWithConfigurationPartialMatch(lyricName) :
+                lyricRepository.loadWithConfiguration(lyricName);
     }
 
     public List<LyricQueryModel> getAllLyrics() {
@@ -72,8 +91,8 @@ public class LyricApplicationService {
         lyricRepository.remove(idsLyrics);
     }
 
-    public String getConfigExtension() {
-        return configurationRepository.getConfigExtension();
+    public boolean isConfigFile(String fileName) {
+        return fileName.endsWith(configurationRepository.getConfigExtension());
     }
 
     public void importAllConfigurationsFromFileUri(Uri configFileUri) throws FileSystemException {
@@ -81,31 +100,31 @@ public class LyricApplicationService {
     }
 
     public String[] getAllPlaylistNames() {
-        return setListFinder.getAllSetListsNames();
+        return playlistFinder.getAllPlaylistNames();
     }
 
-    public void addSetList(String name, List<String> lyricsNames) throws FileSystemException {
-        setListRepository.add(name, lyricsNames);
+    public void addPlaylist(String name, List<String> lyricsNames) throws FileSystemException {
+        playlistRepository.add(name, lyricsNames);
     }
 
-    public void updateSetListName(String oldSetListName, String newSetListName) throws
+    public void updatePlaylistName(String oldPlaylistName, String newPlaylistName) throws
             FileNotFoundException, FileSystemException {
-        setListRepository.updateSetListName(oldSetListName, newSetListName);
+        playlistRepository.updatePlaylistName(oldPlaylistName, newPlaylistName);
     }
 
-    public void addLyricToSetList(String setListName, List<String> lyricsNames) throws FileSystemException {
-        setListRepository.addLyricsToSetList(setListName, lyricsNames);
+    public void addLyricsToPlaylist(String playlistName, List<String> lyricsNames) throws FileSystemException {
+        playlistRepository.addLyricsToPlaylist(playlistName, lyricsNames);
     }
 
-    public List<LyricQueryModel> loadLyricsFromSetList(String setListName) throws FileSystemException {
-        return lyricFinder.getFromSetList(setListName);
+    public List<LyricQueryModel> loadLyricsFromPlaylist(String playlistName) throws FileSystemException {
+        return lyricFinder.getFromSetList(playlistName);
     }
 
-    public void removeLyricsFromSetList(String setListName, List<String> lyricsName) throws FileSystemException {
-        setListRepository.removeLyricsFromSetList(setListName, lyricsName);
+    public void removeLyricsFromPlaylist(String playlistName, List<String> lyricsName) throws FileSystemException {
+        playlistRepository.removeLyricsFromPlaylist(playlistName, lyricsName);
     }
 
     public void removeSetList(String setListName) throws FileNotFoundException, FileSystemException {
-        setListRepository.remove(setListName);
+        playlistRepository.remove(setListName);
     }
 }

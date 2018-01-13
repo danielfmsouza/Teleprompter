@@ -1,4 +1,4 @@
-package com.easyapps.singerpro.presentation.components;
+package com.easyapps.singerpro.presentation.fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
+import com.easyapps.singerpro.presentation.components.NumberPickerPreference;
 import com.easyapps.teleprompter.R;
 import com.easyapps.singerpro.presentation.messages.Constants;
 

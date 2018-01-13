@@ -14,7 +14,7 @@
     <integer name="number_min_value_text_size">10</integer>
     <integer name="number_max_value_text_size">100</integer>
 
-    <integer name="number_song">0</integer>
+    <integer name="number_song">-2147483648</integer>
 
     <integer name="number_max_song_name_size">50</integer>
 

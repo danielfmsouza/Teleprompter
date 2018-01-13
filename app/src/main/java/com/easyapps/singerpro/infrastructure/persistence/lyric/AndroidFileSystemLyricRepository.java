@@ -79,6 +79,14 @@ public class AndroidFileSystemLyricRepository extends FileSystemRepository imple
     }
 
     @Override
+    public Lyric loadWithConfigurationPartialMatch(String name) throws Exception {
+        String[] result = getFirstMatchFileContent(name);
+        if (result == null) return null;
+
+        return Lyric.newCompleteInstance(result[0], result[1], configurationRepository.load(result[0]));
+    }
+
+    @Override
     public Uri[] exportAllLyrics() {
         File[] filesFiltered = androidContext.getFilesDir().
                 listFiles(new FilenameFilter() {
@@ -120,6 +128,19 @@ public class AndroidFileSystemLyricRepository extends FileSystemRepository imple
             return readFile(filesFiltered[0], androidContext);
         }
         throwNewFileNotFoundException(fileName, androidContext);
+
+        return null;
+    }
+
+    private String[] getFirstMatchFileContent(String fileName) throws FileSystemException {
+        File[] filesFiltered = androidContext.getFilesDir().
+                listFiles(new LyricPartialFileNameFilter(fileName));
+
+        if (filesFiltered != null && filesFiltered.length > 0) {
+            String content = readFile(filesFiltered[0], androidContext);
+            String name = filesFiltered[0].getName().replace(FILE_EXTENSION, "");
+            return new String[]{name, content};
+        }
         return null;
     }
 
@@ -133,6 +154,19 @@ public class AndroidFileSystemLyricRepository extends FileSystemRepository imple
         @Override
         public boolean accept(File dir, String name) {
             return filter.equals(name);
+        }
+    }
+
+    private class LyricPartialFileNameFilter implements FilenameFilter {
+        private final String filter;
+
+        LyricPartialFileNameFilter(String filter) {
+            this.filter = filter + FILE_EXTENSION;
+        }
+
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.endsWith(filter);
         }
     }
 }

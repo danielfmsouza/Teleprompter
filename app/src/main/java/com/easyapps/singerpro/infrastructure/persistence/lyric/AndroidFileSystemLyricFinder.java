@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.easyapps.singerpro.domain.model.lyric.Configuration;
 import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
+import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
 import com.easyapps.singerpro.domain.model.lyric.ISetListRepository;
 import com.easyapps.singerpro.query.model.lyric.ConfigurationQueryModel;
 import com.easyapps.singerpro.query.model.lyric.ILyricFinder;
@@ -45,7 +46,7 @@ public class AndroidFileSystemLyricFinder implements ILyricFinder {
         File[] files = androidApplicationContext.getFilesDir().listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return name.endsWith(FILE_EXTENSION);
+                return name.endsWith(FILE_EXTENSION) && !name.contains(ILyricRepository.TEMP_LYRIC_NAME);
             }
         });
 

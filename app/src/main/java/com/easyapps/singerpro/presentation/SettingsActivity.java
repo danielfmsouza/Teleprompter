@@ -3,7 +3,7 @@ package com.easyapps.singerpro.presentation;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.easyapps.singerpro.presentation.components.TimerPreferenceFragment;
+import com.easyapps.singerpro.presentation.fragments.TimerPreferenceFragment;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
 /**
@@ -11,13 +11,13 @@ import com.easyapps.singerpro.presentation.helper.ActivityUtils;
  * Settings activity for each lyric. The file name is received by parameter.
  */
 public class SettingsActivity extends Activity {
-    private String setList;
+    private String mCurrentPlaylist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setList = ActivityUtils.getPlaylistNameParameter(getIntent());
+        mCurrentPlaylist = ActivityUtils.getCurrentPlaylistName(this);
         String fileName = ActivityUtils.getFileNameParameter(getIntent());
         if (fileName == null)
             throw new RuntimeException("File not found.");
@@ -29,6 +29,6 @@ public class SettingsActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        ActivityUtils.backToMain(this, setList);
+        ActivityUtils.backToMain(this, mCurrentPlaylist);
     }
 }

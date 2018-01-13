@@ -71,10 +71,13 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
     }
 
     @Override
-    public void addOrUpdateSongNumber(String id, int songNumber) {
+    public void addOrUpdateSongNumber(String id, String songNumber) {
         SharedPreferences.Editor editor = preferences.edit();
 
-        editor.putInt(songNumberPrefKey + id, songNumber);
+        if (songNumber != null && !"".equals(songNumber) && songNumber.matches("\\d+"))
+            editor.putInt(songNumberPrefKey + id, Integer.parseInt(songNumber));
+        else
+            editor.putInt(songNumberPrefKey + id, songNumberDefault);
 
         editor.apply();
     }

@@ -18,7 +18,7 @@ import com.easyapps.teleprompter.R;
  * A {@link android.preference.Preference} that displays a number picker as a dialog.
  * Copyright rhmeeuwisse (https://github.com/rhmeeuwisse)
  */
-class NumberPickerPreference extends DialogPreference {
+public class NumberPickerPreference extends DialogPreference {
 
     private static final int DEFAULT_MAX_VALUE = 50;
     private static final int DEFAULT_MIN_VALUE = 0;

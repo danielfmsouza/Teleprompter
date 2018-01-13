@@ -13,9 +13,9 @@ import java.util.Set;
 
 public interface ISetListRepository {
     void add(String name, List<String> lyricsNames) throws FileSystemException;
-    void addLyricsToSetList(String setListName, List<String> lyricsNames)throws FileSystemException;
-    void removeLyricsFromSetList(String setListName, List<String> lyricsName)throws FileSystemException;
+    void addLyricsToPlaylist(String setListName, List<String> lyricsNames)throws FileSystemException;
+    void removeLyricsFromPlaylist(String setListName, List<String> lyricsName)throws FileSystemException;
     void remove(String setListName) throws FileSystemException, FileNotFoundException;
     List<String> load(String setListName)throws FileSystemException;
-    void updateSetListName(String oldSetListName, String newSetListName) throws FileSystemException, FileNotFoundException;
+    void updatePlaylistName(String oldSetListName, String newSetListName) throws FileSystemException, FileNotFoundException;
 }

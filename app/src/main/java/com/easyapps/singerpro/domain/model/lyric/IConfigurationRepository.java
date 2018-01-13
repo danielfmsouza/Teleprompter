@@ -13,7 +13,7 @@ public interface IConfigurationRepository {
 
     void updateId(String oldId, String newId);
 
-    void addOrUpdateSongNumber(String id, int songNumber);
+    void addOrUpdateSongNumber(String id, String songNumber);
 
     Configuration load(String id);
 

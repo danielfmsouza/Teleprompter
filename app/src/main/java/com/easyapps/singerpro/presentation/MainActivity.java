@@ -23,6 +23,7 @@ import com.easyapps.singerpro.application.command.AddLyricCommand;
 import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
 import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
 import com.easyapps.singerpro.domain.model.lyric.ISetListRepository;
+import com.easyapps.singerpro.domain.model.lyric.Lyric;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricFinder;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricRepository;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemSetListFinder;
@@ -40,7 +41,6 @@ import com.easyapps.teleprompter.R;
 import java.io.FileNotFoundException;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int PICK_FILE_RESULT_CODE = 1;
 
     private LyricApplicationService mAppService;
-    private String mCurrentSetList = "";
+    private String mCurrentPlaylist = "";
     private Menu mMenu;
 
     @Override
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements
         mAppService = new LyricApplicationService(lyricRepository, lyricFinder, configRepository,
                 setListFinder, setListRepository);
 
-        mCurrentSetList = ActivityUtils.getPlaylistNameParameter(this.getIntent());
+        mCurrentPlaylist = ActivityUtils.getCurrentPlaylistName(this);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-
     public void startAbout(MenuItem item) {
         startActivity(AboutActivity.class);
     }
@@ -130,21 +129,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void startExport(MenuItem item) {
-        IConfigurationRepository ConfigRepository =
-                new AndroidPreferenceConfigurationRepository(getApplicationContext());
+        ArrayList allUris = mAppService.exportAllLyrics();
 
-        Uri configUri = ConfigRepository.getURIFromConfiguration();
-        Uri[] lyricsUris = mAppService.exportAllLyrics();
-
-        ArrayList<Uri> allUris = new ArrayList<>();
-
-        if (lyricsUris != null)
-            allUris.addAll(Arrays.asList(lyricsUris));
-
-        if (configUri != null)
-            allUris.add(configUri);
-
-        if (!allUris.isEmpty()) {
+        if (allUris != null && !allUris.isEmpty()) {
 
             Intent backupIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
             backupIntent.setType("vnd.android.cursor.dir/email");
@@ -200,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements
                         String fileName = FileSystemRepository.getFileName(uri, this);
 
                         if (uri != null) {
-                            if (fileName.endsWith(mAppService.getConfigExtension()))
+                            if (mAppService.isConfigFile(fileName))
                                 importConfigurationFile(uri);
                             else
                                 importLyricFile(1, uri, fileName);
@@ -221,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements
             if (item != null) {
                 String fileName = FileSystemRepository.getFileName(item.getUri(), this);
 
-                if (fileName.endsWith(mAppService.getConfigExtension()))
+                if (mAppService.isConfigFile(fileName))
                     configFileUri = item.getUri();
                 else
                     importLyricFile(i, item.getUri(), fileName);
@@ -257,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void startActivity(Class activity, String lyricName) {
         Intent i = new Intent(this, activity);
-        ActivityUtils.setPlaylistNameParameter(mCurrentSetList, i);
+        ActivityUtils.setCurrentPlaylistName(mCurrentPlaylist, this);
         ActivityUtils.setLyricFileNameParameter(lyricName, i);
         startActivity(i);
         finish();
@@ -269,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public void renameSetList(MenuItem item) {
         final EditText input = new EditText(this);
-        input.setText(mCurrentSetList);
+        input.setText(mCurrentPlaylist);
         input.setSelected(true);
 
         Dialog d = new AlertDialog.Builder(this)
@@ -283,9 +270,10 @@ public class MainActivity extends AppCompatActivity implements
                             input.setError(getString(R.string.set_list_name_required));
                         else {
                             try {
-                                mAppService.updateSetListName(mCurrentSetList, value);
-                                mCurrentSetList = value;
-                                setTitle(getString(R.string.app_name) + " - " + mCurrentSetList);
+                                mAppService.updatePlaylistName(mCurrentPlaylist, value);
+                                mCurrentPlaylist = value;
+                                setTitle(getString(R.string.app_name) + " - " + mCurrentPlaylist);
+                                ActivityUtils.setCurrentPlaylistName(value, getApplicationContext());
                             } catch (FileSystemException | FileNotFoundException e) {
                                 Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -333,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements
      * (on large screens). Hence, it has to update the list after one it's saved
      */
     @Override
-    public void onSaveItem() {
+    public void onSaveItem(Lyric lyric) {
         MainListFragment listFragment = getMainListFragment();
         listFragment.refresh();
     }
@@ -364,8 +352,9 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onClick(DialogInterface dlg, int position) {
                         listFragment.loadLyricsFromPlaylist(items[position]);
-                        mCurrentSetList = items[position];
+                        mCurrentPlaylist = items[position];
                         menuRenamePlaylist.setVisible(true);
+                        ActivityUtils.setCurrentPlaylistName(mCurrentPlaylist, getApplicationContext());
                     }
                 })
                 .create();

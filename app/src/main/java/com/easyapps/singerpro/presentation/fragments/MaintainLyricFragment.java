@@ -3,6 +3,7 @@ package com.easyapps.singerpro.presentation.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,6 @@ import android.widget.Toast;
 import com.easyapps.singerpro.application.LyricApplicationService;
 import com.easyapps.singerpro.application.command.AddLyricCommand;
 import com.easyapps.singerpro.application.command.UpdateLyricCommand;
-import com.easyapps.singerpro.domain.model.lyric.Configuration;
 import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
 import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
@@ -23,19 +23,17 @@ import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidPreference
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 import com.easyapps.teleprompter.R;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass the holds the creation and edition of a Lyric
  */
 public class MaintainLyricFragment extends Fragment {
-    private static final String TEXT_WRITTEN = "TEXT_WRITTEN";
-    private static final String SONG_NUMBER = "SONG_NUMBER";
-    private static final String FILE_NAME = "FILE_NAME";
-
     private Operation mOperation = Operation.NEW_LYRIC;
     private Lyric mLyric;
-
     private LyricApplicationService mAppService;
     private OnSaveItemListener mListener;
+    private boolean mIsTempFileUsed;
 
     public MaintainLyricFragment() {
     }
@@ -43,19 +41,27 @@ public class MaintainLyricFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            int songNumber = getArguments().getInt(SONG_NUMBER);
-            mLyric = Lyric.newCompleteInstance(getArguments().getString(FILE_NAME),
-                    getArguments().getString(TEXT_WRITTEN),
-                    Configuration.newLightInstance(songNumber));
-        }
-
         ILyricRepository mLyricRepository =
                 new AndroidFileSystemLyricRepository(getActivity());
         IConfigurationRepository mConfigRepository =
                 new AndroidPreferenceConfigurationRepository(getActivity());
         mAppService = new LyricApplicationService(mLyricRepository, null,
                 mConfigRepository, null, null);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        boolean isTablet = getResources().getBoolean(R.bool.isTablet);
+        if (isTablet) {
+            try {
+                String tempLyricName = getFileNameContent() + mAppService.getTempLyricName();
+                mAppService.addLyric(new AddLyricCommand(tempLyricName, getTextContent(),
+                        getSongNumberContent()));
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     private void saveLyricFile() {
@@ -69,18 +75,25 @@ public class MaintainLyricFragment extends Fragment {
         if (!fileName.trim().equals("") && !songNumber.trim().equals("")) {
             try {
                 if (mOperation == Operation.EDIT_LYRIC) {
+                    String oldName = mLyric.getName();
+                    if (mIsTempFileUsed) {
+                        oldName = ActivityUtils.getFileNameParameter(getActivity().getIntent());
+                    }
                     UpdateLyricCommand cmd = new UpdateLyricCommand(fileName, getTextContent(),
-                            songNumber, mLyric.getName());
-
+                            songNumber, oldName);
                     mAppService.updateLyric(cmd);
                 } else {
                     AddLyricCommand cmd = new AddLyricCommand(fileName, getTextContent(), songNumber);
                     mAppService.addLyric(cmd);
                 }
 
+                mLyric = tryLoadLyricToUpdate(fileName);
+
                 String message = getResources().getString(R.string.file_saved);
                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-                mListener.onSaveItem();
+                ActivityUtils.setIsNewLyric(false, getActivity());
+                mListener.onSaveItem(mLyric);
+                mIsTempFileUsed = false;
             } catch (Exception e) {
                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
             }
@@ -100,7 +113,6 @@ public class MaintainLyricFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_maintain_lyric, container, false);
 
         EditText etLyricContent = v.findViewById(R.id.etTextFile);
@@ -108,34 +120,59 @@ public class MaintainLyricFragment extends Fragment {
         EditText etSongNumber = v.findViewById(R.id.etSongNumber);
         etSongNumber.requestFocus();
 
-        if (mLyric != null) {
-            setTextFields(mLyric, etLyricContent, etLyricName, etSongNumber);
-        } else {
-            tryLoadLyricToUpdate(etLyricContent, etLyricName, etSongNumber);
-        }
+        tryLoadLyric(etLyricContent, etLyricName, etSongNumber);
         setSaveButtonOnClickListener(v);
 
         return v;
     }
 
-    private void setTextFields(Lyric lyric, EditText etLyricContent, EditText etLyricName, EditText etSongNumber) {
-        etLyricContent.setText(lyric.getContent());
-        etLyricName.setText(lyric.getName());
-        etSongNumber.setText(String.valueOf(lyric.getConfiguration().getSongNumber()));
+    private void tryLoadLyric(EditText etLyricContent, EditText etLyricName, EditText etSongNumber) {
+        mLyric = tryLoadLyricFromTempFile();
+        if (mLyric == null) {
+            String lyricName = ActivityUtils.getFileNameParameter(getActivity().getIntent());
+            mLyric = tryLoadLyricToUpdate(lyricName);
+        }
+        setTextFields(mLyric, etLyricContent, etLyricName, etSongNumber);
     }
 
-    private void tryLoadLyricToUpdate(EditText etLyricContent, EditText etLyricName,
-                                      EditText etSongNumber) {
-        String lyricName = ActivityUtils.getFileNameParameter(getActivity().getIntent());
+    private Lyric tryLoadLyricFromTempFile() {
+        try {
+            Lyric lyric = mAppService.loadLyricWithConfiguration(mAppService.getTempLyricName(), true);
+            if (lyric != null) {
+                ArrayList<String> removeTemp = new ArrayList<>();
+                removeTemp.add(lyric.getName());
+                mAppService.removeLyrics(removeTemp);
+                lyric.removeNameSufix(mAppService.getTempLyricName());
+                mOperation = ActivityUtils.isNewLyric(getActivity()) ? Operation.NEW_LYRIC : Operation.EDIT_LYRIC;
+                mIsTempFileUsed = true;
+                return lyric;
+            }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        return null;
+    }
+
+    private void setTextFields(Lyric lyric, EditText etLyricContent, EditText etLyricName, EditText etSongNumber) {
+        if (lyric != null) {
+            etLyricContent.setText(lyric.getContent());
+            etLyricName.setText(lyric.getName());
+            int songNumber = lyric.getConfiguration().getSongNumber();
+            etSongNumber.setText(String.valueOf(songNumber == Integer.MIN_VALUE ? "" : songNumber));
+        }
+    }
+
+    private Lyric tryLoadLyricToUpdate(String lyricName) {
         if (lyricName != null) {
             mOperation = Operation.EDIT_LYRIC;
+            mIsTempFileUsed = false;
             try {
-                mLyric = mAppService.loadLyricWithConfiguration(lyricName);
-                setTextFields(mLyric, etLyricContent, etLyricName, etSongNumber);
+                return mAppService.loadLyricWithConfiguration(lyricName, false);
             } catch (Exception e) {
                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
+        return null;
     }
 
     @Override
@@ -213,33 +250,37 @@ public class MaintainLyricFragment extends Fragment {
     }
 
     public void updateContent(String lyricName) {
-        if (getView() != null) {
-            ActivityUtils.setLyricFileNameParameter(lyricName, getActivity().getIntent());
-
+        mOperation = Operation.EDIT_LYRIC;
+        ActivityUtils.setLyricFileNameParameter(lyricName, getActivity().getIntent());
+        if (!mIsTempFileUsed && getView() != null) {
             EditText etLyricContent = getView().findViewById(R.id.etTextFile);
             EditText etLyricName = getView().findViewById(R.id.etFileName);
             EditText etSongNumber = getView().findViewById(R.id.etSongNumber);
 
-            tryLoadLyricToUpdate(etLyricContent, etLyricName, etSongNumber);
+            tryLoadLyric(etLyricContent, etLyricName, etSongNumber);
         }
     }
 
     public void newContent() {
+        boolean wasNewLyricBefore = ActivityUtils.isNewLyric(getActivity());
         if (getView() != null) {
+            ActivityUtils.setIsNewLyric(true, getActivity());
             EditText etLyricContent = getView().findViewById(R.id.etTextFile);
             EditText etLyricName = getView().findViewById(R.id.etFileName);
             EditText etSongNumber = getView().findViewById(R.id.etSongNumber);
 
-            etLyricContent.setText("");
-            etLyricName.setText("");
-            etSongNumber.setText("");
+            if (!wasNewLyricBefore) {
+                etLyricContent.setText("");
+                etLyricName.setText("");
+                etSongNumber.setText("");
+            }
 
             mOperation = Operation.NEW_LYRIC;
         }
     }
 
     public interface OnSaveItemListener {
-        void onSaveItem();
+        void onSaveItem(Lyric lyric);
     }
 
     private enum Operation {
@@ -247,5 +288,3 @@ public class MaintainLyricFragment extends Fragment {
         EDIT_LYRIC
     }
 }
-
-
