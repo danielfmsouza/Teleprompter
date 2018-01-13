@@ -8,8 +8,8 @@
     tools:context="com.easyapps.singerpro.presentation.AboutActivity">
 
     <ImageView
-        android:layout_width="@dimen/about_icon_width"
-        android:layout_height="@dimen/about_icon_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/ic_about"
         android:contentDescription="@string/app_logo_description" />

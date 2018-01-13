@@ -3,7 +3,6 @@ package com.easyapps.singerpro.presentation.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,7 +63,7 @@ public class MaintainLyricFragment extends Fragment {
         }
     }
 
-    private void saveLyricFile() {
+     private void saveLyricFile() {
         String fileName = getFileNameContent();
         String songNumber = getSongNumberContent();
 
