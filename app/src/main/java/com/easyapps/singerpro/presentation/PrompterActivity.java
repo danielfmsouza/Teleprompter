@@ -26,7 +26,6 @@ import com.easyapps.teleprompter.R;
 public class PrompterActivity extends AppCompatActivity {
 
     private PrompterView mPrompter;
-    private String playlistName;
     private boolean playNext;
     private int timeBeforeStart;
 
@@ -45,7 +44,7 @@ public class PrompterActivity extends AppCompatActivity {
                 getResources().getString(R.string.pref_key_playNext), false);
         timeBeforeStart = sharedPref.getInt(
                 getResources().getString(R.string.pref_key_timeBeforeStart), timeBeforeStartDefault);
-        playlistName = ActivityUtils.getCurrentPlaylistName(this);
+        String playlistName = ActivityUtils.getCurrentPlaylistName(this);
 
         boolean automaticPlaying = playNext && hasFinishedAnimationParameter;
         if (automaticPlaying) {
@@ -62,17 +61,17 @@ public class PrompterActivity extends AppCompatActivity {
                 loadFileIntoPrompter(fileName, playlistName);
             } else {
                 if (automaticPlaying) {
-                    ActivityUtils.backToMain(this, playlistName);
+                    ActivityUtils.backToMain(this);
                     showToastMessage(R.string.prompting_finished);
                 } else {
-                    ActivityUtils.backToMain(this, playlistName);
+                    ActivityUtils.backToMain(this);
                     showToastMessage(R.string.file_not_found);
                 }
             }
             setScrollViewBackgroundColor();
             VerifyTimeBeforeStartAnimation();
         } else {
-            ActivityUtils.backToMain(this, playlistName);
+            ActivityUtils.backToMain(this);
             showToastMessage(R.string.prompting_finished);
         }
     }
@@ -145,7 +144,7 @@ public class PrompterActivity extends AppCompatActivity {
         int backgroundColor = Integer.parseInt(sharedPref.getString(
                 getResources().getString(R.string.pref_key_backgroundColor), backgroundColorDefault));
 
-        ScrollView scrollView = (ScrollView) findViewById(R.id.svText);
+        ScrollView scrollView = findViewById(R.id.svText);
         scrollView.setBackgroundColor(backgroundColor);
     }
 
@@ -192,7 +191,7 @@ public class PrompterActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        ActivityUtils.backToMain(this, playlistName);
+        ActivityUtils.backToMain(this);
         showToastMessage(R.string.prompting_canceled);
     }
 }

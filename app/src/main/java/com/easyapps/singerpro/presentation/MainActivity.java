@@ -5,16 +5,19 @@ import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -80,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements
                 createLyric();
             }
         });
-
         verifyDetailsFragment();
     }
 
@@ -97,11 +99,38 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private void setConfigurationButtonVisible(boolean visibility) {
+        if (mMenu != null) {
+            MenuItem menuConfig = mMenu.findItem(R.id.menu_lyric_settings_main);
+            menuConfig.setVisible(visibility);
+        }
+    }
+
+    public void startSettingsFromMain(MenuItem item) {
+        MaintainLyricFragment contentFragment = (MaintainLyricFragment) getFragmentManager()
+                .findFragmentById(R.id.details_frag);
+        if (contentFragment != null)
+            contentFragment.saveLyricFile();
+
+        String lyricName = ActivityUtils.getFileNameParameter(getIntent());
+        startActivity(SettingsActivity.class, lyricName);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_settings, menu);
         mMenu = menu;
+        boolean isTablet = getResources().getBoolean(R.bool.isTablet);
+        boolean isNewLyric = ActivityUtils.isNewLyric(this);
+        int orientation = getResources().getConfiguration().orientation;
+
+        if (!isNewLyric && isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setConfigurationButtonVisible(true);
+        } else {
+            setConfigurationButtonVisible(false);
+        }
+
         return true;
     }
 
@@ -288,8 +317,11 @@ public class MainActivity extends AppCompatActivity implements
         MaintainLyricFragment contentFragment = (MaintainLyricFragment) getFragmentManager()
                 .findFragmentById(R.id.details_frag);
 
+        setConfigurationButtonVisible(false);
+
         if (contentFragment != null && getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
             contentFragment.newContent();
+            getMainListFragment().removeSelection();
         } else {
             startActivity(MaintainLyricActivity.class);
         }
@@ -302,6 +334,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (contentFragment != null && getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
             contentFragment.updateContent(lyricName);
+            setConfigurationButtonVisible(true);
         } else {
             startActivity(MaintainLyricActivity.class, lyricName);
         }
@@ -312,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements
         MaintainLyricFragment contentFragment = (MaintainLyricFragment) getFragmentManager()
                 .findFragmentById(R.id.details_frag);
         if (contentFragment != null) {
+            setConfigurationButtonVisible(false);
             contentFragment.newContent();
         }
     }
@@ -324,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onSaveItem(Lyric lyric) {
         MainListFragment listFragment = getMainListFragment();
         listFragment.refresh();
+        setConfigurationButtonVisible(true);
     }
 
     private MainListFragment getMainListFragment() {

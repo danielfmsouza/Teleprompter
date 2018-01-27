@@ -96,18 +96,12 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         holder.text = row.findViewById(R.id.tvFileName);
         holder.configs = row.findViewById(R.id.tvFileConfiguration);
         holder.playButton = row.findViewById(R.id.btnPlay);
-        holder.settingsButton = row.findViewById(R.id.btnSettings);
 
         final String lyricName = getLyricName(position);
         ConfigurationQueryModel config = getConfiguration(position);
 
         holder.text.setText(getLyricTitle(lyricName, config));
         holder.configs.setText(getConfigurationMessage(config));
-
-        if (mMultiSelectionEnabled)
-            holder.settingsButton.setVisibility(View.INVISIBLE);
-        else
-            holder.settingsButton.setVisibility(View.VISIBLE);
 
         if (mSelection.contains(position)) {
             row.setBackgroundColor(getContext().getResources().getColor(R.color.colorSelectedItem));
@@ -117,8 +111,6 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
             holder.playButton.setSelected(false);
         }
 
-        holder.settingsButton.setFocusable(false);
-        holder.settingsButton.setFocusableInTouchMode(false);
         holder.playButton.setFocusable(false);
         holder.playButton.setFocusableInTouchMode(false);
 
@@ -126,12 +118,6 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
             @Override
             public void onClick(View v) {
                 setRowClickAction(position, (ListView) parent, convertView);
-            }
-        });
-        holder.settingsButton.setOnClickListener(new ImageButton.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startSettings(position);
             }
         });
 
@@ -198,10 +184,6 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         startActivity(PrompterActivity.class, position);
     }
 
-    private void startSettings(int position) {
-        startActivity(SettingsActivity.class, position);
-    }
-
     private void startActivity(Class clazz, int position) {
         Intent i = new Intent(getContext(), clazz);
 
@@ -229,6 +211,5 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         TextView text;
         TextView configs;
         ImageView playButton;
-        ImageView settingsButton;
     }
 }

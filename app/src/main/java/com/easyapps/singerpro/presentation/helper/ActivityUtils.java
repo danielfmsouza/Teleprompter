@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
 import com.easyapps.singerpro.presentation.MainActivity;
+import com.easyapps.singerpro.presentation.MaintainLyricActivity;
 import com.easyapps.singerpro.presentation.PrompterActivity;
 import com.easyapps.singerpro.presentation.messages.Constants;
 import com.easyapps.teleprompter.R;
@@ -24,7 +25,7 @@ public class ActivityUtils {
         setParameter(value, intent, Constants.FILE_NAME_PARAM);
     }
 
-    public static void setHasFinishedAnimationParameter(boolean value, Intent intent) {
+    private static void setHasFinishedAnimationParameter(boolean value, Intent intent) {
         setParameter(value, intent, Constants.HAS_FINISHED_ANIMATION);
     }
 
@@ -46,6 +47,10 @@ public class ActivityUtils {
 
     public static void setIsNewLyric(boolean value, Context context) {
         setPreference(value, context, R.string.pref_key_isNewLyric);
+    }
+
+    public static void setClickedOnLyric(boolean clickedOnLyric, Context context) {
+        setPreference(clickedOnLyric, context, R.string.pref_key_clickedOnLyric);
     }
 
     private static void setPreference(String value, Context context, int resource) {
@@ -78,16 +83,20 @@ public class ActivityUtils {
         editor.apply();
     }
 
-    public static String getCurrentPlaylistName(Context context){
+    public static String getCurrentPlaylistName(Context context) {
         return getStringPreference(R.string.pref_key_currentPlaylistName, context);
     }
 
-    public static int getCurrentSelectedLyric(Context context){
+    public static int getCurrentSelectedLyric(Context context) {
         return getIntPreference(R.string.pref_key_currentSelectedLyric, context);
     }
 
-    public static boolean isNewLyric(Context context){
+    public static boolean isNewLyric(Context context) {
         return getBoolPreference(R.string.pref_key_isNewLyric, context);
+    }
+
+    public static boolean isClickedOnLyric(Context context) {
+        return getBoolPreference(R.string.pref_key_clickedOnLyric, context);
     }
 
     @NonNull
@@ -152,11 +161,14 @@ public class ActivityUtils {
     }
 
     public static void backToMain(Activity currentActivity) {
-        backToMain(currentActivity, null);
+        Intent i = new Intent(currentActivity, MainActivity.class);
+        currentActivity.startActivity(i);
+        currentActivity.finish();
     }
 
-    public static void backToMain(Activity currentActivity, String playlistName) {
-        Intent i = new Intent(currentActivity, MainActivity.class);
+    public static void backToMaintainLyric(Activity currentActivity, String lyricName) {
+        Intent i = new Intent(currentActivity, MaintainLyricActivity.class);
+        setLyricFileNameParameter(lyricName, i);
         currentActivity.startActivity(i);
         currentActivity.finish();
     }

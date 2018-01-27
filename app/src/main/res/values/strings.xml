@@ -33,7 +33,7 @@
     <string name="app_name">SingerPro</string>
     <string name="btn_create_file_description">Create a new lyric file</string>
     <string name="btn_play_description">Play song</string>
-    <string name="btn_config_description">Configuration for this file</string>
+    <string name="btn_config_description">Configuration for this lyric</string>
     <string name="btn_remove_from_playlist_description">Remove this song from set list</string>
     <string name="et_text_file_hint">Type or paste your text here</string>
     <string name="btn_save_name">Save File</string>
@@ -94,4 +94,5 @@
     <string name="pref_key_currentPlaylistName">pref_currentPlaylistName</string>
     <string name="pref_key_currentSelectedLyric">pref_currentSelectedLyric</string>
     <string name="pref_key_isNewLyric">pref_isNewLyric</string>
+    <string name="pref_key_clickedOnLyric">pref_clickedOnLyric</string>
 </resources>

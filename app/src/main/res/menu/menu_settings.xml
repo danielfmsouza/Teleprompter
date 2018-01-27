@@ -4,6 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.easyapps.singerpro.presentation.MainActivity">
     <item
+        android:icon="@drawable/ic_settings"
+        android:id="@+id/menu_lyric_settings_main"
+        android:title="@string/btn_config_description"
+        android:orderInCategory="94"
+        app:showAsAction="ifRoom"
+        android:visible="false"
+        android:onClick="startSettingsFromMain"/>
+    <item
         android:icon="@drawable/ic_playlist_load"
         android:id="@+id/menu_load_playlist"
         android:title="@string/menu_item_load_playlist_title"

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:id="@+id/test"
     tools:context="com.easyapps.singerpro.presentation.PrompterActivity">
 
     <ScrollView
@@ -27,6 +28,8 @@
             android:textColor="#ffffff"
             android:textSize="50sp"
             android:textStyle="bold"
+            android:verticalScrollbarPosition="right"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
             preference:scrollSpeed="@integer/number_default_value_scroll_speed"
             preference:timerRunningValue="@integer/number_min_value_timer"
             preference:timerWaitingValue="@integer/number_min_value_timer"

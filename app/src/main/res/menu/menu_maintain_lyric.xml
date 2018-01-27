@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.easyapps.singerpro.presentation.MaintainLyricActivity">
+    <item
+        android:icon="@drawable/ic_settings"
+        android:id="@+id/menu_lyric_settings"
+        android:title="@string/btn_config_description"
+        android:orderInCategory="95"
+        app:showAsAction="ifRoom"
+        android:onClick="startSettings"/>
+</menu>

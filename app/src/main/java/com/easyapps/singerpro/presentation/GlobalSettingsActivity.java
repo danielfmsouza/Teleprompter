@@ -12,13 +12,9 @@ import com.easyapps.singerpro.presentation.helper.ActivityUtils;
  * Global Settings activity for entire application.
  */
 public class GlobalSettingsActivity extends Activity {
-    private String setList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setList = ActivityUtils.getCurrentPlaylistName(this);
 
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction()
@@ -33,6 +29,6 @@ public class GlobalSettingsActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        ActivityUtils.backToMain(this, setList);
+        ActivityUtils.backToMain(this);
     }
 }

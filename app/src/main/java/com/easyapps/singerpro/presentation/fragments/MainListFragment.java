@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -99,10 +100,10 @@ public class MainListFragment extends Fragment {
         AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View container, int position, long id) {
-                mPositionClicked = position;
-                ActivityUtils.setCurrentSelectedLyric(mPositionClicked, getActivity());
-                ActivityUtils.setIsNewLyric(false, getActivity());
-                mListener.onItemSelected(mAdapter.getLyricName(position));
+                ActivityUtils.setClickedOnLyric(true, getActivity());
+                setSelectedItem(position);
+                removeSelectedBackgroundColor(parent);
+                container.setBackgroundColor(Color.LTGRAY);
             }
         };
 
@@ -168,6 +169,20 @@ public class MainListFragment extends Fragment {
         });
 
         return v;
+    }
+
+    private void removeSelectedBackgroundColor(AdapterView<?> parent) {
+        if (parent == null) return;
+        for (int a = 0; a < parent.getChildCount(); a++) {
+            parent.getChildAt(a).setBackgroundColor(Color.TRANSPARENT);
+        }
+    }
+
+    private void setSelectedItem(int position) {
+        mPositionClicked = position;
+        ActivityUtils.setCurrentSelectedLyric(mPositionClicked, getActivity());
+        ActivityUtils.setIsNewLyric(false, getActivity());
+        mListener.onItemSelected(mAdapter.getLyricName(position));
     }
 
     @Override
@@ -400,9 +415,8 @@ public class MainListFragment extends Fragment {
 
     public boolean selectCurrentItem() {
         if (mAdapter != null && !mAdapter.isEmpty() && !ActivityUtils.isNewLyric(getActivity())) {
-            mPositionClicked = ActivityUtils.getCurrentSelectedLyric(getActivity());
-            mListener.onItemSelected(mAdapter.getLyricName(mPositionClicked));
-            ActivityUtils.setIsNewLyric(false, getActivity());
+            ActivityUtils.setClickedOnLyric(false, getActivity());
+            setSelectedItem(ActivityUtils.getCurrentSelectedLyric(getActivity()));
             return true;
         }
         return false;
@@ -410,6 +424,13 @@ public class MainListFragment extends Fragment {
 
     public void refresh() {
         loadLyricsFromPlaylist(mCurrentPlaylist);
+    }
+
+    /***
+     * Remove the background color for the last selected item in the list
+     */
+    public void removeSelection() {
+        removeSelectedBackgroundColor(mListView);
     }
 
     public interface OnListChangeListener {

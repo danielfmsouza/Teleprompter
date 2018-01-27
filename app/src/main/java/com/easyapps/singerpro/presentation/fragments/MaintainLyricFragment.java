@@ -63,7 +63,7 @@ public class MaintainLyricFragment extends Fragment {
         }
     }
 
-     private void saveLyricFile() {
+     public void saveLyricFile() {
         String fileName = getFileNameContent();
         String songNumber = getSongNumberContent();
 
@@ -91,6 +91,7 @@ public class MaintainLyricFragment extends Fragment {
                 String message = getResources().getString(R.string.file_saved);
                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                 ActivityUtils.setIsNewLyric(false, getActivity());
+                ActivityUtils.setLyricFileNameParameter(fileName, getActivity().getIntent());
                 mListener.onSaveItem(mLyric);
                 mIsTempFileUsed = false;
             } catch (Exception e) {
@@ -251,7 +252,9 @@ public class MaintainLyricFragment extends Fragment {
     public void updateContent(String lyricName) {
         mOperation = Operation.EDIT_LYRIC;
         ActivityUtils.setLyricFileNameParameter(lyricName, getActivity().getIntent());
-        if (!mIsTempFileUsed && getView() != null) {
+        boolean userSelectedALyric = ActivityUtils.isClickedOnLyric(getActivity());
+
+        if (getView() != null && (userSelectedALyric || !mIsTempFileUsed)) {
             EditText etLyricContent = getView().findViewById(R.id.etTextFile);
             EditText etLyricName = getView().findViewById(R.id.etFileName);
             EditText etSongNumber = getView().findViewById(R.id.etSongNumber);
