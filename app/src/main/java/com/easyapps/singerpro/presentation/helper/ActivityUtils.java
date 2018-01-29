@@ -25,12 +25,20 @@ public class ActivityUtils {
         setParameter(value, intent, Constants.FILE_NAME_PARAM);
     }
 
+    public static void setIsTestPlayParameter(boolean value, Intent intent) {
+        setParameter(value, intent, Constants.IS_TEST_PLAY);
+    }
+
     private static void setHasFinishedAnimationParameter(boolean value, Intent intent) {
         setParameter(value, intent, Constants.HAS_FINISHED_ANIMATION);
     }
 
-    public static boolean getHasFinishedAnimationParameter(Intent intent) {
+    public static boolean hasFinishedAnimationParameter(Intent intent) {
         return getBooleanParameter(intent, Constants.HAS_FINISHED_ANIMATION);
+    }
+
+    public static boolean isTestPlayParameter(Intent intent) {
+        return getBooleanParameter(intent, Constants.IS_TEST_PLAY);
     }
 
     public static String getFileNameParameter(Intent intent) {
@@ -173,9 +181,10 @@ public class ActivityUtils {
         currentActivity.finish();
     }
 
-    public static void backToPrompter(Activity currentActivity, String setListName, String fileName) {
+    public static void backToPrompter(Activity currentActivity, boolean isTestPlay, String fileName) {
         Intent i = new Intent(currentActivity, PrompterActivity.class);
         setHasFinishedAnimationParameter(true, i);
+        setIsTestPlayParameter(isTestPlay, i);
         setLyricFileNameParameter(fileName, i);
         currentActivity.startActivity(i);
         currentActivity.finish();

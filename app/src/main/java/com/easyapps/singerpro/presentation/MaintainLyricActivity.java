@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
 import com.easyapps.singerpro.presentation.fragments.MaintainLyricFragment;
@@ -60,19 +61,31 @@ public class MaintainLyricActivity extends AppCompatActivity implements Maintain
     }
 
     public void startSettings(MenuItem item) {
-        MaintainLyricFragment contentFragment = (MaintainLyricFragment) getFragmentManager()
-                .findFragmentById(R.id.maintain_lyric_frag);
+        if (!saveLyric()) return;
+        startActivity(SettingsActivity.class);
+    }
 
-        if (contentFragment != null)
-            contentFragment.saveLyricFile();
+    public void startTestPrompter(MenuItem item) {
+        if (!saveLyric()) return;
+        startActivity(PrompterActivity.class);
+    }
 
-        Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+    private void startActivity(Class activity) {
+        Intent i = new Intent(getApplicationContext(), activity);
 
         String lyricName = ActivityUtils.getFileNameParameter(getIntent());
         ActivityUtils.setLyricFileNameParameter(lyricName, i);
+        ActivityUtils.setIsTestPlayParameter(true, i);
         ActivityUtils.setCurrentPlaylistName(mCurrentPlaylist, getApplicationContext());
         startActivity(i);
 
         finish();
+    }
+
+    private boolean saveLyric() {
+        MaintainLyricFragment contentFragment = (MaintainLyricFragment) getFragmentManager()
+                .findFragmentById(R.id.maintain_lyric_frag);
+
+        return contentFragment != null && contentFragment.saveLyricFile();
     }
 }

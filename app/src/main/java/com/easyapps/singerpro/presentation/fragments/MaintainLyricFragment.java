@@ -63,7 +63,9 @@ public class MaintainLyricFragment extends Fragment {
         }
     }
 
-     public void saveLyricFile() {
+    public boolean saveLyricFile() {
+        boolean savedSuccessfully = false;
+
         String fileName = getFileNameContent();
         String songNumber = getSongNumberContent();
 
@@ -88,16 +90,17 @@ public class MaintainLyricFragment extends Fragment {
 
                 mLyric = tryLoadLyricToUpdate(fileName);
 
-                String message = getResources().getString(R.string.file_saved);
-                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                 ActivityUtils.setIsNewLyric(false, getActivity());
                 ActivityUtils.setLyricFileNameParameter(fileName, getActivity().getIntent());
+                savedSuccessfully = true;
+
                 mListener.onSaveItem(mLyric);
                 mIsTempFileUsed = false;
             } catch (Exception e) {
                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
+        return savedSuccessfully;
     }
 
     private void setSaveButtonOnClickListener(View v) {
@@ -105,7 +108,10 @@ public class MaintainLyricFragment extends Fragment {
         btnSaveLyric.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveLyricFile();
+                if (saveLyricFile()) {
+                    String message = getResources().getString(R.string.file_saved);
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

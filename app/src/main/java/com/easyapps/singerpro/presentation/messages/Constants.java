@@ -8,4 +8,5 @@ package com.easyapps.singerpro.presentation.messages;
 public class Constants {
     public static final String FILE_NAME_PARAM = "fileName";
     public static final String HAS_FINISHED_ANIMATION = "hasFinishedAnimation";
+    public static final String IS_TEST_PLAY = "isTestPlay";
 }

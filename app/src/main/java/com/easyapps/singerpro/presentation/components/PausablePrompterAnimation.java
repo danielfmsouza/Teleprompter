@@ -1,7 +1,6 @@
 package com.easyapps.singerpro.presentation.components;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.util.AttributeSet;
@@ -11,7 +10,6 @@ import android.view.animation.AnimationSet;
 import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
 
-import com.easyapps.singerpro.presentation.PrompterActivity;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -28,8 +26,8 @@ class PausablePrompterAnimation extends AnimationSet {
 
     private static final String ANIMATION_NAME_SET = "set";
     private static final String ANIMATION_NAME_TRANSLATE = "translate";
-    private static String mSetListName = "";
     private static String mFileName;
+    private static boolean mIsTestPlay;
 
     private long mElapsedAtPause = 0;
     private boolean isPaused = false;
@@ -49,7 +47,7 @@ class PausablePrompterAnimation extends AnimationSet {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                ActivityUtils.backToPrompter(ActivityUtils.getActivity(context), mSetListName,
+                ActivityUtils.backToPrompter(ActivityUtils.getActivity(context), mIsTestPlay,
                         mFileName);
             }
         });
@@ -89,10 +87,11 @@ class PausablePrompterAnimation extends AnimationSet {
     }
 
     static Animation loadAnimation(Context context, int id, int toYDelta, int scrollSpeed,
-                                   String setListName, String fileName)
+                                   boolean isTestPlay, String fileName)
             throws Resources.NotFoundException {
-        mSetListName = setListName;
         mFileName = fileName;
+        mIsTestPlay = isTestPlay;
+        
         XmlResourceParser parser = null;
         try {
             parser = context.getResources().getAnimation(id);

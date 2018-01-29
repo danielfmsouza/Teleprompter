@@ -35,6 +35,7 @@
     <string name="btn_play_description">Play song</string>
     <string name="btn_config_description">Configuration for this lyric</string>
     <string name="btn_remove_from_playlist_description">Remove this song from set list</string>
+    <string name="btn_test_config_description">Test lyric</string>
     <string name="et_text_file_hint">Type or paste your text here</string>
     <string name="btn_save_name">Save File</string>
     <string name="et_file_name_hint">Song Name</string>

@@ -14,10 +14,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.easyapps.singerpro.presentation.PrompterActivity;
-import com.easyapps.singerpro.presentation.SettingsActivity;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 import com.easyapps.singerpro.query.model.lyric.ConfigurationQueryModel;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;
@@ -75,7 +73,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     }
 
     public void clearSelection() {
-        mSelection = new HashSet<Integer>();
+        mSelection = new HashSet<>();
         notifyDataSetChanged();
         mMultiSelectionEnabled = false;
     }
@@ -152,7 +150,6 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     @NonNull
     private String getLyricTitle(String lyricName, ConfigurationQueryModel config) {
         String songNumberFormatted = String.format(Locale.getDefault(), "%02d", config.getSongNumber());
-
         return songNumberFormatted + " - " + lyricName;
     }
 
@@ -187,6 +184,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     private void startActivity(Class clazz, int position) {
         Intent i = new Intent(getContext(), clazz);
 
+        ActivityUtils.setIsTestPlayParameter(false, i);
         ActivityUtils.setLyricFileNameParameter(getLyricName(position), i);
         ActivityUtils.setCurrentPlaylistName(playListName, getContext());
         getContext().startActivity(i);

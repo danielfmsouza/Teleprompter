@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -103,7 +104,11 @@ public class MainListFragment extends Fragment {
                 ActivityUtils.setClickedOnLyric(true, getActivity());
                 setSelectedItem(position);
                 removeSelectedBackgroundColor(parent);
-                container.setBackgroundColor(Color.LTGRAY);
+
+                boolean isTablet = getResources().getBoolean(R.bool.isTablet);
+                int orientation = getResources().getConfiguration().orientation;
+                if (isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE)
+                    container.setBackgroundColor(Color.LTGRAY);
             }
         };
 
@@ -435,6 +440,7 @@ public class MainListFragment extends Fragment {
 
     public interface OnListChangeListener {
         void onItemSelected(String lyricName);
+
         void onRemovedAllItems();
     }
 }

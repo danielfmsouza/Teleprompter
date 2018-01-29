@@ -24,7 +24,7 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
     private int[] timeRunning;
     private int[] timeWaiting;
     private int totalTimers;
-    private String setListName;
+    private boolean isTestPlay;
     private String fileName;
     private boolean animationPrepared = false;
     private final CountDownTimerPrompter initialTimer = new CountDownTimerPrompter(1, -2);
@@ -75,7 +75,7 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
 
         if (changed && !animationPrepared) {
             animation = PausablePrompterAnimation.loadAnimation(
-                    getContext(), animationId, b, scrollSpeed, setListName, fileName);
+                    getContext(), animationId, b, scrollSpeed, isTestPlay, fileName);
 
             // this is needed to make animation work
 
@@ -130,8 +130,8 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
         this.totalTimers = totalTimers;
     }
 
-    public void setSetListName(String setListName) {
-        this.setListName = setListName;
+    public void setIsTestPlay(boolean isTestPlay) {
+        this.isTestPlay = isTestPlay;
     }
 
     public void setFileName(String fileName) {
