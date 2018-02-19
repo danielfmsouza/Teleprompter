@@ -3,8 +3,8 @@ package com.easyapps.singerpro.infrastructure.persistence.lyric;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.easyapps.singerpro.domain.model.lyric.ISetListRepository;
-import com.easyapps.teleprompter.R;
+import com.easyapps.singerpro.domain.model.lyric.IPlaylistRepository;
+import com.easyapps.singerpro.R;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,17 +19,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 /**
- * Implementation of the ISetListRepository specific for the Android File System.
+ * Implementation of the IPlaylistRepository specific for the Android File System.
  * Created by daniel on 11/05/2017.
  */
 
-public class AndroidFileSystemSetListRepository extends FileSystemRepository implements ISetListRepository {
+public class AndroidFileSystemPlaylistRepository extends FileSystemRepository implements IPlaylistRepository {
 
     private static final String FILE_EXTENSION = ".sl";
     private final Context androidContext;
 
-    public AndroidFileSystemSetListRepository(Context androidContext) {
+    @Inject
+    public AndroidFileSystemPlaylistRepository(Context androidContext) {
         this.androidContext = androidContext;
     }
 
@@ -60,42 +63,42 @@ public class AndroidFileSystemSetListRepository extends FileSystemRepository imp
     }
 
     @Override
-    public void addLyricsToPlaylist(String setListName, List<String> lyricsNames)
+    public void addLyricsToPlaylist(String playlistName, List<String> lyricsNames)
             throws FileSystemException {
-        List<String> setList = loadSetListFromFile(setListName);
+        List<String> setList = loadSetListFromFile(playlistName);
 
         Set<String> setListWithNewLyrics = new HashSet<>(setList);
         setListWithNewLyrics.addAll(lyricsNames);
 
         List<String> mergedSetList = new ArrayList<>(setListWithNewLyrics);
 
-        add(setListName, mergedSetList);
+        add(playlistName, mergedSetList);
     }
 
     @Override
-    public void removeLyricsFromPlaylist(String setListName, List<String> lyricsNames) throws FileSystemException {
-        List<String> setList = loadSetListFromFile(setListName);
+    public void removeLyricsFromPlaylist(String playlistName, List<String> lyricsNames) throws FileSystemException {
+        List<String> setList = loadSetListFromFile(playlistName);
         setList.removeAll(lyricsNames);
         if (setList.isEmpty())
             try {
-                remove(setListName);
+                remove(playlistName);
             } catch (FileNotFoundException e) {
-                throwNewFileSystemException(setListName, R.string.file_not_found, androidContext);
+                throwNewFileSystemException(playlistName, R.string.file_not_found, androidContext);
             }
         else
-            add(setListName, setList);
+            add(playlistName, setList);
     }
 
     @Override
-    public void remove(final String setListName) throws FileSystemException, FileNotFoundException {
-        File fileToDelete = getFileByName(setListName, new FilenameFilter() {
+    public void remove(final String playlistName) throws FileSystemException, FileNotFoundException {
+        File fileToDelete = getFileByName(playlistName, new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return name.equals(setListName + FILE_EXTENSION);
+                return name.equals(playlistName + FILE_EXTENSION);
             }
         });
         if (!fileToDelete.delete()) {
-            throwNewFileSystemException(setListName, R.string.delete_file_error,
+            throwNewFileSystemException(playlistName, R.string.delete_file_error,
                     androidContext);
         }
     }
@@ -112,36 +115,36 @@ public class AndroidFileSystemSetListRepository extends FileSystemRepository imp
     }
 
     @Override
-    public List<String> load(String setListName) throws FileSystemException {
-        return loadSetListFromFile(setListName);
+    public List<String> load(String playlistName) throws FileSystemException {
+        return loadSetListFromFile(playlistName);
     }
 
     @Override
-    public void updatePlaylistName(String oldSetListName, final String newSetListName)
+    public void updatePlaylistName(String oldPlaylistName, final String newPlaylistName)
             throws FileSystemException, FileNotFoundException {
-        if (oldSetListName.equals(newSetListName)) return;
+        if (oldPlaylistName.equals(newPlaylistName)) return;
 
         File dir = androidContext.getFilesDir();
-        File oldFile = new File(dir, oldSetListName + FILE_EXTENSION);
+        File oldFile = new File(dir, oldPlaylistName + FILE_EXTENSION);
 
-        List<String> fileContent = loadSetListFromFile(oldSetListName);
+        List<String> fileContent = loadSetListFromFile(oldPlaylistName);
 
         if (fileExists(dir, new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return name.equals(newSetListName + FILE_EXTENSION);
+                return name.equals(newPlaylistName + FILE_EXTENSION);
             }
         })) {
-            throwNewFileSystemException(newSetListName, R.string.file_exists_error, androidContext);
+            throwNewFileSystemException(newPlaylistName, R.string.file_exists_error, androidContext);
         } else if (oldFile.exists()) {
-            add(newSetListName, fileContent);
+            add(newPlaylistName, fileContent);
             try {
-                remove(oldSetListName);
+                remove(oldPlaylistName);
             } catch (Exception ex) {
-                remove(newSetListName);
+                remove(newPlaylistName);
             }
         } else {
-            throwNewFileSystemException(oldSetListName, R.string.file_not_found, androidContext);
+            throwNewFileSystemException(oldPlaylistName, R.string.file_not_found, androidContext);
         }
 
     }

@@ -22,26 +22,21 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.application.LyricApplicationService;
-import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
-import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
-import com.easyapps.singerpro.domain.model.lyric.ISetListRepository;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricFinder;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricRepository;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemSetListFinder;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemSetListRepository;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidPreferenceConfigurationRepository;
+import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
 import com.easyapps.singerpro.presentation.components.PlayableCustomAdapter;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
-import com.easyapps.singerpro.query.model.lyric.ILyricFinder;
-import com.easyapps.singerpro.query.model.lyric.ISetListFinder;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;
-import com.easyapps.teleprompter.R;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 
 
 /**
@@ -50,16 +45,20 @@ import java.util.List;
 public class MainListFragment extends Fragment {
     private static final String SELECTED_ITEMS = "SELECTED_ITEMS";
     private static final String POSITION_CLICKED = "POSITION_CLICKED";
+    private static final String PLAYLIST_NAME_PARAM = "PLAYLIST_NAME_PARAM";
 
     private ArrayList<Integer> selectedItems = new ArrayList<>();
     private int mPositionClicked;
     private PlayableCustomAdapter mAdapter;
     private ListView mListView;
     private OnListChangeListener mListener;
-    private LyricApplicationService mAppService;
     private String mCurrentPlaylist = "";
 
-    private static final String PLAYLIST_NAME_PARAM = "PLAYLIST_NAME_PARAM";
+    @Inject
+    LyricApplicationService mAppService;
+
+    @Inject
+    IQueueLyricRepository lyricQueue;
 
     public MainListFragment() {
     }
@@ -74,17 +73,6 @@ public class MainListFragment extends Fragment {
         } else {
             mCurrentPlaylist = ActivityUtils.getCurrentPlaylistName(getActivity());
         }
-
-        ILyricRepository lyricRepository
-                = new AndroidFileSystemLyricRepository(getActivity());
-        IConfigurationRepository configRepository
-                = new AndroidPreferenceConfigurationRepository(getActivity());
-        ISetListRepository setListRepository
-                = new AndroidFileSystemSetListRepository(getActivity());
-        ILyricFinder lyricFinder = new AndroidFileSystemLyricFinder(getActivity());
-        ISetListFinder setListFinder = new AndroidFileSystemSetListFinder(getActivity());
-        mAppService = new LyricApplicationService(lyricRepository, lyricFinder, configRepository,
-                setListFinder, setListRepository);
     }
 
     @Override
@@ -192,6 +180,7 @@ public class MainListFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        AndroidInjection.inject(this);
         super.onAttach(context);
         attachListener(context);
     }
@@ -212,6 +201,7 @@ public class MainListFragment extends Fragment {
      */
     @Override
     public void onAttach(Activity activity) {
+        AndroidInjection.inject(this);
         super.onAttach(activity);
         attachListener(activity);
     }
@@ -235,9 +225,9 @@ public class MainListFragment extends Fragment {
 
     public void showAllLyrics() {
         mCurrentPlaylist = "";
+        ActivityUtils.setCurrentPlaylistName(mCurrentPlaylist, getActivity());
         listAllLyrics();
         getActivity().setTitle(getString(R.string.app_name) + " - " + getString(R.string.app_name_all_songs));
-        ActivityUtils.setCurrentPlaylistName(mCurrentPlaylist, getActivity());
     }
 
     private void setPrimaryStatusBarColor() {
@@ -270,7 +260,7 @@ public class MainListFragment extends Fragment {
                 showAllLyrics();
             } else {
                 mAdapter = new PlayableCustomAdapter(getActivity(),
-                        R.layout.row_list_item, lyrics, setListName, R.id.tvFileName);
+                        R.layout.row_list_item, lyrics, R.id.tvFileName, lyricQueue);
                 mListView.setAdapter(mAdapter);
                 getActivity().setTitle(getString(R.string.app_name) + " - " + setListName);
                 mCurrentPlaylist = setListName;
@@ -414,7 +404,7 @@ public class MainListFragment extends Fragment {
     private void listAllLyrics() {
         mAdapter = new PlayableCustomAdapter(getActivity(),
                 R.layout.row_list_item, mAppService.getAllLyrics(),
-                mCurrentPlaylist, R.id.tvFileName);
+                R.id.tvFileName, lyricQueue);
         mListView.setAdapter(mAdapter);
     }
 

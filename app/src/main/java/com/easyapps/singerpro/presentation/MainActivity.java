@@ -12,39 +12,31 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.application.LyricApplicationService;
 import com.easyapps.singerpro.application.command.AddLyricCommand;
-import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
-import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
-import com.easyapps.singerpro.domain.model.lyric.ISetListRepository;
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricFinder;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricRepository;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemSetListFinder;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemSetListRepository;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidPreferenceConfigurationRepository;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemRepository;
 import com.easyapps.singerpro.presentation.fragments.MainListFragment;
 import com.easyapps.singerpro.presentation.fragments.MaintainLyricFragment;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
-import com.easyapps.singerpro.query.model.lyric.ILyricFinder;
-import com.easyapps.singerpro.query.model.lyric.ISetListFinder;
-import com.easyapps.teleprompter.R;
 
 import java.io.FileNotFoundException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
@@ -54,25 +46,17 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final int PICK_FILE_RESULT_CODE = 1;
 
-    private LyricApplicationService mAppService;
+    @Inject
+    LyricApplicationService mAppService;
+
     private String mCurrentPlaylist = "";
     private Menu mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        ILyricRepository lyricRepository
-                = new AndroidFileSystemLyricRepository(getApplicationContext());
-        IConfigurationRepository configRepository
-                = new AndroidPreferenceConfigurationRepository(getApplicationContext());
-        ISetListRepository setListRepository
-                = new AndroidFileSystemSetListRepository(getApplicationContext());
-        ILyricFinder lyricFinder = new AndroidFileSystemLyricFinder(getApplicationContext());
-        ISetListFinder setListFinder = new AndroidFileSystemSetListFinder(getApplicationContext());
-        mAppService = new LyricApplicationService(lyricRepository, lyricFinder, configRepository,
-                setListFinder, setListRepository);
 
         mCurrentPlaylist = ActivityUtils.getCurrentPlaylistName(this);
 
@@ -112,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements
         if (contentFragment != null)
             contentFragment.saveLyricFile();
 
-        String lyricName = ActivityUtils.getFileNameParameter(getIntent());
+        String lyricName = ActivityUtils.getLyricFileNameParameter(getIntent());
         startActivity(SettingsActivity.class, lyricName);
     }
 
@@ -368,6 +352,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public void showAllLyrics(MenuItem item) {
         getMainListFragment().showAllLyrics();
+        mCurrentPlaylist = "";
         MenuItem menuRenamePlaylist = mMenu.findItem(R.id.menu_rename_playlist);
         menuRenamePlaylist.setVisible(false);
     }

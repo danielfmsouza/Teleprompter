@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.Toast;
 
 import com.easyapps.singerpro.presentation.fragments.TimerPreferenceFragment;
-import com.easyapps.teleprompter.R;
+import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
 /**
@@ -22,7 +22,7 @@ public class TimersCountPickerPreference extends NumberPickerPreference {
         super(context, attrs);
         mContext = (Activity) context;
 
-        String fileName = ActivityUtils.getFileNameParameter(
+        String fileName = ActivityUtils.getLyricFileNameParameter(
                 mContext.getIntent());
         if (fileName != null) {
             mFileName = fileName;

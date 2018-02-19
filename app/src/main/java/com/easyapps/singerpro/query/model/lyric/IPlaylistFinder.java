@@ -6,7 +6,7 @@ import java.util.List;
  * Created by daniel on 10/05/2017.
  */
 
-public interface ISetListFinder {
+public interface IPlaylistFinder {
 
     String[] getAllPlaylistNames();
 }

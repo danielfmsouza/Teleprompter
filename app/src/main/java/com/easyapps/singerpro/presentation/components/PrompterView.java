@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.animation.Animation;
 
-import com.easyapps.teleprompter.R;
+import com.easyapps.singerpro.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,16 +24,26 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
     private int[] timeRunning;
     private int[] timeWaiting;
     private int totalTimers;
-    private boolean isTestPlay;
     private String fileName;
     private boolean animationPrepared = false;
     private final CountDownTimerPrompter initialTimer = new CountDownTimerPrompter(1, -2);
     private final List<CountDownTimerPrompter> timers = new ArrayList<>();
     Animation animation;
+    PausablePrompterAnimation.OnFinishAnimationListener listener;
 
     public PrompterView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        settOnFinishAnimationListener(context);
         formatPrompter(context);
+    }
+
+    private void settOnFinishAnimationListener(Context context) {
+        if (context instanceof PausablePrompterAnimation.OnFinishAnimationListener) {
+            listener = (PausablePrompterAnimation.OnFinishAnimationListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFinishAnimationListener");
+        }
     }
 
     private void formatPrompter(Context context) {
@@ -47,7 +57,6 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
                 getResources().getString(R.string.pref_key_backgroundColor), backgroundColorDefault));
         int textColor = Integer.parseInt(sharedPref.getString(
                 getResources().getString(R.string.pref_key_textColor), textColorDefault));
-
 
         setTextColor(textColor);
         setBackgroundColor(backgroundColor);
@@ -72,12 +81,13 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+        loadAnimation(changed, b);
+    }
 
-        if (changed && !animationPrepared) {
+    private void loadAnimation(boolean changed, int b) {
+        if (changed && !animationPrepared && fileName != null) {
             animation = PausablePrompterAnimation.loadAnimation(
-                    getContext(), animationId, b, scrollSpeed, isTestPlay, fileName);
-
-            // this is needed to make animation work
+                    getContext(), animationId, b, scrollSpeed, fileName, listener);
 
             animationPrepared = true;
         }
@@ -128,10 +138,6 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
 
     public void setTotalTimers(int totalTimers) {
         this.totalTimers = totalTimers;
-    }
-
-    public void setIsTestPlay(boolean isTestPlay) {
-        this.isTestPlay = isTestPlay;
     }
 
     public void setFileName(String fileName) {

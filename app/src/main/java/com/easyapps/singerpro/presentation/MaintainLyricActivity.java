@@ -1,6 +1,5 @@
 package com.easyapps.singerpro.presentation;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -9,12 +8,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.easyapps.singerpro.R;
+import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
 import com.easyapps.singerpro.presentation.fragments.MaintainLyricFragment;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
-import com.easyapps.teleprompter.R;
+
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 
 /**
  * Created by Daniel on 2017-12-28.
@@ -25,8 +28,12 @@ public class MaintainLyricActivity extends AppCompatActivity implements Maintain
 
     private String mCurrentPlaylist;
 
+    @Inject
+    IQueueLyricRepository lyricQueue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
         boolean isTablet = getResources().getBoolean(R.bool.isTablet);
@@ -43,6 +50,12 @@ public class MaintainLyricActivity extends AppCompatActivity implements Maintain
                     getResources().getString(R.string.pref_key_currentPlaylistName), "");
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_maintain_lyric, menu);
+        return true;
+    }
 
     @Override
     public void onBackPressed() {
@@ -53,33 +66,21 @@ public class MaintainLyricActivity extends AppCompatActivity implements Maintain
     public void onSaveItem(Lyric lyric) {
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_maintain_lyric, menu);
-        return true;
-    }
-
     public void startSettings(MenuItem item) {
         if (!saveLyric()) return;
-        startActivity(SettingsActivity.class);
+        ActivityUtils.startActivity(this, mCurrentPlaylist, SettingsActivity.class);
     }
 
     public void startTestPrompter(MenuItem item) {
         if (!saveLyric()) return;
-        startActivity(PrompterActivity.class);
+        setLyricForPlaying();
+        ActivityUtils.startActivity(this, mCurrentPlaylist, PrompterActivity.class);
     }
 
-    private void startActivity(Class activity) {
-        Intent i = new Intent(getApplicationContext(), activity);
-
-        String lyricName = ActivityUtils.getFileNameParameter(getIntent());
-        ActivityUtils.setLyricFileNameParameter(lyricName, i);
-        ActivityUtils.setIsTestPlayParameter(true, i);
-        ActivityUtils.setCurrentPlaylistName(mCurrentPlaylist, getApplicationContext());
-        startActivity(i);
-
-        finish();
+    private void setLyricForPlaying() {
+        String lyricName = ActivityUtils.getLyricFileNameParameter(getIntent());
+        lyricQueue.clearPlaylistQueue();
+        lyricQueue.queueLyricForPlaying(lyricName);
     }
 
     private boolean saveLyric() {

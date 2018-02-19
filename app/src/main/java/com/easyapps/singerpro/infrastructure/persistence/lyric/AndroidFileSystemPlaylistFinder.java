@@ -2,23 +2,26 @@ package com.easyapps.singerpro.infrastructure.persistence.lyric;
 
 import android.content.Context;
 
-import com.easyapps.singerpro.query.model.lyric.ISetListFinder;
+import com.easyapps.singerpro.query.model.lyric.IPlaylistFinder;
 
 import java.io.File;
 import java.io.FilenameFilter;
 
+import javax.inject.Inject;
+
 /**
- * Android File System implementation for ISetListFinder.
+ * Android File System implementation for IPlaylistFinder.
  * Created by daniel on 04/10/2016.
  */
 
-public class AndroidFileSystemSetListFinder implements ISetListFinder {
+public class AndroidFileSystemPlaylistFinder implements IPlaylistFinder {
 
     private static final String FILE_EXTENSION = ".sl";
 
     private final Context androidApplicationContext;
 
-    public AndroidFileSystemSetListFinder(Context androidApplicationContext) {
+    @Inject
+    public AndroidFileSystemPlaylistFinder(Context androidApplicationContext) {
         this.androidApplicationContext = androidApplicationContext;
     }
 

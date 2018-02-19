@@ -4,34 +4,34 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 
+import com.easyapps.singerpro.BuildConfig;
+import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
 import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
-import com.easyapps.teleprompter.BuildConfig;
-import com.easyapps.teleprompter.R;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Implementation of the ILyricRepository specific for the Android File System.
  * Created by daniel on 01/10/2016.
  */
-
 public class AndroidFileSystemLyricRepository extends FileSystemRepository implements ILyricRepository {
 
     private static final String FILE_EXTENSION = ".mt";
-    private final Context androidContext;
-    private final IConfigurationRepository configurationRepository;
+    private IConfigurationRepository configurationRepository;
+    private Context androidContext;
 
-    public AndroidFileSystemLyricRepository(Context androidContext) {
-        this.androidContext = androidContext;
-
-        // TODO Do not instantiate it here. Use IoC and pass it as a parameter (improve testability).
-        this.configurationRepository =
-                new AndroidPreferenceConfigurationRepository(androidContext);
+    @Inject
+    public AndroidFileSystemLyricRepository(Context context,
+                                            IConfigurationRepository configurationRepository) {
+        this.androidContext = context;
+        this.configurationRepository = configurationRepository;
     }
 
     @Override

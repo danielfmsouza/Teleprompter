@@ -6,17 +6,19 @@ import com.easyapps.singerpro.application.command.AddLyricCommand;
 import com.easyapps.singerpro.application.command.UpdateLyricCommand;
 import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
 import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
-import com.easyapps.singerpro.domain.model.lyric.ISetListRepository;
+import com.easyapps.singerpro.domain.model.lyric.IPlaylistRepository;
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
 import com.easyapps.singerpro.query.model.lyric.ILyricFinder;
-import com.easyapps.singerpro.query.model.lyric.ISetListFinder;
+import com.easyapps.singerpro.query.model.lyric.IPlaylistFinder;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Application service that manages all calls for Lyric aggregate.
@@ -25,16 +27,17 @@ import java.util.List;
 
 public class LyricApplicationService {
 
-    private final ILyricRepository lyricRepository;
-    private final ISetListFinder playlistFinder;
-    private final ISetListRepository playlistRepository;
-    private final ILyricFinder lyricFinder;
-    private final IConfigurationRepository configurationRepository;
+    ILyricRepository lyricRepository;
+    IPlaylistFinder playlistFinder;
+    IPlaylistRepository playlistRepository;
+    ILyricFinder lyricFinder;
+    IConfigurationRepository configurationRepository;
 
+    @Inject
     public LyricApplicationService(ILyricRepository lyricRepository, ILyricFinder lyricFinder,
                                    IConfigurationRepository configurationRepository,
-                                   ISetListFinder playlistFinder,
-                                   ISetListRepository playlistRepository) {
+                                   IPlaylistFinder playlistFinder,
+                                   IPlaylistRepository playlistRepository) {
         this.lyricRepository = lyricRepository;
         this.lyricFinder = lyricFinder;
         this.configurationRepository = configurationRepository;

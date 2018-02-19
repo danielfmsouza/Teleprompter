@@ -10,8 +10,6 @@ import android.view.animation.AnimationSet;
 import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
 
-import com.easyapps.singerpro.presentation.helper.ActivityUtils;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -22,17 +20,17 @@ import java.io.IOException;
  * Animation that is pausable by touch on the screen, for example. Designed to work with animated
  * texts.
  */
-class PausablePrompterAnimation extends AnimationSet {
+public class PausablePrompterAnimation extends AnimationSet {
 
     private static final String ANIMATION_NAME_SET = "set";
     private static final String ANIMATION_NAME_TRANSLATE = "translate";
     private static String mFileName;
-    private static boolean mIsTestPlay;
 
     private long mElapsedAtPause = 0;
     private boolean isPaused = false;
 
-    private PausablePrompterAnimation(final Context context, AttributeSet attrs) {
+    private PausablePrompterAnimation(final Context context, AttributeSet attrs,
+                                      final OnFinishAnimationListener listener) {
         super(context, attrs);
 
         setAnimationListener(new AnimationListener() {
@@ -47,8 +45,7 @@ class PausablePrompterAnimation extends AnimationSet {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                ActivityUtils.backToPrompter(ActivityUtils.getActivity(context), mIsTestPlay,
-                        mFileName);
+                listener.onFinishAnimation(mFileName);
             }
         });
     }
@@ -80,22 +77,23 @@ class PausablePrompterAnimation extends AnimationSet {
         }
     }
 
-    private static Animation createAnimationFromXml(Context c, XmlPullParser parser, int toYDelta, int scrollSpeed)
+    private static Animation createAnimationFromXml(Context c, XmlPullParser parser, int toYDelta,
+                                                    int scrollSpeed, OnFinishAnimationListener listener)
             throws XmlPullParserException, IOException {
 
-        return createAnimationFromXml(c, parser, null, Xml.asAttributeSet(parser), toYDelta, scrollSpeed);
+        return createAnimationFromXml(c, parser, null, Xml.asAttributeSet(parser), toYDelta,
+                scrollSpeed, listener);
     }
 
     static Animation loadAnimation(Context context, int id, int toYDelta, int scrollSpeed,
-                                   boolean isTestPlay, String fileName)
+                                   String fileName, OnFinishAnimationListener listener)
             throws Resources.NotFoundException {
         mFileName = fileName;
-        mIsTestPlay = isTestPlay;
-        
+
         XmlResourceParser parser = null;
         try {
             parser = context.getResources().getAnimation(id);
-            return createAnimationFromXml(context, parser, toYDelta, scrollSpeed);
+            return createAnimationFromXml(context, parser, toYDelta, scrollSpeed, listener);
         } catch (XmlPullParserException | IOException ex) {
             Resources.NotFoundException rnf = new Resources.NotFoundException("Can't load animation resource ID #0x" +
                     Integer.toHexString(id));
@@ -108,7 +106,8 @@ class PausablePrompterAnimation extends AnimationSet {
 
     private static Animation createAnimationFromXml(Context c, XmlPullParser parser,
                                                     AnimationSet parent, AttributeSet attrs,
-                                                    int toYDelta, int scrollSpeed)
+                                                    int toYDelta, int scrollSpeed,
+                                                    OnFinishAnimationListener listener)
             throws XmlPullParserException, IOException {
 
         Animation anim = null;
@@ -128,9 +127,9 @@ class PausablePrompterAnimation extends AnimationSet {
 
             switch (name) {
                 case ANIMATION_NAME_SET:
-                    anim = new PausablePrompterAnimation(c, attrs);
+                    anim = new PausablePrompterAnimation(c, attrs, listener);
                     createAnimationFromXml(c, parser, (PausablePrompterAnimation) anim, attrs,
-                            toYDelta, scrollSpeed);
+                            toYDelta, scrollSpeed, listener);
                     break;
                 case ANIMATION_NAME_TRANSLATE:
                     anim = new TranslateAnimation(0, 0, 0, -toYDelta);
@@ -145,5 +144,9 @@ class PausablePrompterAnimation extends AnimationSet {
             }
         }
         return anim;
+    }
+
+    public interface OnFinishAnimationListener {
+        void onFinishAnimation(String lyricName);
     }
 }

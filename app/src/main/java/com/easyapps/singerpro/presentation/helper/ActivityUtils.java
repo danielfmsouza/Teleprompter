@@ -2,47 +2,31 @@ package com.easyapps.singerpro.presentation.helper;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.widget.Toast;
 
+import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.presentation.MainActivity;
-import com.easyapps.singerpro.presentation.MaintainLyricActivity;
-import com.easyapps.singerpro.presentation.PrompterActivity;
-import com.easyapps.singerpro.presentation.messages.Constants;
-import com.easyapps.teleprompter.R;
 
 /**
  * Created by daniel on 16/09/2016.
  * Helper that provides common methods to Activities.
  */
 public class ActivityUtils {
+    private static final String FILE_NAME = "fileName";
+    private static final String CALLER_ACTIVITY = "callerActivity";
 
     public static void setLyricFileNameParameter(String value, Intent intent) {
-        setParameter(value, intent, Constants.FILE_NAME_PARAM);
+        setParameter(value, intent, FILE_NAME);
     }
 
-    public static void setIsTestPlayParameter(boolean value, Intent intent) {
-        setParameter(value, intent, Constants.IS_TEST_PLAY);
-    }
-
-    private static void setHasFinishedAnimationParameter(boolean value, Intent intent) {
-        setParameter(value, intent, Constants.HAS_FINISHED_ANIMATION);
-    }
-
-    public static boolean hasFinishedAnimationParameter(Intent intent) {
-        return getBooleanParameter(intent, Constants.HAS_FINISHED_ANIMATION);
-    }
-
-    public static boolean isTestPlayParameter(Intent intent) {
-        return getBooleanParameter(intent, Constants.IS_TEST_PLAY);
-    }
-
-    public static String getFileNameParameter(Intent intent) {
-        return getStringParameter(intent, Constants.FILE_NAME_PARAM);
+    public static String getLyricFileNameParameter(Intent intent) {
+        return getStringParameter(intent, FILE_NAME);
     }
 
     public static void setCurrentPlaylistName(String playlistName, Context context) {
@@ -138,33 +122,10 @@ public class ActivityUtils {
         intent.putExtras(b);
     }
 
-    private static void setParameter(boolean value, Intent intent, String paramName) {
-        Bundle b = new Bundle();
-        b.putBoolean(paramName, value);
-        intent.putExtras(b);
-    }
-
     private static String getStringParameter(Intent intent, String paramName) {
         Bundle b = intent.getExtras();
         if (b != null)
             return b.getString(paramName);
-        return null;
-    }
-
-    private static boolean getBooleanParameter(Intent intent, String paramName) {
-        Bundle b = intent.getExtras();
-        if (b != null)
-            return b.getBoolean(paramName);
-        return false;
-    }
-
-    public static Activity getActivity(Context context) {
-        while (context instanceof ContextWrapper) {
-            if (context instanceof Activity) {
-                return (Activity) context;
-            }
-            context = ((ContextWrapper) context).getBaseContext();
-        }
         return null;
     }
 
@@ -174,19 +135,46 @@ public class ActivityUtils {
         currentActivity.finish();
     }
 
-    public static void backToMaintainLyric(Activity currentActivity, String lyricName) {
-        Intent i = new Intent(currentActivity, MaintainLyricActivity.class);
+    public static void startActivity(Activity currentActivity, String playlistName,
+                                     Class activityToStart){
+        Intent i = new Intent(currentActivity.getApplicationContext(), activityToStart);
+
+        String lyricName = ActivityUtils.getLyricFileNameParameter(currentActivity.getIntent());
+
         setLyricFileNameParameter(lyricName, i);
+        setCurrentPlaylistName(playlistName, currentActivity.getApplicationContext());
+        setParameter(currentActivity.getClass().getName(), i, CALLER_ACTIVITY);
+
         currentActivity.startActivity(i);
         currentActivity.finish();
     }
 
-    public static void backToPrompter(Activity currentActivity, boolean isTestPlay, String fileName) {
-        Intent i = new Intent(currentActivity, PrompterActivity.class);
-        setHasFinishedAnimationParameter(true, i);
-        setIsTestPlayParameter(isTestPlay, i);
-        setLyricFileNameParameter(fileName, i);
-        currentActivity.startActivity(i);
-        currentActivity.finish();
+    public static void backToCaller(Activity currentActivity, String lyricName) {
+        String caller = getStringParameter(currentActivity.getIntent(), CALLER_ACTIVITY);
+
+        if (caller == null || caller.isEmpty()) {
+            backToMain(currentActivity);
+        } else {
+            Class callerActivityClass = getCallerActivityClass(currentActivity, caller);
+            if (callerActivityClass == null) return;
+
+            Intent i = new Intent(currentActivity, callerActivityClass);
+            setLyricFileNameParameter(lyricName, i);
+
+            currentActivity.startActivity(i);
+            currentActivity.finish();
+        }
+    }
+
+    @Nullable
+    private static Class getCallerActivityClass(Activity currentActivity, String caller) {
+        Class callerActivityClass = null;
+        try {
+            callerActivityClass = Class.forName(caller);
+        } catch (ClassNotFoundException e) {
+            Toast.makeText(currentActivity.getApplicationContext(),
+                    R.string.internal_error, Toast.LENGTH_LONG).show();
+        }
+        return callerActivityClass;
     }
 }

@@ -9,14 +9,14 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.widget.Toast;
 
+import com.easyapps.singerpro.R;
+import com.easyapps.singerpro.infrastructure.communication.bluetooth.BluetoothScreenShareServer;
 import com.easyapps.singerpro.presentation.components.NumberPickerPreference;
 import com.easyapps.singerpro.presentation.helper.PresentationConstants;
-import com.easyapps.teleprompter.R;
-import com.easyapps.singerpro.infrastructure.communication.bluetooth.BluetoothScreenShareServer;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
-import static com.easyapps.teleprompter.R.xml.global_preferences;
+import static com.easyapps.singerpro.R.xml.global_preferences;
 
 /**
  * screen for global settings of the application
@@ -114,16 +114,15 @@ public class GlobalSettingsFragment extends PreferenceFragment {
         }
     }
 
-    public void verifyPlayNextActivated(){
+    public void verifyPlayNextActivated() {
         PreferenceScreen preferenceScreen = this.getPreferenceScreen();
         CheckBoxPreference cpbPlayNext = (CheckBoxPreference)
                 preferenceScreen.findPreference(
                         getResources().getString(R.string.pref_key_playNext));
 
-        if (cpbPlayNext.isChecked()){
+        if (cpbPlayNext.isChecked()) {
             activateTimeBeforeNextOption(preferenceScreen);
-        }
-        else{
+        } else {
             deactivateTimeBeforeNextOption(preferenceScreen);
         }
     }

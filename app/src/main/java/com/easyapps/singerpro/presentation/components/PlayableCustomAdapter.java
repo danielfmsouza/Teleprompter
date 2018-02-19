@@ -1,10 +1,11 @@
 package com.easyapps.singerpro.presentation.components;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -14,13 +15,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.easyapps.singerpro.R;
+import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;
+import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
 import com.easyapps.singerpro.presentation.PrompterActivity;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 import com.easyapps.singerpro.query.model.lyric.ConfigurationQueryModel;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModelComparator;
-import com.easyapps.teleprompter.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,13 +43,13 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     private Map<Integer, Holder> mHolders = new HashMap<>();
     private boolean mMultiSelectionEnabled = false;
     private Set<Integer> mSelection = new HashSet<>();
-    private String playListName;
+    private IQueueLyricRepository lyricQueue;
 
     public PlayableCustomAdapter(Context context, int resource, List<LyricQueryModel> lyrics,
-                                 String setListName, int textViewResourceId) {
+                                 int textViewResourceId,
+                                 IQueueLyricRepository lyricQueue) {
         super(context, resource, textViewResourceId, lyrics);
-        this.playListName = setListName;
-
+        this.lyricQueue = lyricQueue;
         sortItemsBySongNumber();
     }
 
@@ -182,14 +186,29 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     }
 
     private void startActivity(Class clazz, int position) {
-        Intent i = new Intent(getContext(), clazz);
+        String currentPlaylistName = ActivityUtils.getCurrentPlaylistName(getContext());
+        fillQueueToPlay(position, currentPlaylistName);
+        ActivityUtils.startActivity((Activity) getContext(), currentPlaylistName, clazz);
+    }
 
-        ActivityUtils.setIsTestPlayParameter(false, i);
-        ActivityUtils.setLyricFileNameParameter(getLyricName(position), i);
-        ActivityUtils.setCurrentPlaylistName(playListName, getContext());
-        getContext().startActivity(i);
+    private void fillQueueToPlay(int position, String currentPlaylistName) {
+        String lyricName = getLyricName(position);
+        SharedPreferences sharedPref =
+                PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean playNext = sharedPref.getBoolean(getContext().
+                getResources().getString(R.string.pref_key_playNext), false);
 
-        ((AppCompatActivity) getContext()).finish();
+        lyricQueue.clearPlaylistQueue();
+        if (playNext) {
+            try {
+                lyricQueue.queueLyricsForPlaying(lyricName, currentPlaylistName);
+            } catch (FileSystemException e) {
+                Toast.makeText(getContext(), R.string.file_not_found,
+                        Toast.LENGTH_LONG).show();
+            }
+        } else {
+            lyricQueue.queueLyricForPlaying(lyricName);
+        }
     }
 
     private String getConfigurationMessage(ConfigurationQueryModel config) {

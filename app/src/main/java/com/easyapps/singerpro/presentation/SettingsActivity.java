@@ -6,7 +6,9 @@ import android.os.Bundle;
 
 import com.easyapps.singerpro.presentation.fragments.TimerPreferenceFragment;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
-import com.easyapps.teleprompter.R;
+import com.easyapps.singerpro.R;
+
+import dagger.android.AndroidInjection;
 
 /**
  * Created by daniel on 08/09/2016.
@@ -17,9 +19,10 @@ public class SettingsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        mLyricName = ActivityUtils.getFileNameParameter(getIntent());
+        mLyricName = ActivityUtils.getLyricFileNameParameter(getIntent());
         if (mLyricName == null)
             throw new RuntimeException("File not found.");
 
@@ -36,7 +39,7 @@ public class SettingsActivity extends Activity {
         if (isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
             ActivityUtils.backToMain(this);
         } else {
-            ActivityUtils.backToMaintainLyric(this, mLyricName);
+            ActivityUtils.backToCaller(this, mLyricName);
         }
     }
 }

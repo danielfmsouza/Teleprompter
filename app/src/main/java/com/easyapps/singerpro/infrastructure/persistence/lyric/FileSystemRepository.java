@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 
-import com.easyapps.teleprompter.R;
+import com.easyapps.singerpro.R;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -7,8 +7,8 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 
-import com.easyapps.teleprompter.BuildConfig;
-import com.easyapps.teleprompter.R;
+import com.easyapps.singerpro.BuildConfig;
+import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.domain.model.lyric.Configuration;
 import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
 
@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 /**
  * Implementation of IConfigurationRepository specific for an Android Shared Preference.
@@ -46,6 +48,7 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
     private static final String FILE_NAME = "settings";
     private static final String FILE_EXTENSION = ".cfg";
 
+    @Inject
     public AndroidPreferenceConfigurationRepository(Context androidContext) {
         this.androidContext = androidContext;
         this.preferences = PreferenceManager.getDefaultSharedPreferences(androidContext);
@@ -164,7 +167,7 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
 
         for (Map.Entry<String, ?> config : ((Map<String, ?>) configs).entrySet()) {
             String value = config.getValue().toString();
-            if(value.matches("\\d+")) {
+            if (value.matches("\\d+")) {
                 int parsedInt = Integer.parseInt(value);
                 editor.putInt(config.getKey(), parsedInt);
             }

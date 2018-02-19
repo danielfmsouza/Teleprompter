@@ -11,18 +11,18 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.application.LyricApplicationService;
 import com.easyapps.singerpro.application.command.AddLyricCommand;
 import com.easyapps.singerpro.application.command.UpdateLyricCommand;
-import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
-import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidFileSystemLyricRepository;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.AndroidPreferenceConfigurationRepository;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
-import com.easyapps.teleprompter.R;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 
 /**
  * A simple {@link Fragment} subclass the holds the creation and edition of a Lyric
@@ -30,9 +30,11 @@ import java.util.ArrayList;
 public class MaintainLyricFragment extends Fragment {
     private Operation mOperation = Operation.NEW_LYRIC;
     private Lyric mLyric;
-    private LyricApplicationService mAppService;
     private OnSaveItemListener mListener;
     private boolean mIsTempFileUsed;
+
+    @Inject
+    LyricApplicationService mAppService;
 
     public MaintainLyricFragment() {
     }
@@ -40,12 +42,6 @@ public class MaintainLyricFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ILyricRepository mLyricRepository =
-                new AndroidFileSystemLyricRepository(getActivity());
-        IConfigurationRepository mConfigRepository =
-                new AndroidPreferenceConfigurationRepository(getActivity());
-        mAppService = new LyricApplicationService(mLyricRepository, null,
-                mConfigRepository, null, null);
     }
 
     @Override
@@ -78,7 +74,7 @@ public class MaintainLyricFragment extends Fragment {
                 if (mOperation == Operation.EDIT_LYRIC) {
                     String oldName = mLyric.getName();
                     if (mIsTempFileUsed) {
-                        oldName = ActivityUtils.getFileNameParameter(getActivity().getIntent());
+                        oldName = ActivityUtils.getLyricFileNameParameter(getActivity().getIntent());
                     }
                     UpdateLyricCommand cmd = new UpdateLyricCommand(fileName, getTextContent(),
                             songNumber, oldName);
@@ -135,7 +131,7 @@ public class MaintainLyricFragment extends Fragment {
     private void tryLoadLyric(EditText etLyricContent, EditText etLyricName, EditText etSongNumber) {
         mLyric = tryLoadLyricFromTempFile();
         if (mLyric == null) {
-            String lyricName = ActivityUtils.getFileNameParameter(getActivity().getIntent());
+            String lyricName = ActivityUtils.getLyricFileNameParameter(getActivity().getIntent());
             mLyric = tryLoadLyricToUpdate(lyricName);
         }
         setTextFields(mLyric, etLyricContent, etLyricName, etSongNumber);
@@ -183,6 +179,7 @@ public class MaintainLyricFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        AndroidInjection.inject(this);
         super.onAttach(context);
         attachListener(context);
     }
@@ -245,6 +242,7 @@ public class MaintainLyricFragment extends Fragment {
      */
     @Override
     public void onAttach(Activity activity) {
+        AndroidInjection.inject(this);
         super.onAttach(activity);
         attachListener(activity);
     }

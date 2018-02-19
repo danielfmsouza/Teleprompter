@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.NumberPicker;
 
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
-import com.easyapps.teleprompter.R;
+import com.easyapps.singerpro.R;
 
 /**
  * A {@link android.preference.Preference} that displays a number picker as a dialog.
@@ -55,7 +55,7 @@ public class NumberPickerPreference extends DialogPreference {
         a.recycle();
 
         Activity parent = ((Activity)context);
-        String fileName = ActivityUtils.getFileNameParameter(parent.getIntent());
+        String fileName = ActivityUtils.getLyricFileNameParameter(parent.getIntent());
         setKey(getKey() + (fileName == null ? "" : fileName));
     }
 

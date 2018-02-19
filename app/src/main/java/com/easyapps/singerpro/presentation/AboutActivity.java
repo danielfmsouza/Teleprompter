@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.text.util.Linkify;
 import android.widget.TextView;
 
-import com.easyapps.teleprompter.R;
+import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
 public class AboutActivity extends AppCompatActivity {

@@ -2,7 +2,7 @@ package com.easyapps.singerpro.presentation.helper;
 
 /**
  * Created by daniel on 08/07/2017.
- * All constants shrared by the classes of presentation layer.
+ * All constants shared by the classes of presentation layer.
  */
 
 public class PresentationConstants {

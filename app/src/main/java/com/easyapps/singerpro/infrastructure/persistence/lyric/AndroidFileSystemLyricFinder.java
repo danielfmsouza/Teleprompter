@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.easyapps.singerpro.domain.model.lyric.Configuration;
 import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
 import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
-import com.easyapps.singerpro.domain.model.lyric.ISetListRepository;
+import com.easyapps.singerpro.domain.model.lyric.IPlaylistRepository;
 import com.easyapps.singerpro.query.model.lyric.ConfigurationQueryModel;
 import com.easyapps.singerpro.query.model.lyric.ILyricFinder;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;
@@ -17,6 +17,8 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Android File System implementation for ILyricFinder.
@@ -29,16 +31,15 @@ public class AndroidFileSystemLyricFinder implements ILyricFinder {
 
     private final Context androidApplicationContext;
     private final IConfigurationRepository configurationRepository;
-    private final ISetListRepository setListRepository;
+    private final IPlaylistRepository playlistRepository;
 
-    public AndroidFileSystemLyricFinder(Context androidApplicationContext) {
+    @Inject
+    public AndroidFileSystemLyricFinder(Context androidApplicationContext,
+                                        IConfigurationRepository configurationRepository,
+                                        IPlaylistRepository playlistRepository) {
         this.androidApplicationContext = androidApplicationContext;
-
-        // TODO Do not instantiate it here. Use IoC and pass it as a parameter (improve testability).
-        this.configurationRepository =
-                new AndroidPreferenceConfigurationRepository(androidApplicationContext);
-        this.setListRepository =
-                new AndroidFileSystemSetListRepository(androidApplicationContext);
+        this.configurationRepository = configurationRepository;
+        this.playlistRepository = playlistRepository;
     }
 
     @Override
@@ -73,7 +74,7 @@ public class AndroidFileSystemLyricFinder implements ILyricFinder {
 
     @Override
     public List<LyricQueryModel> getFromSetList(String setListName) throws FileSystemException {
-        final List<String> lyrics = setListRepository.load(setListName);
+        final List<String> lyrics = playlistRepository.load(setListName);
 
         File[] files = androidApplicationContext.getFilesDir().listFiles(new FilenameFilter() {
             @Override
@@ -90,20 +91,27 @@ public class AndroidFileSystemLyricFinder implements ILyricFinder {
     }
 
     @Override
-    public String getNextLyricNameFromSetList(String setListName, String currentLyricName) throws FileSystemException {
+    public List<String> getAllLyricNamesFromPlaylist(String playlistName, String currentLyricName) throws FileSystemException {
         List<LyricQueryModel> allLyricsFromSetList;
-        if (setListName == null || setListName.isEmpty()) {
+        if (playlistName == null || playlistName.isEmpty()) {
             allLyricsFromSetList = getAll();
         } else {
-            allLyricsFromSetList = getFromSetList(setListName);
+            allLyricsFromSetList = getFromSetList(playlistName);
         }
 
         Collections.sort(allLyricsFromSetList, new LyricQueryModelComparator());
 
         int currentIndex = allLyricsFromSetList.indexOf(new LyricQueryModel(currentLyricName, null));
-        if (currentIndex != -1 && currentIndex != allLyricsFromSetList.size() - 1)
-            return allLyricsFromSetList.get(currentIndex + 1).getName();
+        if (currentIndex > -1) {
+            List<LyricQueryModel> subList =
+                    allLyricsFromSetList.subList(currentIndex, allLyricsFromSetList.size());
 
+            List<String> lyricNames = new ArrayList<>();
+            for (LyricQueryModel lyric : subList) {
+                lyricNames.add(lyric.getName());
+            }
+            return lyricNames;
+        }
         return null;
     }
 

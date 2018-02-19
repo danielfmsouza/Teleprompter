@@ -6,10 +6,6 @@ package com.easyapps.singerpro.infrastructure.persistence.lyric;
  */
 
 public class FileSystemException extends Exception {
-    FileSystemException(Exception cause){
-        super(cause);
-    }
-
     FileSystemException(String message){
         super(message);
     }

@@ -9,9 +9,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
+import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.presentation.components.NumberPickerPreference;
-import com.easyapps.teleprompter.R;
-import com.easyapps.singerpro.presentation.messages.Constants;
 
 /**
  * Created by daniel on 20/09/2016.
@@ -20,14 +19,14 @@ import com.easyapps.singerpro.presentation.messages.Constants;
  */
 public class TimerPreferenceFragment extends PreferenceFragment {
 
+    private static final String LYRIC_NAME = "LYRIC_NAME";
     private Context mContext;
 
-    public static TimerPreferenceFragment newInstance(String fileName) {
-
+    public static TimerPreferenceFragment newInstance(String lyricName) {
         TimerPreferenceFragment fragment = new TimerPreferenceFragment();
 
         Bundle b = new Bundle();
-        b.putString(Constants.FILE_NAME_PARAM, fileName);
+        b.putString(LYRIC_NAME, lyricName);
         fragment.setArguments(b);
 
         return fragment;
@@ -51,7 +50,7 @@ public class TimerPreferenceFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
 
         Bundle b = getArguments();
-        String fileName = b.getString(Constants.FILE_NAME_PARAM);
+        String fileName = b.getString(LYRIC_NAME);
 
         // load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
