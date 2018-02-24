@@ -1,4 +1,4 @@
-package com.easyapps.singerpro.presentation.components;
+package com.easyapps.singerpro.presentation.component;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
-import com.easyapps.singerpro.presentation.PrompterActivity;
+import com.easyapps.singerpro.presentation.activity.PrompterActivity;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 import com.easyapps.singerpro.query.model.lyric.ConfigurationQueryModel;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;

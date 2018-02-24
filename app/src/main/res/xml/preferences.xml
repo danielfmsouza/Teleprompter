@@ -1,6 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:preference="http://schemas.android.com/apk/res-auto">
-    <com.easyapps.singerpro.presentation.components.NumberPickerPreference
+    <com.easyapps.singerpro.presentation.component.NumberPickerPreference
         android:key="@string/pref_key_scrollSpeed"
         android:title="@string/pref_title_scrollSpeed"
         android:summary="@string/pref_summary_scrollSpeed"
@@ -9,7 +9,7 @@
         preference:minValue="@integer/number_min_value_scroll_speed"
         preference:wrapSelectorWheel="false"/>
 
-    <com.easyapps.singerpro.presentation.components.NumberPickerPreference
+    <com.easyapps.singerpro.presentation.component.NumberPickerPreference
         android:key="@string/pref_key_textSize"
         android:title="@string/pref_title_textSize"
         android:summary="@string/pref_summary_textSize"
@@ -18,7 +18,7 @@
         preference:minValue="@integer/number_min_value_text_size"
         preference:wrapSelectorWheel="false"/>
 
-    <com.easyapps.singerpro.presentation.components.TimersCountPickerPreference
+    <com.easyapps.singerpro.presentation.component.TimersCountPickerPreference
         android:key="@string/pref_key_totalTimers"
         android:title="@string/pref_title_totalTimers"
         android:summary="@string/pref_summary_totalTimers"

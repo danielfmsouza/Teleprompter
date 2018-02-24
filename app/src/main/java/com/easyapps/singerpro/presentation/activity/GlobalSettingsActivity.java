@@ -1,10 +1,10 @@
-package com.easyapps.singerpro.presentation;
+package com.easyapps.singerpro.presentation.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.easyapps.singerpro.presentation.fragments.GlobalSettingsFragment;
+import com.easyapps.singerpro.presentation.fragment.GlobalSettingsFragment;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
 /**

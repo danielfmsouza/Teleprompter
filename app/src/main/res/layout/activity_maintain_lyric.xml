@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/maintain_lyric_frag"
-        class="com.easyapps.singerpro.presentation.fragments.MaintainLyricFragment"
+        class="com.easyapps.singerpro.presentation.fragment.MaintainLyricFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

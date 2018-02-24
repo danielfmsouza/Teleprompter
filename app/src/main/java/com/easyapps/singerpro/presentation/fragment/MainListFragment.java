@@ -1,4 +1,4 @@
-package com.easyapps.singerpro.presentation.fragments;
+package com.easyapps.singerpro.presentation.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -26,7 +26,7 @@ import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.application.LyricApplicationService;
 import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
-import com.easyapps.singerpro.presentation.components.PlayableCustomAdapter;
+import com.easyapps.singerpro.presentation.component.PlayableCustomAdapter;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;
 

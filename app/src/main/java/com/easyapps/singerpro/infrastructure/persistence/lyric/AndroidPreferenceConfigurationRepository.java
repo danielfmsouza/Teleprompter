@@ -28,7 +28,6 @@ import javax.inject.Inject;
 
 public class AndroidPreferenceConfigurationRepository extends FileSystemRepository implements IConfigurationRepository {
 
-    private final Context androidContext;
     private final SharedPreferences preferences;
 
     private final String scrollSpeedPrefKey;
@@ -50,7 +49,7 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
 
     @Inject
     public AndroidPreferenceConfigurationRepository(Context androidContext) {
-        this.androidContext = androidContext;
+        super(androidContext);
         this.preferences = PreferenceManager.getDefaultSharedPreferences(androidContext);
 
         scrollSpeedPrefKey = getResourcesString(R.string.pref_key_scrollSpeed);
@@ -109,14 +108,14 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
         String fileName = FILE_NAME + FILE_EXTENSION;
 
         try {
-            FileOutputStream file = androidContext.openFileOutput(
+            FileOutputStream file = getContext().openFileOutput(
                     fileName, Context.MODE_PRIVATE);
             outputWriter = new ObjectOutputStream(file);
             outputWriter.writeObject(preferences.getAll());
 
-            return FileProvider.getUriForFile(androidContext,
+            return FileProvider.getUriForFile(getContext(),
                     BuildConfig.APPLICATION_ID + ".provider",
-                    new File(androidContext.getFilesDir(), fileName));
+                    new File(getContext().getFilesDir(), fileName));
 
         } catch (Exception e) {
             return null;
@@ -141,7 +140,7 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
         Map configs;
         ObjectInputStream ois = null;
         try {
-            ois = new ObjectInputStream(androidContext.getContentResolver().openInputStream(configFileUri));
+            ois = new ObjectInputStream(getContext().getContentResolver().openInputStream(configFileUri));
             Object object = ois.readObject();
 
             if (object instanceof Map) {
@@ -149,8 +148,8 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
                 addConfigurationsFromMap(configs);
             }
         } catch (Exception ioe) {
-            throwNewFileSystemException(FILE_NAME, R.string.input_output_file_error,
-                    androidContext);
+            AndroidFileSystemHelper.throwNewFileSystemException(FILE_NAME,
+                    R.string.input_output_file_error, getContext());
         } finally {
             if (ois != null) {
                 try {
@@ -218,10 +217,10 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
 
     @NonNull
     private String getResourcesString(int resource) {
-        return androidContext.getResources().getString(resource);
+        return getContext().getResources().getString(resource);
     }
 
     private int getResourcesInt(int resource) {
-        return androidContext.getResources().getInteger(resource);
+        return getContext().getResources().getInteger(resource);
     }
 }

@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- "Fragment A" -->
-    <fragment class="com.easyapps.singerpro.presentation.fragments.MainListFragment"
+    <fragment class="com.easyapps.singerpro.presentation.fragment.MainListFragment"
         android:id="@+id/list_frag"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:id="@+id/test"
-    tools:context="com.easyapps.singerpro.presentation.PrompterActivity">
+    tools:context="com.easyapps.singerpro.presentation.activity.PrompterActivity">
 
     <ScrollView
         android:id="@+id/svText"
@@ -17,7 +17,7 @@
         android:isScrollContainer="true"
         android:overScrollMode="always">
 
-        <com.easyapps.singerpro.presentation.components.PrompterView
+        <com.easyapps.singerpro.presentation.component.PrompterView
             android:id="@+id/fullscreen_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package com.easyapps.singerpro.presentation.fragments;
+package com.easyapps.singerpro.presentation.fragment;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.infrastructure.communication.bluetooth.BluetoothScreenShareServer;
-import com.easyapps.singerpro.presentation.components.NumberPickerPreference;
+import com.easyapps.singerpro.presentation.component.NumberPickerPreference;
 import com.easyapps.singerpro.presentation.helper.PresentationConstants;
 
 import static android.app.Activity.RESULT_CANCELED;

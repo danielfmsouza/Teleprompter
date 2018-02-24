@@ -3,12 +3,12 @@ package com.easyapps.singerpro.ioc;
 import android.app.Activity;
 import android.app.Fragment;
 
-import com.easyapps.singerpro.presentation.MainActivity;
-import com.easyapps.singerpro.presentation.MaintainLyricActivity;
-import com.easyapps.singerpro.presentation.PrompterActivity;
-import com.easyapps.singerpro.presentation.SettingsActivity;
-import com.easyapps.singerpro.presentation.fragments.MainListFragment;
-import com.easyapps.singerpro.presentation.fragments.MaintainLyricFragment;
+import com.easyapps.singerpro.presentation.activity.MainActivity;
+import com.easyapps.singerpro.presentation.activity.MaintainLyricActivity;
+import com.easyapps.singerpro.presentation.activity.PrompterActivity;
+import com.easyapps.singerpro.presentation.activity.SettingsActivity;
+import com.easyapps.singerpro.presentation.fragment.MainListFragment;
+import com.easyapps.singerpro.presentation.fragment.MaintainLyricFragment;
 
 import dagger.Binds;
 import dagger.Module;

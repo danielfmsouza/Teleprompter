@@ -2,9 +2,7 @@ package com.easyapps.singerpro.infrastructure.persistence.lyric;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.v4.content.FileProvider;
 
-import com.easyapps.singerpro.BuildConfig;
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
 import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
@@ -25,39 +23,41 @@ public class AndroidFileSystemLyricRepository extends FileSystemRepository imple
 
     private static final String FILE_EXTENSION = ".mt";
     private IConfigurationRepository configurationRepository;
-    private Context androidContext;
 
     @Inject
     public AndroidFileSystemLyricRepository(Context context,
                                             IConfigurationRepository configurationRepository) {
-        this.androidContext = context;
+        super(context);
         this.configurationRepository = configurationRepository;
     }
 
     @Override
     public void add(Lyric lyric) throws FileSystemException {
-        saveFile(lyric.getName(), FILE_EXTENSION, lyric.getContent(), androidContext);
+        saveFile(lyric.getName(), FILE_EXTENSION, lyric.getContent(), getContext());
     }
 
     @Override
     public void update(Lyric lyric, String oldName) throws FileSystemException {
-        File dir = androidContext.getFilesDir();
+        File dir = getContext().getFilesDir();
         File oldFile = new File(dir, oldName + FILE_EXTENSION);
         File newFile = new File(dir, lyric.getName() + FILE_EXTENSION);
 
         if (oldName.equals(lyric.getName())) {
-            saveFile(lyric.getName(), FILE_EXTENSION, lyric.getContent(), androidContext);
+            saveFile(lyric.getName(), FILE_EXTENSION, lyric.getContent(), getContext());
         } else if (fileExists(dir, new LyricFileNameFilter(lyric.getName()))) {
-            throwNewFileSystemException(lyric.getName(), R.string.file_exists_error, androidContext);
+            AndroidFileSystemHelper.throwNewFileSystemException(lyric.getName(),
+                    R.string.file_exists_error, getContext());
         } else if (oldFile.exists()) {
             if (!oldFile.renameTo(newFile)) {
-                throwNewFileSystemException(oldName, R.string.file_rename_error, androidContext);
+                AndroidFileSystemHelper.throwNewFileSystemException(oldName,
+                        R.string.file_rename_error, getContext());
             } else {
-                saveFile(lyric.getName(), FILE_EXTENSION, lyric.getContent(), androidContext);
+                saveFile(lyric.getName(), FILE_EXTENSION, lyric.getContent(), getContext());
                 configurationRepository.updateId(oldName, lyric.getName());
             }
         } else {
-            throwNewFileSystemException(oldName, R.string.file_not_found, androidContext);
+            AndroidFileSystemHelper.throwNewFileSystemException(oldName,
+                    R.string.file_not_found, getContext());
         }
     }
 
@@ -66,8 +66,9 @@ public class AndroidFileSystemLyricRepository extends FileSystemRepository imple
         for (String id : ids) {
             File fileToDelete = getFileByName(id);
             if (!fileToDelete.delete()) {
-                throwNewFileSystemException(id, R.string.delete_file_error,
-                        androidContext);
+                AndroidFileSystemHelper.throwNewFileSystemException(id,
+                        R.string.delete_file_error,
+                        getContext());
             }
         }
     }
@@ -88,56 +89,38 @@ public class AndroidFileSystemLyricRepository extends FileSystemRepository imple
 
     @Override
     public Uri[] exportAllLyrics() {
-        File[] filesFiltered = androidContext.getFilesDir().
-                listFiles(new FilenameFilter() {
-                              public boolean accept(File dir, String name) {
-                                  return name.toLowerCase().endsWith(FILE_EXTENSION);
-                              }
-                          }
-                );
-
-        if (filesFiltered != null && filesFiltered.length > 0) {
-            Uri[] uris = new Uri[filesFiltered.length];
-
-            for (int i = 0; i < filesFiltered.length; i++) {
-
-                uris[i] = FileProvider.getUriForFile(androidContext,
-                        BuildConfig.APPLICATION_ID + ".provider", filesFiltered[i]);
-            }
-            return uris;
-        }
-        return null;
+        return getAllUris(FILE_EXTENSION);
     }
 
     private File getFileByName(final String name) throws FileNotFoundException {
-        File workDirectory = androidContext.getFilesDir();
+        File workDirectory = getContext().getFilesDir();
         File[] files = workDirectory.listFiles(new LyricFileNameFilter(name));
         if (files != null && files.length > 0) {
             return files[0];
         }
 
-        throwNewFileNotFoundException(name, androidContext);
+        AndroidFileSystemHelper.throwNewFileNotFoundException(name, getContext());
         return new File(name);
     }
 
     private String getFileContent(String fileName) throws FileSystemException, FileNotFoundException {
-        File[] filesFiltered = androidContext.getFilesDir().
+        File[] filesFiltered = getContext().getFilesDir().
                 listFiles(new LyricFileNameFilter(fileName));
 
         if (filesFiltered != null && filesFiltered.length > 0) {
-            return readFile(filesFiltered[0], androidContext);
+            return readFile(filesFiltered[0], getContext());
         }
-        throwNewFileNotFoundException(fileName, androidContext);
+        AndroidFileSystemHelper.throwNewFileNotFoundException(fileName, getContext());
 
         return null;
     }
 
     private String[] getFirstMatchFileContent(String fileName) throws FileSystemException {
-        File[] filesFiltered = androidContext.getFilesDir().
+        File[] filesFiltered = getContext().getFilesDir().
                 listFiles(new LyricPartialFileNameFilter(fileName));
 
         if (filesFiltered != null && filesFiltered.length > 0) {
-            String content = readFile(filesFiltered[0], androidContext);
+            String content = readFile(filesFiltered[0], getContext());
             String name = filesFiltered[0].getName().replace(FILE_EXTENSION, "");
             return new String[]{name, content};
         }

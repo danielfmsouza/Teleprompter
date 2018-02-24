@@ -1,23 +1,23 @@
 package com.easyapps.singerpro.infrastructure.persistence.lyric;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
-import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 
+import com.easyapps.singerpro.BuildConfig;
 import com.easyapps.singerpro.R;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
-import java.util.Scanner;
+
+import javax.inject.Inject;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -27,54 +27,15 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class FileSystemRepository {
+    private Context context;
 
-    public static String getFileName(Uri uri, Context context) {
-        String result = null;
-        if (uri.getScheme().equals("content")) {
-            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                }
-            } finally {
-                if (cursor != null)
-                    cursor.close();
-            }
-        }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
-            }
-        }
-        return result;
+    @Inject
+    public FileSystemRepository(Context context) {
+        this.context = context;
     }
 
     @NonNull
-    public static String readFile(Uri uri, Context context, String fileName)
-            throws FileSystemException {
-        InputStream is = null;
-        String result = "";
-        try {
-            is = context.getContentResolver().openInputStream(uri);
-            Scanner s = new Scanner(is).useDelimiter("\\A");
-            result = s.hasNext() ? s.next() : "";
-        } catch (Exception e) {
-            throwNewFileSystemException(fileName, R.string.input_output_file_error, context);
-        } finally {
-            try {
-                if (is != null)
-                    is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return result;
-    }
-
-    @NonNull
-    static String readFile(File f, Context context) throws FileSystemException {
+    String readFile(File f, Context context) throws FileSystemException {
         StringBuilder text = new StringBuilder();
         String line;
         BufferedReader br = null;
@@ -86,7 +47,8 @@ public class FileSystemRepository {
                 text.append('\n');
             }
         } catch (Exception e) {
-            throwNewFileSystemException(f.getName(), R.string.input_output_file_error, context);
+            AndroidFileSystemHelper.throwNewFileSystemException(f.getName(),
+                    R.string.input_output_file_error, context);
         } finally {
             try {
                 if (br != null)
@@ -99,12 +61,32 @@ public class FileSystemRepository {
         return text.toString();
     }
 
-    static boolean fileExists(File dir, FilenameFilter filter) {
+    public Object deserializeFromFile(Uri configFileUri) throws FileSystemException {
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(getContext().getContentResolver().openInputStream(configFileUri));
+            return ois.readObject();
+        } catch (Exception ioe) {
+            AndroidFileSystemHelper.throwNewFileSystemException(configFileUri.getLastPathSegment(),
+                    R.string.input_output_file_error, getContext());
+        } finally {
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    boolean fileExists(File dir, FilenameFilter filter) {
         File[] filesFiltered = dir.listFiles(filter);
         return filesFiltered != null && filesFiltered.length > 0;
     }
 
-    static void saveFile(String fileName, String extension, String content, Context context)
+    void saveFile(String fileName, String extension, String content, Context context)
             throws FileSystemException {
         OutputStreamWriter outputWriter = null;
         try {
@@ -113,7 +95,7 @@ public class FileSystemRepository {
             outputWriter.write(content);
 
         } catch (Exception e) {
-            throwNewFileSystemException(fileName, R.string.file_saving_error, context);
+            AndroidFileSystemHelper.throwNewFileSystemException(fileName, R.string.file_saving_error, context);
         } finally {
             if (outputWriter != null) {
                 try {
@@ -125,15 +107,28 @@ public class FileSystemRepository {
         }
     }
 
-    static void throwNewFileSystemException(String fileName, int resource, Context context)
-            throws FileSystemException {
-        String message = context.getResources().getString(resource, fileName);
-        throw new FileSystemException(message);
+    Uri[] getAllUris(final String fileExtension) {
+        File[] filesFiltered = context.getFilesDir().
+                listFiles(new FilenameFilter() {
+                              public boolean accept(File dir, String name) {
+                                  return name.toLowerCase().endsWith(fileExtension);
+                              }
+                          }
+                );
+        if (filesFiltered != null && filesFiltered.length > 0) {
+            Uri[] uris = new Uri[filesFiltered.length];
+
+            for (int i = 0; i < filesFiltered.length; i++) {
+
+                uris[i] = FileProvider.getUriForFile(context,
+                        BuildConfig.APPLICATION_ID + ".provider", filesFiltered[i]);
+            }
+            return uris;
+        }
+        return null;
     }
 
-    static void throwNewFileNotFoundException(String name, Context context)
-            throws FileNotFoundException {
-        String message = context.getResources().getString(R.string.file_not_found, name);
-        throw new FileNotFoundException(message);
+    public Context getContext() {
+        return context;
     }
 }

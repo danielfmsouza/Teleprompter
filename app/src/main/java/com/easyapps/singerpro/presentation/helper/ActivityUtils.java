@@ -11,7 +11,7 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.easyapps.singerpro.R;
-import com.easyapps.singerpro.presentation.MainActivity;
+import com.easyapps.singerpro.presentation.activity.MainActivity;
 
 /**
  * Created by daniel on 16/09/2016.

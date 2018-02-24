@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.easyapps.singerpro.presentation.MainActivity">
+    tools:context="com.easyapps.singerpro.presentation.activity.MainActivity">
     <item
         android:icon="@drawable/ic_settings"
         android:id="@+id/menu_lyric_settings_main"

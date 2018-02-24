@@ -1,10 +1,10 @@
-package com.easyapps.singerpro.presentation;
+package com.easyapps.singerpro.presentation.activity;
 
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
-import com.easyapps.singerpro.presentation.fragments.TimerPreferenceFragment;
+import com.easyapps.singerpro.presentation.fragment.TimerPreferenceFragment;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 import com.easyapps.singerpro.R;
 

@@ -1,6 +1,6 @@
 package com.easyapps.singerpro.ioc;
 
-import com.easyapps.singerpro.presentation.fragments.MainListFragment;
+import com.easyapps.singerpro.presentation.fragment.MainListFragment;
 
 import dagger.Subcomponent;
 import dagger.android.AndroidInjector;

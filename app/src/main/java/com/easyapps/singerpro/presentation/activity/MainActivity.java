@@ -1,4 +1,4 @@
-package com.easyapps.singerpro.presentation;
+package com.easyapps.singerpro.presentation.activity;
 
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
@@ -21,12 +21,10 @@ import android.widget.Toast;
 
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.application.LyricApplicationService;
-import com.easyapps.singerpro.application.command.AddLyricCommand;
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemRepository;
-import com.easyapps.singerpro.presentation.fragments.MainListFragment;
-import com.easyapps.singerpro.presentation.fragments.MaintainLyricFragment;
+import com.easyapps.singerpro.presentation.fragment.MainListFragment;
+import com.easyapps.singerpro.presentation.fragment.MaintainLyricFragment;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
 import java.io.FileNotFoundException;
@@ -142,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void startExport(MenuItem item) {
-        ArrayList allUris = mAppService.exportAllLyrics();
+        ArrayList allUris = mAppService.exportAll();
 
         if (allUris != null && !allUris.isEmpty()) {
 
@@ -196,15 +194,7 @@ public class MainActivity extends AppCompatActivity implements
                     if (data != null) {
                         importFiles(data);
                     } else {
-                        Uri uri = intent.getData();
-                        String fileName = FileSystemRepository.getFileName(uri, this);
-
-                        if (uri != null) {
-                            if (mAppService.isConfigFile(fileName))
-                                importConfigurationFile(uri);
-                            else
-                                importLyricFile(1, uri, fileName);
-                        }
+                        importFile(intent);
                     }
                     showAllLyrics(null);
                 }
@@ -212,44 +202,18 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void importFiles(ClipData data) {
-        Uri configFileUri = null;
-
-        for (int i = 0; i < data.getItemCount(); i++) {
-            ClipData.Item item = data.getItemAt(i);
-
-            if (item != null) {
-                String fileName = FileSystemRepository.getFileName(item.getUri(), this);
-
-                if (mAppService.isConfigFile(fileName))
-                    configFileUri = item.getUri();
-                else
-                    importLyricFile(i, item.getUri(), fileName);
-            }
-        }
-        importConfigurationFile(configFileUri);
-    }
-
-    private void importConfigurationFile(Uri configFileUri) {
-        if (configFileUri != null) {
-            try {
-                mAppService.importAllConfigurationsFromFileUri(configFileUri);
-            } catch (FileSystemException e) {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    private void importLyricFile(int i, Uri uri, String fileName) {
+    private void importFile(Intent intent) {
+        Uri uri = intent.getData();
         try {
-            String content = FileSystemRepository.readFile(uri, this, fileName);
+            mAppService.importFile(uri, this);
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
 
-            if (fileName != null) {
-                String shortFileName = fileName.substring(0, fileName.indexOf("."));
-                AddLyricCommand cmd = new AddLyricCommand(shortFileName, content, String.valueOf(i));
-                mAppService.addLyric(cmd);
-            }
-
+    private void importFiles(ClipData data) {
+        try {
+            mAppService.importAll(data, this);
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }

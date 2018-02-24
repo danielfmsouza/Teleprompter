@@ -1,6 +1,6 @@
 package com.easyapps.singerpro.ioc;
 
-import com.easyapps.singerpro.presentation.PrompterActivity;
+import com.easyapps.singerpro.presentation.activity.PrompterActivity;
 
 import dagger.Subcomponent;
 import dagger.android.AndroidInjector;

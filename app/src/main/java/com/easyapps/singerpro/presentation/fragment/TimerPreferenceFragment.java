@@ -1,4 +1,4 @@
-package com.easyapps.singerpro.presentation.fragments;
+package com.easyapps.singerpro.presentation.fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
 import com.easyapps.singerpro.R;
-import com.easyapps.singerpro.presentation.components.NumberPickerPreference;
+import com.easyapps.singerpro.presentation.component.NumberPickerPreference;
 
 /**
  * Created by daniel on 20/09/2016.

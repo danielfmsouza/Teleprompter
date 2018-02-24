@@ -1,5 +1,7 @@
 package com.easyapps.singerpro.domain.model.lyric;
 
+import android.net.Uri;
+
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
 
 import java.io.FileNotFoundException;
@@ -18,4 +20,7 @@ public interface IPlaylistRepository {
     void remove(String playlistName) throws FileSystemException, FileNotFoundException;
     List<String> load(String playlistName)throws FileSystemException;
     void updatePlaylistName(String oldPlaylistName, String newPlaylistName) throws FileSystemException, FileNotFoundException;
+    Uri[] exportAllPlaylists();
+    void importPlaylistFile(Uri uri, String playlistName) throws FileSystemException;
+    String getPlaylistExtension();
 }

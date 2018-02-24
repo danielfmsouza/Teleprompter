@@ -12,6 +12,7 @@
     <string name="file_rename_error">Could not rename the file %1$2s.</string>
     <string name="file_name_required">Song name is required</string>
     <string name="song_number_required">Song number is required</string>
+    <string name="lyric_content_required">Lyric content is required</string>
     <string name="set_list_name_required">Please provide a name for the set list</string>
     <string name="delete_files_question">Delete all selected files?</string>
     <string name="remove_from_playlist_question">Remove all selected lyrics from playlist?</string>

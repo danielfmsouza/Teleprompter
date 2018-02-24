@@ -1,4 +1,4 @@
-package com.easyapps.singerpro.presentation;
+package com.easyapps.singerpro.presentation.activity;
 
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -12,7 +12,7 @@ import android.view.MenuItem;
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
-import com.easyapps.singerpro.presentation.fragments.MaintainLyricFragment;
+import com.easyapps.singerpro.presentation.fragment.MaintainLyricFragment;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
 import javax.inject.Inject;

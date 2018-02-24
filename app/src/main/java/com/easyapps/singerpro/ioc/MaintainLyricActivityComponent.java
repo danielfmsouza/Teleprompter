@@ -1,6 +1,6 @@
 package com.easyapps.singerpro.ioc;
 
-import com.easyapps.singerpro.presentation.MaintainLyricActivity;
+import com.easyapps.singerpro.presentation.activity.MaintainLyricActivity;
 
 import dagger.Subcomponent;
 import dagger.android.AndroidInjector;

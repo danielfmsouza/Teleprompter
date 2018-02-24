@@ -1,10 +1,11 @@
 package com.easyapps.singerpro.infrastructure.persistence.lyric;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.easyapps.singerpro.domain.model.lyric.IPlaylistRepository;
 import com.easyapps.singerpro.R;
+import com.easyapps.singerpro.domain.model.lyric.IPlaylistRepository;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,11 +30,10 @@ import javax.inject.Inject;
 public class AndroidFileSystemPlaylistRepository extends FileSystemRepository implements IPlaylistRepository {
 
     private static final String FILE_EXTENSION = ".sl";
-    private final Context androidContext;
 
     @Inject
-    public AndroidFileSystemPlaylistRepository(Context androidContext) {
-        this.androidContext = androidContext;
+    public AndroidFileSystemPlaylistRepository(Context context) {
+        super(context);
     }
 
     @Override
@@ -42,15 +42,17 @@ public class AndroidFileSystemPlaylistRepository extends FileSystemRepository im
         String fileName = name + FILE_EXTENSION;
 
         try {
-            FileOutputStream file = androidContext.openFileOutput(
+            FileOutputStream file = getContext().openFileOutput(
                     fileName, Context.MODE_PRIVATE);
             outputWriter = new ObjectOutputStream(file);
             outputWriter.writeObject(lyricsNames);
 
         } catch (FileNotFoundException e) {
-            throwNewFileSystemException(fileName, R.string.file_not_found, androidContext);
+            AndroidFileSystemHelper.throwNewFileSystemException(fileName,
+                    R.string.file_not_found, getContext());
         } catch (IOException e) {
-            throwNewFileSystemException(fileName, R.string.file_saving_error, androidContext);
+            AndroidFileSystemHelper.throwNewFileSystemException(fileName,
+                    R.string.file_saving_error, getContext());
         } finally {
             if (outputWriter != null) {
                 try {
@@ -83,7 +85,8 @@ public class AndroidFileSystemPlaylistRepository extends FileSystemRepository im
             try {
                 remove(playlistName);
             } catch (FileNotFoundException e) {
-                throwNewFileSystemException(playlistName, R.string.file_not_found, androidContext);
+                AndroidFileSystemHelper.throwNewFileSystemException(playlistName,
+                        R.string.file_not_found, getContext());
             }
         else
             add(playlistName, setList);
@@ -98,19 +101,19 @@ public class AndroidFileSystemPlaylistRepository extends FileSystemRepository im
             }
         });
         if (!fileToDelete.delete()) {
-            throwNewFileSystemException(playlistName, R.string.delete_file_error,
-                    androidContext);
+            AndroidFileSystemHelper.throwNewFileSystemException(playlistName,
+                    R.string.delete_file_error, getContext());
         }
     }
 
     private File getFileByName(final String name, FilenameFilter filter) throws FileNotFoundException {
-        File workDirectory = androidContext.getFilesDir();
+        File workDirectory = getContext().getFilesDir();
         File[] files = workDirectory.listFiles(filter);
         if (files != null && files.length > 0) {
             return files[0];
         }
 
-        throwNewFileNotFoundException(name, androidContext);
+        AndroidFileSystemHelper.throwNewFileNotFoundException(name, getContext());
         return new File(name);
     }
 
@@ -124,7 +127,7 @@ public class AndroidFileSystemPlaylistRepository extends FileSystemRepository im
             throws FileSystemException, FileNotFoundException {
         if (oldPlaylistName.equals(newPlaylistName)) return;
 
-        File dir = androidContext.getFilesDir();
+        File dir = getContext().getFilesDir();
         File oldFile = new File(dir, oldPlaylistName + FILE_EXTENSION);
 
         List<String> fileContent = loadSetListFromFile(oldPlaylistName);
@@ -135,7 +138,8 @@ public class AndroidFileSystemPlaylistRepository extends FileSystemRepository im
                 return name.equals(newPlaylistName + FILE_EXTENSION);
             }
         })) {
-            throwNewFileSystemException(newPlaylistName, R.string.file_exists_error, androidContext);
+            AndroidFileSystemHelper.throwNewFileSystemException(newPlaylistName,
+                    R.string.file_exists_error, getContext());
         } else if (oldFile.exists()) {
             add(newPlaylistName, fileContent);
             try {
@@ -144,14 +148,45 @@ public class AndroidFileSystemPlaylistRepository extends FileSystemRepository im
                 remove(newPlaylistName);
             }
         } else {
-            throwNewFileSystemException(oldPlaylistName, R.string.file_not_found, androidContext);
+            AndroidFileSystemHelper.throwNewFileSystemException(oldPlaylistName,
+                    R.string.file_not_found, getContext());
         }
+    }
 
+    @Override
+    public Uri[] exportAllPlaylists() {
+        return getAllUris(FILE_EXTENSION);
+    }
+
+    @Override
+    public void importPlaylistFile(Uri uri, String playlistName) throws FileSystemException {
+        Object playlistFile = deserializeFromFile(uri);
+        if (playlistFile instanceof ArrayList) {
+            ArrayList<String> lyricsNames = (ArrayList<String>) playlistFile;
+            String shortPlaylistName = getShortPlaylistName(playlistName);
+            add(shortPlaylistName, lyricsNames);
+        }
+    }
+
+    private String getShortPlaylistName(String playlistName) {
+        if (playlistName != null) {
+            int indexFileType = playlistName.indexOf(".");
+            String shortPlaylistName = playlistName;
+            if (indexFileType != -1)
+                shortPlaylistName = playlistName.substring(0, indexFileType);
+            return shortPlaylistName;
+        }
+        return null;
+    }
+
+    @Override
+    public String getPlaylistExtension() {
+        return FILE_EXTENSION;
     }
 
     @NonNull
     private List<String> loadSetListFromFile(String setListName) throws FileSystemException {
-        File dir = androidContext.getFilesDir();
+        File dir = getContext().getFilesDir();
         File file = new File(dir, setListName + FILE_EXTENSION);
         FileInputStream fis = null;
         List<String> setList = new ArrayList<>();
@@ -162,14 +197,16 @@ public class AndroidFileSystemPlaylistRepository extends FileSystemRepository im
             Object object = ois.readObject();
 
             if (object instanceof List) {
-                setList = (List) object;
+                setList = (List<String>) object;
             }
 
             ois.close();
         } catch (FileNotFoundException e) {
-            throwNewFileSystemException(setListName, R.string.file_not_found, androidContext);
+            AndroidFileSystemHelper.throwNewFileSystemException(setListName,
+                    R.string.file_not_found, getContext());
         } catch (Exception e) {
-            throwNewFileSystemException(setListName, R.string.input_output_file_error, androidContext);
+            AndroidFileSystemHelper.throwNewFileSystemException(setListName,
+                    R.string.input_output_file_error, getContext());
         } finally {
             if (fis != null) {
                 try {

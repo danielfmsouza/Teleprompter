@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".presentation.activity.MainActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,17 +27,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.MaintainLyricActivity" />
+        <activity android:name=".presentation.activity.MaintainLyricActivity" />
         <activity
-            android:name=".presentation.PrompterActivity"
+            android:name=".presentation.activity.PrompterActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name=".presentation.SettingsActivity"
+            android:name=".presentation.activity.SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name=".presentation.GlobalSettingsActivity"
+            android:name=".presentation.activity.GlobalSettingsActivity"
             android:label="@string/menu_item_global_options_title" />
-        <activity android:name=".presentation.AboutActivity" />
+        <activity android:name=".presentation.activity.AboutActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

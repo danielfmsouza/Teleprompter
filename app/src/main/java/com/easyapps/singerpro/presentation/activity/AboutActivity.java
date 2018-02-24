@@ -1,4 +1,4 @@
-package com.easyapps.singerpro.presentation;
+package com.easyapps.singerpro.presentation.activity;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;

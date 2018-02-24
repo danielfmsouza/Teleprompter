@@ -1,4 +1,4 @@
-package com.easyapps.singerpro.presentation.components;
+package com.easyapps.singerpro.presentation.component;
 
 import android.app.Activity;
 import android.content.Context;

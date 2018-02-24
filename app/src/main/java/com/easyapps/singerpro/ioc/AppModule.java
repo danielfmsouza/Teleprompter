@@ -2,10 +2,6 @@ package com.easyapps.singerpro.ioc;
 
 import android.content.Context;
 
-import com.easyapps.singerpro.presentation.MaintainLyricActivity;
-import com.easyapps.singerpro.presentation.SettingsActivity;
-import com.easyapps.singerpro.presentation.fragments.MaintainLyricFragment;
-
 import javax.inject.Singleton;
 
 import dagger.Module;

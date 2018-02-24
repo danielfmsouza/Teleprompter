@@ -8,13 +8,13 @@
 
     <fragment
         android:id="@+id/list_frag"
-        class="com.easyapps.singerpro.presentation.fragments.MainListFragment"
+        class="com.easyapps.singerpro.presentation.fragment.MainListFragment"
         android:layout_width="@dimen/titles_size"
         android:layout_height="match_parent" />
 
     <fragment
         android:id="@+id/details_frag"
-        class="com.easyapps.singerpro.presentation.fragments.MaintainLyricFragment"
+        class="com.easyapps.singerpro.presentation.fragment.MaintainLyricFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

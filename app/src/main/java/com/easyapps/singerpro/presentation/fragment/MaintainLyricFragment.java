@@ -1,4 +1,4 @@
-package com.easyapps.singerpro.presentation.fragments;
+package com.easyapps.singerpro.presentation.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -62,32 +62,23 @@ public class MaintainLyricFragment extends Fragment {
     public boolean saveLyricFile() {
         boolean savedSuccessfully = false;
 
-        String fileName = getFileNameContent();
-        String songNumber = getSongNumberContent();
+        String lyricName = getFileNameContent();
+        String lyricNumber = getSongNumberContent();
+        String lyricContent = getTextContent();
 
-        if (fileName.trim().equals(""))
-            setErrorFileNameRequired();
-        if (songNumber.trim().equals(""))
-            setErrorSongNumberRequired();
-        if (!fileName.trim().equals("") && !songNumber.trim().equals("")) {
+        boolean valid = validateRequiredFields(lyricName, lyricNumber, lyricContent);
+        if (valid) {
             try {
                 if (mOperation == Operation.EDIT_LYRIC) {
-                    String oldName = mLyric.getName();
-                    if (mIsTempFileUsed) {
-                        oldName = ActivityUtils.getLyricFileNameParameter(getActivity().getIntent());
-                    }
-                    UpdateLyricCommand cmd = new UpdateLyricCommand(fileName, getTextContent(),
-                            songNumber, oldName);
-                    mAppService.updateLyric(cmd);
+                    updateLyric(lyricName, lyricNumber);
                 } else {
-                    AddLyricCommand cmd = new AddLyricCommand(fileName, getTextContent(), songNumber);
-                    mAppService.addLyric(cmd);
+                    addLyric(lyricName, lyricNumber);
                 }
 
-                mLyric = tryLoadLyricToUpdate(fileName);
+                mLyric = tryLoadLyricToUpdate(lyricName);
 
                 ActivityUtils.setIsNewLyric(false, getActivity());
-                ActivityUtils.setLyricFileNameParameter(fileName, getActivity().getIntent());
+                ActivityUtils.setLyricFileNameParameter(lyricName, getActivity().getIntent());
                 savedSuccessfully = true;
 
                 mListener.onSaveItem(mLyric);
@@ -97,6 +88,38 @@ public class MaintainLyricFragment extends Fragment {
             }
         }
         return savedSuccessfully;
+    }
+
+    private void addLyric(String lyricName, String lyricNumber) throws Exception {
+        AddLyricCommand cmd = new AddLyricCommand(lyricName, getTextContent(), lyricNumber);
+        mAppService.addLyric(cmd);
+    }
+
+    private void updateLyric(String lyricName, String lyricNumber) throws Exception {
+        String oldName = mLyric.getName();
+        if (mIsTempFileUsed) {
+            oldName = ActivityUtils.getLyricFileNameParameter(getActivity().getIntent());
+        }
+        UpdateLyricCommand cmd = new UpdateLyricCommand(lyricName, getTextContent(),
+                lyricNumber, oldName);
+        mAppService.updateLyric(cmd);
+    }
+
+    private boolean validateRequiredFields(String lyricName, String lyricNumber, String lyricContent) {
+        boolean valid = true;
+        if (lyricName.trim().equals("")) {
+            setErrorFileNameRequired();
+            valid = false;
+        }
+        if (lyricNumber.trim().equals("")) {
+            setErrorSongNumberRequired();
+            valid = false;
+        }
+        if (lyricContent.trim().equals("")) {
+            setErrorLyricContentRequired();
+            valid = false;
+        }
+        return valid;
     }
 
     private void setSaveButtonOnClickListener(View v) {
@@ -208,6 +231,15 @@ public class MaintainLyricFragment extends Fragment {
             String error = getResources().getString(R.string.song_number_required);
 
             etSongNumber.setError(error);
+        }
+    }
+
+    private void setErrorLyricContentRequired(){
+        if (getView() != null) {
+            EditText etLyricContent = getView().findViewById(R.id.etTextFile);
+            String error = getResources().getString(R.string.lyric_content_required);
+
+            etLyricContent.setError(error);
         }
     }
 

@@ -1,4 +1,4 @@
-package com.easyapps.singerpro.presentation;
+package com.easyapps.singerpro.presentation.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,8 +17,8 @@ import com.easyapps.singerpro.application.LyricApplicationService;
 import com.easyapps.singerpro.domain.model.lyric.Configuration;
 import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
-import com.easyapps.singerpro.presentation.components.PausablePrompterAnimation;
-import com.easyapps.singerpro.presentation.components.PrompterView;
+import com.easyapps.singerpro.presentation.component.PausablePrompterAnimation;
+import com.easyapps.singerpro.presentation.component.PrompterView;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
 import javax.inject.Inject;
