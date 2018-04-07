@@ -17,12 +17,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.application.LyricApplicationService;
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
+import com.easyapps.singerpro.infrastructure.communication.bluetooth.BluetoothScreenShareServer;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
+import com.easyapps.singerpro.presentation.component.ChecklistCustomAdapter;
 import com.easyapps.singerpro.presentation.fragment.MainListFragment;
 import com.easyapps.singerpro.presentation.fragment.MaintainLyricFragment;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
@@ -46,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Inject
     LyricApplicationService mAppService;
+
+    @Inject
+    BluetoothScreenShareServer mBluetoothScreenShare;
 
     private String mCurrentPlaylist = "";
     private Menu mMenu;
@@ -81,13 +87,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void setConfigurationButtonVisible(boolean visibility) {
-        if (mMenu != null) {
-            MenuItem menuConfig = mMenu.findItem(R.id.menu_lyric_settings_main);
-            menuConfig.setVisible(visibility);
-        }
-    }
-
     public void startSettingsFromMain(MenuItem item) {
         MaintainLyricFragment contentFragment = (MaintainLyricFragment) getFragmentManager()
                 .findFragmentById(R.id.details_frag);
@@ -96,6 +95,20 @@ public class MainActivity extends AppCompatActivity implements
 
         String lyricName = ActivityUtils.getLyricFileNameParameter(getIntent());
         startActivity(SettingsActivity.class, lyricName);
+    }
+
+    private void setConfigurationButtonVisible(boolean visibility) {
+        if (mMenu != null) {
+            MenuItem menuConfig = mMenu.findItem(R.id.menu_lyric_settings_main);
+            menuConfig.setVisible(visibility);
+        }
+    }
+
+    private void setScreenShareButtonVisible(boolean visibility) {
+        if (mMenu != null) {
+            MenuItem menuConfig = mMenu.findItem(R.id.menu_share_screen);
+            menuConfig.setVisible(visibility);
+        }
     }
 
     @Override
@@ -113,8 +126,15 @@ public class MainActivity extends AppCompatActivity implements
             setConfigurationButtonVisible(false);
         }
 
+        if (mBluetoothScreenShare.isScreenShareAvailable()) {
+            setScreenShareButtonVisible(false);
+        } else {
+            setScreenShareButtonVisible(false);
+        }
+
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -277,6 +297,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onItemSelected(String lyricName) {
+        if (lyricName == null) return;
+
         MaintainLyricFragment contentFragment = (MaintainLyricFragment) getFragmentManager()
                 .findFragmentById(R.id.details_frag);
 
@@ -321,6 +343,47 @@ public class MainActivity extends AppCompatActivity implements
         menuRenamePlaylist.setVisible(false);
     }
 
+    public void shareScreen(MenuItem item) {
+        if (mBluetoothScreenShare.isProtocolEnabled()) {
+            showPairedDevicesDialog();
+        } else {
+            showEnableBluetoothDialog();
+        }
+    }
+
+    private void showEnableBluetoothDialog() {
+        Dialog d = new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.bluetooth_enable_dialog_title))
+                .setNegativeButton(getResources().getString(R.string.cancel), null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mBluetoothScreenShare.enable())
+                            showPairedDevicesDialog();
+                    }
+                })
+                .create();
+        d.show();
+    }
+
+    private void showPairedDevicesDialog() {
+        ListView lvPairedDevices = new ListView(this);
+        lvPairedDevices.setAdapter(new ChecklistCustomAdapter(this,
+                R.layout.row_list_simple_item,
+                mBluetoothScreenShare.getPairedDevicesNames(), R.id.tvDescription));
+
+        Dialog d = new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.bluetooth_paired_devices_dialog_title))
+                .setNegativeButton(getResources().getString(R.string.cancel), null)
+                .setView(lvPairedDevices)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+//                        mBluetoothScreenShare.connect();
+                    }
+                })
+                .create();
+        d.show();
+    }
+
     public void loadPlaylist(MenuItem item) {
         String[] playlistNames = mAppService.getAllPlaylistNames();
         final String[] items = new String[playlistNames.length];
@@ -335,13 +398,21 @@ public class MainActivity extends AppCompatActivity implements
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dlg, int position) {
-                        listFragment.loadLyricsFromPlaylist(items[position]);
-                        mCurrentPlaylist = items[position];
+                        tryLoadLyricsFromPlaylist(listFragment, items[position]);
                         menuRenamePlaylist.setVisible(true);
-                        ActivityUtils.setCurrentPlaylistName(mCurrentPlaylist, getApplicationContext());
+
                     }
                 })
                 .create();
         d.show();
+    }
+
+    private void tryLoadLyricsFromPlaylist(MainListFragment listFragment, String playListName) {
+        boolean loaded = listFragment.loadLyricsFromPlaylist(playListName);
+        if (loaded) {
+            mCurrentPlaylist = playListName;
+            ActivityUtils.setCurrentPlaylistName(mCurrentPlaylist, getApplicationContext());
+        } else
+            mCurrentPlaylist = "";
     }
 }

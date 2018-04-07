@@ -14,21 +14,6 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/skin" />
 
-    <!--<ImageView-->
-        <!--android:id="@+id/btnSettings"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom"-->
-        <!--android:background="?attr/selectableItemBackgroundBorderless"-->
-        <!--android:contentDescription="@string/btn_config_description"-->
-        <!--android:layout_marginEnd="0dp"-->
-        <!--android:layout_marginRight="0dp"-->
-        <!--android:layout_marginLeft="38dp"-->
-        <!--android:layout_marginStart="38dp"-->
-        <!--android:layout_marginTop="30dp"-->
-        <!--android:src="@drawable/ic_settings"-->
-        <!--android:text="@string/btn_config_description" />-->
-
     <TextView
         android:id="@+id/tvFileName"
         android:layout_width="wrap_content"

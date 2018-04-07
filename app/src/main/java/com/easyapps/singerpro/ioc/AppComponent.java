@@ -1,5 +1,7 @@
 package com.easyapps.singerpro.ioc;
 
+import android.content.SharedPreferences;
+
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
 
 import javax.inject.Singleton;

@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:id="@+id/test"
     tools:context="com.easyapps.singerpro.presentation.activity.PrompterActivity">
 
     <ScrollView
@@ -22,18 +21,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/black"
-            android:gravity="start"
+            android:gravity="bottom"
             android:keepScreenOn="true"
             android:onClick="startStop"
             android:textColor="#ffffff"
             android:textSize="50sp"
             android:textStyle="bold"
+            android:scrollbars = "vertical"
             android:verticalScrollbarPosition="right"
             android:scrollbarAlwaysDrawVerticalTrack="true"
             preference:scrollSpeed="@integer/number_default_value_scroll_speed"
             preference:timerRunningValue="@integer/number_min_value_timer"
             preference:timerWaitingValue="@integer/number_min_value_timer"
             preference:timersCount="@integer/number_min_value_count_timers" />
-
     </ScrollView>
+    <TextView
+        android:id="@+id/tvCountTimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:textAlignment="textEnd"
+        android:focusable="false"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="italic" />
 </merge>

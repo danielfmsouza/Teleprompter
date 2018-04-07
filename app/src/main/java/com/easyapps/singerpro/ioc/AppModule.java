@@ -1,6 +1,8 @@
 package com.easyapps.singerpro.ioc;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import javax.inject.Singleton;
 
@@ -25,5 +27,11 @@ class AppModule {
     @Singleton
     Context provideContext(App application) {
         return application;
+    }
+
+    @Provides
+    @Singleton
+    SharedPreferences provideSharedPrefs(App context) {
+        return PreferenceManager.getDefaultSharedPreferences(context);
     }
 }

@@ -234,7 +234,7 @@ public class MaintainLyricFragment extends Fragment {
         }
     }
 
-    private void setErrorLyricContentRequired(){
+    private void setErrorLyricContentRequired() {
         if (getView() != null) {
             EditText etLyricContent = getView().findViewById(R.id.etTextFile);
             String error = getResources().getString(R.string.lyric_content_required);
@@ -286,6 +286,8 @@ public class MaintainLyricFragment extends Fragment {
     }
 
     public void updateContent(String lyricName) {
+        if (lyricName == null) return;
+
         mOperation = Operation.EDIT_LYRIC;
         ActivityUtils.setLyricFileNameParameter(lyricName, getActivity().getIntent());
         boolean userSelectedALyric = ActivityUtils.isClickedOnLyric(getActivity());

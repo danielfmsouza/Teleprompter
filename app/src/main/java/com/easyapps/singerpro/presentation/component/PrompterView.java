@@ -6,6 +6,7 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.animation.Animation;
+import android.widget.TextView;
 
 import com.easyapps.singerpro.R;
 
@@ -26,7 +27,7 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
     private int totalTimers;
     private String fileName;
     private boolean animationPrepared = false;
-    private final CountDownTimerPrompter initialTimer = new CountDownTimerPrompter(1, -2);
+    private final CountDownTimerPrompter initialTimer = new CountDownTimerPrompter(1, "", -2, null);
     private final List<CountDownTimerPrompter> timers = new ArrayList<>();
     Animation animation;
     PausablePrompterAnimation.OnFinishAnimationListener listener;
@@ -62,14 +63,11 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
         setBackgroundColor(backgroundColor);
     }
 
-    public void startAnimation() {
+    public void startAnimation(TextView tvCountTimer) {
         if (animationPrepared) {
             startAnimation(animation);
-
-            // this is needed to make animation work
             initialTimer.start();
-
-            createTimers();
+            createTimers(tvCountTimer);
             initializeTimers();
         }
     }
@@ -93,26 +91,35 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
         }
     }
 
-    private void createTimers() {
+    private void createTimers(TextView tvCountTimer) {
         final int SECONDS_TO_MILLISECONDS = 1000;
+        final String textTimerWaiting = getResources().getString(R.string.tv_timeWaiting);
+        final String textTimerRunning = getResources().getString(R.string.tv_timeRunning);
 
         if (totalTimers > 0) {
             int pos = 0;
             for (int i = 0; i < totalTimers; i++, pos++) {
                 if (timeRunning[i] == 0) {
-                    timers.add(new CountDownTimerPrompter(timeWaiting[i] * SECONDS_TO_MILLISECONDS, pos));
+                    timers.add(new CountDownTimerPrompter(
+                            timeWaiting[i] * SECONDS_TO_MILLISECONDS,
+                            textTimerWaiting, pos, tvCountTimer));
                     break;
                 }
-                timers.add(new CountDownTimerPrompter(timeWaiting[i] * SECONDS_TO_MILLISECONDS, pos));
-                timers.add(new CountDownTimerPrompter(timeRunning[i] * SECONDS_TO_MILLISECONDS, ++pos));
+                timers.add(new CountDownTimerPrompter(
+                        timeWaiting[i] * SECONDS_TO_MILLISECONDS,
+                        textTimerWaiting, pos, tvCountTimer));
+                timers.add(new CountDownTimerPrompter(
+                        timeRunning[i] * SECONDS_TO_MILLISECONDS,
+                        textTimerRunning, ++pos, tvCountTimer));
             }
         } else
             startStop();
     }
 
     private void initializeTimers() {
-        if (timers.size() > 0)
+        if (timers.size() > 0){
             timers.get(0).start();
+        }
     }
 
     public void setAnimationId(int id) {
@@ -145,17 +152,21 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
     }
 
     private class CountDownTimerPrompter extends CountDownTimer {
-
+        private final String text;
         private boolean finished = false;
         private final int id;
+        private final TextView tvCountTimer;
 
-        CountDownTimerPrompter(long timeToCount, int id) {
+        CountDownTimerPrompter(long timeToCount, String text, int id, TextView tvCountTimer) {
             super(timeToCount, 1000);
             this.id = id;
+            this.text = text;
+            this.tvCountTimer = tvCountTimer;
         }
 
         @Override
         public void onTick(long countDownInterval) {
+            setCountTimerText(String.format(text, id + 1, countDownInterval / 1000));
         }
 
         @Override
@@ -165,6 +176,13 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
                 startNextTimer(id + 1);
 
             finished = true;
+            setCountTimerText("");
+        }
+
+        private void setCountTimerText(String text) {
+            if (tvCountTimer != null) {
+                tvCountTimer.setText(text);
+            }
         }
     }
 

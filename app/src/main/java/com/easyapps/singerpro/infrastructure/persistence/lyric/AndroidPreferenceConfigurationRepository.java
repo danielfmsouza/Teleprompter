@@ -20,6 +20,8 @@ import java.io.ObjectOutputStream;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Scope;
+import javax.inject.Singleton;
 
 /**
  * Implementation of IConfigurationRepository specific for an Android Shared Preference.
@@ -28,7 +30,8 @@ import javax.inject.Inject;
 
 public class AndroidPreferenceConfigurationRepository extends FileSystemRepository implements IConfigurationRepository {
 
-    private final SharedPreferences preferences;
+    @Inject
+    SharedPreferences preferences;
 
     private final String scrollSpeedPrefKey;
     private final String timeRunningPrefKey;
@@ -50,8 +53,6 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
     @Inject
     public AndroidPreferenceConfigurationRepository(Context androidContext) {
         super(androidContext);
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(androidContext);
-
         scrollSpeedPrefKey = getResourcesString(R.string.pref_key_scrollSpeed);
         timeRunningPrefKey = getResourcesString(R.string.pref_key_timeRunning);
         timeStoppedPrefKey = getResourcesString(R.string.pref_key_timeWaiting);

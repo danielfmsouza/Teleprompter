@@ -1,5 +1,7 @@
 package com.easyapps.singerpro.ioc;
 
+import android.content.SharedPreferences;
+
 import com.easyapps.singerpro.domain.model.lyric.IConfigurationRepository;
 import com.easyapps.singerpro.domain.model.lyric.ILyricRepository;
 import com.easyapps.singerpro.domain.model.lyric.IPlaylistRepository;

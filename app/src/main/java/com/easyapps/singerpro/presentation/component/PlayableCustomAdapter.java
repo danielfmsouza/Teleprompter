@@ -154,11 +154,13 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     @NonNull
     private String getLyricTitle(String lyricName, ConfigurationQueryModel config) {
         String songNumberFormatted = String.format(Locale.getDefault(), "%02d", config.getSongNumber());
-        return songNumberFormatted + " - " + lyricName;
+        return songNumberFormatted + " - " + (lyricName == null ? "" : lyricName);
     }
 
     @Nullable
     public String getLyricName(int position) {
+        if (super.isEmpty() || super.getCount() <= position) return "";
+
         LyricQueryModel lyric = getItem(position);
         String lyricName = "";
         if (lyric != null)
@@ -167,6 +169,8 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     }
 
     private ConfigurationQueryModel getConfiguration(int position) {
+        if (super.isEmpty() || super.getCount() <= position) return null;
+
         LyricQueryModel lyric = getItem(position);
         ConfigurationQueryModel configuration = null;
         if (lyric != null)
@@ -212,6 +216,8 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     }
 
     private String getConfigurationMessage(ConfigurationQueryModel config) {
+        if (config == null) return "";
+
         return getContext().getResources().getString(R.string.lyric_configuration,
                 config.getScrollSpeed(), config.getFontSize(), config.getTimersCount());
     }
@@ -219,7 +225,9 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     public List<String> getCurrentCheckedLyrics() {
         List<String> result = new ArrayList<>();
         for (int position : mSelection) {
-            result.add(getLyricName(position));
+            String lyricName = getLyricName(position);
+            if (lyricName != null && !lyricName.isEmpty())
+                result.add(lyricName);
         }
         return result;
     }

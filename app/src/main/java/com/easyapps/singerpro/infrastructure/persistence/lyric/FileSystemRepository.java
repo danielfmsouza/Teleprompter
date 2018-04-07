@@ -61,7 +61,7 @@ public class FileSystemRepository {
         return text.toString();
     }
 
-    public Object deserializeFromFile(Uri configFileUri) throws FileSystemException {
+    Object deserializeFromFile(Uri configFileUri) throws FileSystemException {
         ObjectInputStream ois = null;
         try {
             ois = new ObjectInputStream(getContext().getContentResolver().openInputStream(configFileUri));

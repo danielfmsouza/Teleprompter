@@ -3,7 +3,6 @@ package com.easyapps.singerpro.presentation.activity;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +30,9 @@ public class MaintainLyricActivity extends AppCompatActivity implements Maintain
     @Inject
     IQueueLyricRepository lyricQueue;
 
+    @Inject
+    SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
@@ -43,9 +45,6 @@ public class MaintainLyricActivity extends AppCompatActivity implements Maintain
             ActivityUtils.backToMain(this);
         } else {
             setContentView(R.layout.activity_maintain_lyric);
-
-            SharedPreferences sharedPref =
-                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             mCurrentPlaylist = sharedPref.getString(
                     getResources().getString(R.string.pref_key_currentPlaylistName), "");
         }

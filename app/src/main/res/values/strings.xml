@@ -29,8 +29,13 @@
     <string name="bluetooth_enabled_successfully">Bluetooth activated.</string>
     <string name="bluetooth_disabled_successfully">Bluetooth disabled.</string>
     <string name="bluetooth_enabled_denied">Bluetooth access denied.</string>
+    <string name="bluetooth_enable_dialog_title">Enable bluetooth?</string>
+    <string name="bluetooth_paired_devices_dialog_title">Paired Device(s)</string>
+    <string name="bluetooth_paired_devices_dialog_desc">Please choose one or more paired devices to share your screen with</string>
 
     <!--UI components resources-->
+    <string name="tv_timeWaiting">Time stopped (%1$d): %2$d</string>
+    <string name="tv_timeRunning">Time running (%1$d): %2$d</string>
     <string name="app_name_all_songs">All Songs</string>
     <string name="app_name">SingerPro</string>
     <string name="btn_create_file_description">Create a new lyric file</string>
@@ -50,6 +55,7 @@
     <string name="menu_item_rename_playlist_title">Rename Playlist</string>
     <string name="menu_item_show_all_title">Show All Songs</string>
     <string name="menu_item_load_playlist_title">Load Playlist</string>
+    <string name="menu_item_share_screen_title">Share Screen</string>
     <string name="menu_item_about_title">About</string>
     <string name="menu_item_export_title">Export Files</string>
     <string name="menu_item_import_title">Import Files</string>
@@ -58,7 +64,7 @@
     <string name="rename_playlist">Rename Playlist</string>
     <string name="load_existing_playlist">Load Existing Playlist</string>
     <string name="add_song_playlist">Add Lyric(s) to Playlist</string>
-    <string name="copyright_developer">SingerPro - version 2.3\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
+    <string name="copyright_developer">SingerPro - version 2.4\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->
     <string name="pref_key_scrollSpeed">pref_scrollSpeed</string>
@@ -83,7 +89,8 @@
     <string name="pref_key_textColor">pref_textColor</string>
     <string name="pref_textColor">Text Prompter Color</string>
     <string name="pref_textColor_default">-1</string>
-    <string name="pref_isBluetoothEnabled">Enabled</string>
+    <string name="pref_automaticPlayingNext">Automatic Playing</string>
+    <string name="pref_isBluetoothEnabled">Share Prompter With Paired Devices</string>
     <string name="pref_bluetooth">Bluetooth</string>
     <string name="pref_bluetoothPairedDevices">Paired Devices</string>
     <string name="pref_bluetoothAvailableDevices">Available Devices</string>

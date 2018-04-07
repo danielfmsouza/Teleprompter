@@ -8,13 +8,13 @@ android {
         }
     }
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId 'com.easyapps.singerpro'
         minSdkVersion 17
         targetSdkVersion 26
-        versionCode 20
-        versionName '2.3'
+        versionCode 21
+        versionName '2.4'
     }
     buildTypes {
         release {

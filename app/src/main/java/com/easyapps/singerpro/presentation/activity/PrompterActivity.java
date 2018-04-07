@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.easyapps.singerpro.R;
@@ -29,6 +30,9 @@ public class PrompterActivity extends AppCompatActivity
         implements PausablePrompterAnimation.OnFinishAnimationListener {
     private PrompterView mPrompter;
     private String mLyricName;
+
+    @Inject
+    SharedPreferences sharedPref;
 
     @Inject
     IQueueLyricRepository lyricQueue;
@@ -69,9 +73,6 @@ public class PrompterActivity extends AppCompatActivity
     }
 
     private void verifyTimeBeforeStartAnimation() {
-        SharedPreferences sharedPref =
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
         int timeBeforeStartDefault = 0;
         final boolean playNext = sharedPref.getBoolean(
                 getResources().getString(R.string.pref_key_playNext), false);
@@ -105,24 +106,22 @@ public class PrompterActivity extends AppCompatActivity
 
                 public void onFinish() {
                     toast.cancel();
-                    mPrompter.startAnimation();
+                    mPrompter.startAnimation((TextView) findViewById(R.id.tvCountTimer));
                 }
             }.start();
 
-        } else
-            mPrompter.startAnimation();
+        } else {
+            mPrompter.startAnimation((TextView) findViewById(R.id.tvCountTimer));
+        }
     }
 
     private void setScrollViewBackgroundColor() {
-        SharedPreferences sharedPref =
-                PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
         String backgroundColorDefault =
                 getResources().getString(R.string.pref_backgroundColor_default);
         int backgroundColor = Integer.parseInt(sharedPref.getString(
                 getResources().getString(R.string.pref_key_backgroundColor), backgroundColorDefault));
 
-        ScrollView scrollView = findViewById(R.id.svText);
+        final ScrollView scrollView = findViewById(R.id.svText);
         scrollView.setBackgroundColor(backgroundColor);
     }
 

@@ -172,6 +172,7 @@ public class MainListFragment extends Fragment {
     }
 
     private void setSelectedItem(int position) {
+        if (position < 0) return;
         mPositionClicked = position;
         ActivityUtils.setCurrentSelectedLyric(mPositionClicked, getActivity());
         ActivityUtils.setIsNewLyric(false, getActivity());
@@ -244,9 +245,10 @@ public class MainListFragment extends Fragment {
         }
     }
 
-    public void loadLyricsFromPlaylist(String setListName) {
+    public boolean loadLyricsFromPlaylist(String setListName) {
         if (setListName == null || setListName.isEmpty()) {
             showAllLyrics();
+            return false;
         } else {
             List<LyricQueryModel> lyrics = null;
             try {
@@ -256,19 +258,21 @@ public class MainListFragment extends Fragment {
             }
 
             if (lyrics == null || lyrics.isEmpty()) {
-                removeSetList(setListName);
+                removePlaylist(setListName);
                 showAllLyrics();
+                return false;
             } else {
                 mAdapter = new PlayableCustomAdapter(getActivity(),
                         R.layout.row_list_item, lyrics, R.id.tvFileName, lyricQueue);
                 mListView.setAdapter(mAdapter);
                 getActivity().setTitle(getString(R.string.app_name) + " - " + setListName);
                 mCurrentPlaylist = setListName;
+                return true;
             }
         }
     }
 
-    private void removeSetList(String setListName) {
+    private void removePlaylist(String setListName) {
         try {
             mAppService.removeSetList(setListName);
         } catch (FileNotFoundException | FileSystemException e) {
@@ -387,7 +391,7 @@ public class MainListFragment extends Fragment {
             mAppService.removeLyrics(lyricsToDelete);
             mAdapter.removeAllCheckedItems();
             if (mAdapter.getCount() == 0 && mCurrentPlaylist != null && !mCurrentPlaylist.equals("")) {
-                removeSetList(mCurrentPlaylist);
+                removePlaylist(mCurrentPlaylist);
                 showAllLyrics();
             }
         } catch (FileNotFoundException | FileSystemException e) {

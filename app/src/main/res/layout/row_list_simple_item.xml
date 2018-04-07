@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:gravity="start"
+    android:padding="12dp">
+
+    <CheckBox
+        android:id="@+id/cbSimpleRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tvDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:layout_marginEnd="0dp"
+        android:layout_marginLeft="@dimen/margin_left_song_texts"
+        android:layout_marginStart="@dimen/margin_left_song_texts"
+        android:layout_marginRight="0dp"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

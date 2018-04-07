@@ -80,7 +80,7 @@ public class ActivityUtils {
     }
 
     public static int getCurrentSelectedLyric(Context context) {
-        return getIntPreference(R.string.pref_key_currentSelectedLyric, context);
+        return getIntPreference(R.string.pref_key_currentSelectedLyric, context, -1);
     }
 
     public static boolean isNewLyric(Context context) {
@@ -108,12 +108,12 @@ public class ActivityUtils {
                 context.getResources().getString(resource), false);
     }
 
-    private static int getIntPreference(int resource, Context context) {
+    private static int getIntPreference(int resource, Context context, int defaultValue) {
         SharedPreferences sharedPref =
                 PreferenceManager.getDefaultSharedPreferences(context);
 
         return sharedPref.getInt(
-                context.getResources().getString(resource), 0);
+                context.getResources().getString(resource), defaultValue);
     }
 
     private static void setParameter(String value, Intent intent, String paramName) {
