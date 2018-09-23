@@ -152,7 +152,7 @@ public class LyricApplicationService {
         playlistRepository.addLyricsToPlaylist(playlistName, lyricsNames);
     }
 
-    public List<LyricQueryModel> loadLyricsFromPlaylist(String playlistName) throws FileSystemException {
+    public List<LyricQueryModel> getLyricsFromPlaylist(String playlistName) throws FileSystemException {
         return lyricFinder.getFromSetList(playlistName);
     }
 

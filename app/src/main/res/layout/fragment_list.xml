@@ -13,6 +13,14 @@
         android:descendantFocusability="blocksDescendants">
     </ListView>
 
+    <TextView
+        android:id="@+id/noResultsSearch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No Results"
+        android:gravity="center"
+        android:visibility="gone" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

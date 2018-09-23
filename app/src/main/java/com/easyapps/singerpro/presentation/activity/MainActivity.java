@@ -1,6 +1,7 @@
 package com.easyapps.singerpro.presentation.activity;
 
 import android.app.Dialog;
+import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.DialogInterface;
@@ -12,10 +13,12 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -64,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements
 
         mCurrentPlaylist = ActivityUtils.getCurrentPlaylistName(this);
 
+        handleIntent(getIntent());
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +77,31 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
         verifyDetailsFragment();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            searchByLyricName(query);
+        }
+    }
+
+    private void searchByLyricName(String query) {
+        String normalizedQuery = query != null ? query.toLowerCase() : "";
+        if (normalizedQuery.isEmpty()) {
+            return;
+        }
+
+        MainListFragment listFragment = getMainListFragment();
+        if (listFragment != null){
+            listFragment.filterLyrics(normalizedQuery);
+        }
     }
 
     private void verifyDetailsFragment() {
@@ -106,8 +136,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private void setScreenShareButtonVisible(boolean visibility) {
         if (mMenu != null) {
-            MenuItem menuConfig = mMenu.findItem(R.id.menu_share_screen);
-            menuConfig.setVisible(visibility);
+//            MenuItem menuConfig = mMenu.findItem(R.id.menu_share_screen);
+//            menuConfig.setVisible(visibility);
         }
     }
 
@@ -127,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         if (mBluetoothScreenShare.isScreenShareAvailable()) {
-            setScreenShareButtonVisible(false);
+            setScreenShareButtonVisible(true);
         } else {
             setScreenShareButtonVisible(false);
         }
@@ -341,6 +371,7 @@ public class MainActivity extends AppCompatActivity implements
         mCurrentPlaylist = "";
         MenuItem menuRenamePlaylist = mMenu.findItem(R.id.menu_rename_playlist);
         menuRenamePlaylist.setVisible(false);
+        clearSearchQuery();
     }
 
     public void shareScreen(MenuItem item) {
@@ -352,16 +383,35 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void showEnableBluetoothDialog() {
-        Dialog d = new AlertDialog.Builder(this)
+        final AlertDialog d = new AlertDialog.Builder(this)
                 .setTitle(getResources().getString(R.string.bluetooth_enable_dialog_title))
                 .setNegativeButton(getResources().getString(R.string.cancel), null)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (mBluetoothScreenShare.enable())
-                            showPairedDevicesDialog();
-                    }
-                })
+                .setPositiveButton(android.R.string.ok, null)
                 .create();
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alert_dialog_with_progress_bar, null);
+        d.setView(dialogView);
+        d.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialog) {
+
+                Button b = d.getButton(AlertDialog.BUTTON_POSITIVE);
+                b.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        mBluetoothScreenShare.enable();
+
+                        if (mBluetoothScreenShare.enable()) {
+
+                            showPairedDevicesDialog();
+                        }
+
+                    }
+                });
+            }
+        });
         d.show();
     }
 
@@ -414,5 +464,19 @@ public class MainActivity extends AppCompatActivity implements
             ActivityUtils.setCurrentPlaylistName(mCurrentPlaylist, getApplicationContext());
         } else
             mCurrentPlaylist = "";
+
+        clearSearchQuery();
     }
+
+    private void clearSearchQuery() {
+        Intent intent = getIntent();
+        if (intent != null){
+            intent.setAction(Intent.ACTION_MAIN);
+        }
+    }
+
+    public void search(MenuItem item) {
+        onSearchRequested();
+    }
+
 }

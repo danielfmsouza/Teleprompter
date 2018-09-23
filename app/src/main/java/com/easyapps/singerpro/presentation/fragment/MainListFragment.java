@@ -53,6 +53,7 @@ public class MainListFragment extends Fragment {
     private ListView mListView;
     private OnListChangeListener mListener;
     private String mCurrentPlaylist = "";
+    private boolean mFiltered;
 
     @Inject
     LyricApplicationService mAppService;
@@ -226,6 +227,7 @@ public class MainListFragment extends Fragment {
 
     public void showAllLyrics() {
         mCurrentPlaylist = "";
+        mFiltered = false;
         ActivityUtils.setCurrentPlaylistName(mCurrentPlaylist, getActivity());
         listAllLyrics();
         getActivity().setTitle(getString(R.string.app_name) + " - " + getString(R.string.app_name_all_songs));
@@ -252,7 +254,7 @@ public class MainListFragment extends Fragment {
         } else {
             List<LyricQueryModel> lyrics = null;
             try {
-                lyrics = mAppService.loadLyricsFromPlaylist(setListName);
+                lyrics = mAppService.getLyricsFromPlaylist(setListName);
             } catch (FileSystemException e) {
                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
             }
@@ -267,6 +269,7 @@ public class MainListFragment extends Fragment {
                 mListView.setAdapter(mAdapter);
                 getActivity().setTitle(getString(R.string.app_name) + " - " + setListName);
                 mCurrentPlaylist = setListName;
+                mFiltered = false;
                 return true;
             }
         }
@@ -410,6 +413,38 @@ public class MainListFragment extends Fragment {
                 R.layout.row_list_item, mAppService.getAllLyrics(),
                 R.id.tvFileName, lyricQueue);
         mListView.setAdapter(mAdapter);
+    }
+
+    public void filterLyrics(String query) {
+        List<LyricQueryModel> lyricsFromCurrentPlaylist = new ArrayList<>();
+
+        if (mCurrentPlaylist == null || mCurrentPlaylist.isEmpty()) {
+            lyricsFromCurrentPlaylist = mAppService.getAllLyrics();
+        } else {
+            try {
+                lyricsFromCurrentPlaylist = mAppService.getLyricsFromPlaylist(mCurrentPlaylist);
+            } catch (FileSystemException e) {
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+
+        List<LyricQueryModel> lyricsToShow = new ArrayList<>();
+        for (LyricQueryModel lyric : lyricsFromCurrentPlaylist) {
+            if (lyric.getName() != null && lyric.getName().toLowerCase().contains(query)) {
+                lyricsToShow.add(lyric);
+            }
+        }
+
+        PlayableCustomAdapter adapter = (PlayableCustomAdapter) mListView.getAdapter();
+        adapter.clear();
+        adapter.addAll(lyricsToShow);
+
+        mListView.setEmptyView(getActivity().findViewById(R.id.noResultsSearch));
+
+        if (!mFiltered)
+            getActivity().setTitle(getActivity().getTitle() + " " + getString(R.string.search_filtered));
+
+        mFiltered = true;
     }
 
     public boolean selectCurrentItem() {

@@ -3,13 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.easyapps.singerpro.presentation.activity.MainActivity">
+    <!--<item-->
+        <!--android:icon="@drawable/ic_screen_share"-->
+        <!--android:id="@+id/menu_share_screen"-->
+        <!--android:title="@string/menu_item_share_screen_title"-->
+        <!--android:orderInCategory="93"-->
+        <!--app:showAsAction="ifRoom"-->
+        <!--android:onClick="shareScreen"/>-->
     <item
-        android:icon="@drawable/ic_screen_share"
-        android:id="@+id/menu_share_screen"
-        android:title="@string/menu_item_share_screen_title"
+        android:icon="@drawable/ic_search"
+        android:id="@+id/menu_search_lyric"
+        android:title="@string/menu_item_search_lyric"
         android:orderInCategory="93"
-        app:showAsAction="ifRoom"
-        android:onClick="shareScreen"/>
+        app:showAsAction="always"
+        android:onClick="search"/>
     <item
         android:icon="@drawable/ic_settings"
         android:id="@+id/menu_lyric_settings_main"

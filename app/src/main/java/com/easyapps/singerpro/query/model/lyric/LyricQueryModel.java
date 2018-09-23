@@ -44,4 +44,9 @@ public class LyricQueryModel {
     public int hashCode() {
         return name.hashCode();
     }
+
+    @Override
+    public String toString(){
+        return name != null ? name.toLowerCase() : "";
+    }
 }
