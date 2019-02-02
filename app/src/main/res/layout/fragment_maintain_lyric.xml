@@ -24,7 +24,8 @@
         android:inputType="textMultiLine"
         android:nextFocusForward="@+id/btnSave"
         android:textAlignment="textStart"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:fontFamily="monospace"/>
 
     <ImageButton
         android:id="@+id/btnSave"

@@ -27,6 +27,7 @@
             android:textColor="#ffffff"
             android:textSize="50sp"
             android:textStyle="bold"
+            android:fontFamily="monospace"
             android:scrollbars = "vertical"
             android:verticalScrollbarPosition="right"
             android:scrollbarAlwaysDrawVerticalTrack="true"
