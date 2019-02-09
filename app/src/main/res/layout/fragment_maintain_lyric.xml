@@ -25,7 +25,7 @@
         android:nextFocusForward="@+id/btnSave"
         android:textAlignment="textStart"
         android:textStyle="bold"
-        android:fontFamily="monospace"/>
+        android:fontFamily="sans-serif"/>
 
     <ImageButton
         android:id="@+id/btnSave"

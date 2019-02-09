@@ -2,6 +2,7 @@ package com.easyapps.singerpro.presentation.component;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
@@ -53,12 +54,16 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
         String backgroundColorDefault =
                 getResources().getString(R.string.pref_backgroundColor_default);
         String textColorDefault = getResources().getString(R.string.pref_textColor_default);
+        String fontFamilyDefault = getResources().getString(R.string.pref_fontFamily_default);
 
         int backgroundColor = Integer.parseInt(sharedPref.getString(
                 getResources().getString(R.string.pref_key_backgroundColor), backgroundColorDefault));
         int textColor = Integer.parseInt(sharedPref.getString(
                 getResources().getString(R.string.pref_key_textColor), textColorDefault));
+        String fontFamily = sharedPref.getString(
+                getResources().getString(R.string.pref_key_fontFamily), fontFamilyDefault);
 
+        setTypeface(Typeface.create(fontFamily, Typeface.BOLD));
         setTextColor(textColor);
         setBackgroundColor(backgroundColor);
     }
@@ -117,7 +122,7 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
     }
 
     private void initializeTimers() {
-        if (timers.size() > 0){
+        if (timers.size() > 0) {
             timers.get(0).start();
         }
     }

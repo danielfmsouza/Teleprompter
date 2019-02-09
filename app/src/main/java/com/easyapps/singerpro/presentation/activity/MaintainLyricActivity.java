@@ -2,11 +2,13 @@ package com.easyapps.singerpro.presentation.activity;
 
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;
@@ -48,6 +50,9 @@ public class MaintainLyricActivity extends AppCompatActivity implements Maintain
             mCurrentPlaylist = sharedPref.getString(
                     getResources().getString(R.string.pref_key_currentPlaylistName), "");
         }
+
+        EditText etTextFile = findViewById(R.id.etTextFile);
+        etTextFile.setTypeface(Typeface.create(getFontFamily(), Typeface.BOLD));
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -87,5 +92,12 @@ public class MaintainLyricActivity extends AppCompatActivity implements Maintain
                 .findFragmentById(R.id.maintain_lyric_frag);
 
         return contentFragment != null && contentFragment.saveLyricFile();
+    }
+
+    private String getFontFamily(){
+        String fontFamilyDefault = getResources().getString(R.string.pref_fontFamily_default);
+
+        return sharedPref.getString(
+                getResources().getString(R.string.pref_key_fontFamily), fontFamilyDefault);
     }
 }

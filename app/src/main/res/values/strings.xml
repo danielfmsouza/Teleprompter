@@ -79,6 +79,7 @@
     <string name="pref_title_timeWaiting">Time stopped (%1$d)</string>
     <string name="pref_title_timeRunning">Time running (%1$d)</string>
     <string name="pref_backgroundColor">Background Prompter Color</string>
+    <string name="pref_fontFamily">Font Family</string>
     <string name="pref_textColor">Text Prompter Color</string>
     <string name="pref_automaticPlayingNext">Automatic Playing</string>
     <string name="pref_isBluetoothEnabled">Share Prompter With Paired Devices</string>
@@ -86,13 +87,14 @@
     <string name="pref_bluetoothPairedDevices">Paired Devices</string>
     <string name="pref_bluetoothAvailableDevices">Available Devices</string>
     <string name="pref_pairedDevices">Available Devices</string>
-    <string name="pref_prompterColors">Prompter Colors</string>
+    <string name="pref_prompterFontsAndColors">Prompter Fonts and Colors</string>
     <string name="pref_title_playNext">Play Next Automatically</string>
     <string name="pref_title_timeBeforeStart">Time Before Start Prompting</string>
     <string name="pref_summary_timeBeforeStart">How much time (in seconds) the app must wait before start prompting the next song in the current set list.</string>
 
     <!--Not translated resources-->
     <string name="pref_key_backgroundColor">pref_backgroundColor</string>
+    <string name="pref_key_fontFamily">pref_fontFamily</string>
     <string name="pref_textColor_default">-1</string>
     <string name="pref_key_playNext">pref_playNext</string>
     <string name="pref_key_timeBeforeStart">pref_timeBeforeStart</string>
@@ -107,6 +109,7 @@
     <string name="pref_key_timeRunning">pref_timeRunning</string>
     <string name="pref_key_textSize">pref_textSize</string>
     <string name="pref_key_songNumber">pref_songNumber</string>
+    <string name="pref_fontFamily_default">sans-serif</string>
     <string name="pref_backgroundColor_default">-16777216</string>
     <string name="pref_key_textColor">pref_textColor</string>
     <string name="title_activity_search">SearchActivity</string>

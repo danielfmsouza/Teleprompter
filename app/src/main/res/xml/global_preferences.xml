@@ -1,13 +1,21 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:preference="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <PreferenceCategory android:title="@string/pref_prompterColors">
+    <PreferenceCategory android:title="@string/pref_prompterFontsAndColors">
+        <ListPreference
+            android:defaultValue="@string/pref_fontFamily_default"
+            android:dialogTitle="@string/pref_fontFamily"
+            android:entries="@array/pref_fontFamily_entries"
+            android:entryValues="@array/pref_fontFamily_values"
+            android:key="@string/pref_key_fontFamily"
+            android:title="@string/pref_fontFamily" />
+
         <ListPreference
             android:defaultValue="@string/pref_backgroundColor_default"
             android:dialogTitle="@string/pref_backgroundColor"
             android:entries="@array/pref_color_entries"
             android:entryValues="@array/pref_backgroundColor_values"
-            android:key="pref_backgroundColor"
+            android:key="@string/pref_key_backgroundColor"
             android:title="@string/pref_backgroundColor" />
 
         <ListPreference
@@ -15,7 +23,7 @@
             android:dialogTitle="@string/pref_textColor"
             android:entries="@array/pref_color_entries"
             android:entryValues="@array/pref_textColor_values"
-            android:key="pref_textColor"
+            android:key="@string/pref_key_textColor"
             android:title="@string/pref_textColor" />
     </PreferenceCategory>
 
@@ -23,7 +31,7 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:dialogTitle="@string/pref_key_playNext"
-            android:key="pref_playNext"
+            android:key="@string/pref_key_playNext"
             android:title="@string/pref_title_playNext" />
 
         <com.easyapps.singerpro.presentation.component.NumberPickerPreference

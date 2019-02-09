@@ -389,8 +389,8 @@ public class MainActivity extends AppCompatActivity implements
                 .setPositiveButton(android.R.string.ok, null)
                 .create();
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.alert_dialog_with_progress_bar, null);
-        d.setView(dialogView);
+//        View dialogView = inflater.inflate(R.layout.alert_dialog_with_progress_bar, null);
+//        d.setView(dialogView);
         d.setOnShowListener(new DialogInterface.OnShowListener() {
 
             @Override

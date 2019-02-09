@@ -13,8 +13,8 @@ android {
         applicationId 'com.easyapps.singerpro'
         minSdkVersion 17
         targetSdkVersion 26
-        versionCode 22
-        versionName '2.5'
+        versionCode 24
+        versionName '2.7'
     }
     buildTypes {
         release {

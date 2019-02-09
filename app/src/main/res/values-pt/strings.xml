@@ -79,6 +79,7 @@
     <string name="pref_title_timeWaiting">Tempo parado (%1$d)</string>
     <string name="pref_title_timeRunning">Tempo executando (%1$d)</string>
     <string name="pref_backgroundColor">Cor de Fundo</string>
+    <string name="pref_fontFamily">Tipo da Fonte</string>
     <string name="pref_textColor">Cor do Texto</string>
     <string name="pref_textColor_default">-1</string>
     <string name="pref_automaticPlayingNext">Rolagem automática</string>
@@ -87,7 +88,7 @@
     <string name="pref_bluetoothPairedDevices">Dispositivos Pareados</string>
     <string name="pref_bluetoothAvailableDevices">Dispositivos Disponíveis</string>
     <string name="pref_pairedDevices">Dispositivos Disponíveis</string>
-    <string name="pref_prompterColors">Cores da Tela</string>
+    <string name="pref_prompterFontsAndColors">Fontes e Cores da Tela</string>
     <string name="pref_title_playNext">Iniciar próxima música automaticamente</string>
     <string name="pref_title_timeBeforeStart">Tempo antes de começar a execução da música</string>
     <string name="pref_summary_timeBeforeStart">Quanto tempo (em segundos) o aplicativo deve aguardar antes de iniciar a próxima música do repertório atual.</string>

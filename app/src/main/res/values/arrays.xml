@@ -9,6 +9,16 @@
         <item>Yellow</item>
     </string-array>
 
+    <string-array name="pref_fontFamily_entries">
+        <item>Sans-Serif (default)</item>
+        <item>Monospace</item>
+    </string-array>
+
+    <string-array name="pref_fontFamily_values">
+        <item>sans-serif</item>
+        <item>monospace</item>
+    </string-array>
+
     <string-array name="pref_backgroundColor_values">
         <item>-16777216</item>
         <item>-16776961</item>
