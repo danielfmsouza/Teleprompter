@@ -15,5 +15,5 @@ The singer can add as much timer that he or she wants and configure it specifica
 
 For developers (and possible musicians) that want to contribute with this open source project, please fell free to email me.
 
-Play store link: https://play.google.com/store/apps/details?id=com.easyapps.teleprompter
+Play store link: https://play.google.com/store/apps/details?id=com.easyapps.singerpro
 
