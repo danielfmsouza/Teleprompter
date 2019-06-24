@@ -44,7 +44,7 @@ public class Lyric {
         return configuration;
     }
 
-    public void removeNameSufix(String tempLyricName) {
+    public void removeNameSuffix(String tempLyricName) {
         name = name.replace(tempLyricName, "");
     }
 }

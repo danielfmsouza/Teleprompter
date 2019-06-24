@@ -167,7 +167,7 @@ public class MaintainLyricFragment extends Fragment {
                 ArrayList<String> removeTemp = new ArrayList<>();
                 removeTemp.add(lyric.getName());
                 mAppService.removeLyrics(removeTemp);
-                lyric.removeNameSufix(mAppService.getTempLyricName());
+                lyric.removeNameSuffix(mAppService.getTempLyricName());
                 mOperation = ActivityUtils.isNewLyric(getActivity()) ? Operation.NEW_LYRIC : Operation.EDIT_LYRIC;
                 mIsTempFileUsed = true;
                 return lyric;

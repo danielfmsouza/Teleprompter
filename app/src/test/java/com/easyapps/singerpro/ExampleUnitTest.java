@@ -1,4 +1,4 @@
-package com.easyapps.teleprompter;
+package com.easyapps.singerpro;
 
 import org.junit.Test;
 
