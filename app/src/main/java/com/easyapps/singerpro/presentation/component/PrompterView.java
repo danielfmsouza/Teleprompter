@@ -3,13 +3,14 @@ package com.easyapps.singerpro.presentation.component;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
 import com.easyapps.singerpro.R;
+import com.easyapps.singerpro.presentation.helper.CountDownTimer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +36,17 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
 
     public PrompterView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        settOnFinishAnimationListener(context);
+        setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startStop();
+            }
+        });
+        setOnFinishAnimationListener(context);
         formatPrompter(context);
     }
 
-    private void settOnFinishAnimationListener(Context context) {
+    private void setOnFinishAnimationListener(Context context) {
         if (context instanceof PausablePrompterAnimation.OnFinishAnimationListener) {
             listener = (PausablePrompterAnimation.OnFinishAnimationListener) context;
         } else {
@@ -118,12 +125,12 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
                         textTimerRunning, ++pos, tvCountTimer));
             }
         } else
-            startStop();
+            startStopAnimation();
     }
 
     private void initializeTimers() {
         if (timers.size() > 0) {
-            timers.get(0).start();
+            timers.get(0).startTimer();
         }
     }
 
@@ -132,8 +139,15 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
     }
 
     public void startStop() {
-        if (getAnimation() != null)
+        startStopAnimation();
+        CountDownTimerPrompter current = getCurrentTimer();
+        startStopCurrentTimer(current);
+    }
+
+    private void startStopAnimation() {
+        if (getAnimation() != null) {
             ((PausablePrompterAnimation) getAnimation()).startStop();
+        }
     }
 
     public void setScrollSpeed(int scrollSpeed) {
@@ -159,6 +173,7 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
     private class CountDownTimerPrompter extends CountDownTimer {
         private final String text;
         private boolean finished = false;
+        private boolean isRunning = false;
         private final int id;
         private final TextView tvCountTimer;
 
@@ -169,6 +184,11 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
             this.tvCountTimer = tvCountTimer;
         }
 
+        public void startTimer() {
+            isRunning = true;
+            start();
+        }
+
         @Override
         public void onTick(long countDownInterval) {
             setCountTimerText(String.format(text, id + 1, countDownInterval / 1000));
@@ -176,11 +196,12 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
 
         @Override
         public void onFinish() {
-            startStop();
+            startStopAnimation();
             if (!finished)
                 startNextTimer(id + 1);
 
             finished = true;
+            isRunning = false;
             setCountTimerText("");
         }
 
@@ -191,9 +212,28 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
         }
     }
 
+    private CountDownTimerPrompter getCurrentTimer() {
+        for (CountDownTimerPrompter timer : timers) {
+            if (timer.isRunning) {
+                return timer;
+            }
+        }
+        return null;
+    }
+
     private synchronized void startNextTimer(int id) {
         if (id >= 0 && id < timers.size()) {
-            timers.get(id).start();
+            timers.get(id).startTimer();
+        }
+    }
+
+    private void startStopCurrentTimer(CountDownTimerPrompter currentTimer) {
+        if (currentTimer == null) return;
+
+        if (currentTimer.isPaused()) {
+            currentTimer.resume();
+        } else {
+            currentTimer.pause();
         }
     }
 }

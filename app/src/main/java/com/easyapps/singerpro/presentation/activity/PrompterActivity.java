@@ -82,13 +82,13 @@ public class PrompterActivity extends AppCompatActivity
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                CountDownTimeBeforeStartAnimation(timeBeforeStart, playNext);
+                countDownTimeBeforeStartAnimation(timeBeforeStart, playNext);
                 mPrompter.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
     }
 
-    private void CountDownTimeBeforeStartAnimation(final int timeBeforeStart, boolean playNext) {
+    private void countDownTimeBeforeStartAnimation(final int timeBeforeStart, boolean playNext) {
         if (playNext) {
             final int leftover = 500; // I need to add a half second so the toast is shown correctly
             new CountDownTimer(timeBeforeStart * 1000 + leftover, 1000) {
@@ -145,10 +145,6 @@ public class PrompterActivity extends AppCompatActivity
         mPrompter.setTimeStopped(config.getTimerStopped());
         mPrompter.setTotalTimers(config.getTimersCount());
         mPrompter.setFileName(fileName);
-    }
-
-    public void startStop(View view) {
-        mPrompter.startStop();
     }
 
     private void hideUI() {

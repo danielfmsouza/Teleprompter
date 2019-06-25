@@ -23,7 +23,6 @@
             android:background="@android:color/black"
             android:gravity="bottom"
             android:keepScreenOn="true"
-            android:onClick="startStop"
             android:textColor="#ffffff"
             android:textSize="50sp"
             android:textStyle="bold"
