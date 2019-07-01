@@ -12,6 +12,7 @@ public class Configuration {
     private int fontSize;
     private int timersCount;
     private int songNumber;
+    private boolean isHtmlFormatted;
     private int[] timerRunning;
     private int[] timerStopped;
 
@@ -19,15 +20,19 @@ public class Configuration {
         this.songNumber = songNumber;
     }
 
-    public static Configuration newCompleteInstance(int scrollSpeed, int[] timerRunning,
-                                                    int fontSize, int[] timerStopped,
-                                                    int timersCount, int songNumber) {
+    public static Configuration newCompleteInstance(int scrollSpeed,
+                                                    int[] timerRunning,
+                                                    int fontSize,
+                                                    int[] timerStopped,
+                                                    int timersCount,
+                                                    int songNumber,
+                                                    boolean isHtmlFormatted) {
         return new Configuration(scrollSpeed, timerRunning, fontSize, timerStopped, timersCount,
-                songNumber);
+                songNumber, isHtmlFormatted);
     }
 
     private Configuration(int scrollSpeed, int[] timerRunning, int fontSize, int[] timerStopped,
-                          int timersCount, int songNumber) {
+                          int timersCount, int songNumber, boolean isHtmlFormatted) {
         if (timerStopped == null)
             throw new IllegalArgumentException("timerStopped");
         if (timerRunning == null)
@@ -41,6 +46,7 @@ public class Configuration {
         this.timerRunning = timerRunning;
         this.timerStopped = timerStopped;
         this.songNumber = songNumber;
+        this.isHtmlFormatted = isHtmlFormatted;
     }
 
     public int getScrollSpeed() {
@@ -65,6 +71,10 @@ public class Configuration {
 
     public int getSongNumber() {
         return songNumber;
+    }
+
+    public boolean isHtmlFormatted() {
+        return isHtmlFormatted;
     }
 
     @NonNull

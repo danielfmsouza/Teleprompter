@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
@@ -28,6 +29,7 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
     private int[] timeWaiting;
     private int totalTimers;
     private String fileName;
+    private boolean isHtmlFormatted = false;
     private boolean animationPrepared = false;
     private final CountDownTimerPrompter initialTimer = new CountDownTimerPrompter(1, "", -2, null);
     private final List<CountDownTimerPrompter> timers = new ArrayList<>();
@@ -168,6 +170,19 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public void setText(String text){
+        if (isHtmlFormatted){
+            setText(Html.fromHtml(text), TextView.BufferType.SPANNABLE);
+        }
+        else{
+            super.setText(text);
+        }
+    }
+
+    public void setHtmlFormatted(boolean isHtmlFormatted) {
+        this.isHtmlFormatted = isHtmlFormatted;
     }
 
     private class CountDownTimerPrompter extends CountDownTimer {

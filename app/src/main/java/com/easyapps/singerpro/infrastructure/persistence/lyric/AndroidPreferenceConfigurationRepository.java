@@ -39,6 +39,7 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
     private final String totalTimersPrefKey;
     private final String textSizePrefKey;
     private final String songNumberPrefKey;
+    private final String htmlFormattedPrefKey;
 
     private final int scrollSpeedDefault;
     private final int timeRunningDefault;
@@ -46,6 +47,7 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
     private final int totalTimersDefault;
     private final int fontSizeDefault;
     private final int songNumberDefault;
+    private final boolean isHtmlFormattedDefault;
 
     private static final String FILE_NAME = "settings";
     private static final String FILE_EXTENSION = ".cfg";
@@ -59,12 +61,14 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
         totalTimersPrefKey = getResourcesString(R.string.pref_key_totalTimers);
         textSizePrefKey = getResourcesString(R.string.pref_key_textSize);
         songNumberPrefKey = getResourcesString(R.string.pref_key_songNumber);
+        htmlFormattedPrefKey = getResourcesString(R.string.pref_key_htmlFormatted);
 
         scrollSpeedDefault = getResourcesInt(R.integer.number_default_value_scroll_speed);
         timeRunningDefault = getResourcesInt(R.integer.number_min_value_timer);
         timeStoppedDefault = getResourcesInt(R.integer.number_min_value_timer);
         totalTimersDefault = getResourcesInt(R.integer.number_min_value_count_timers);
         songNumberDefault = getResourcesInt(R.integer.number_song);
+        isHtmlFormattedDefault = getResourcesBoolean(R.bool.isHtmlFormatted);
         fontSizeDefault = getResourcesInt(R.integer.number_default_value_text_size);
     }
 
@@ -91,6 +95,7 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
         int totalTimers = preferences.getInt(totalTimersPrefKey + id, totalTimersDefault);
         int fontSize = preferences.getInt(textSizePrefKey + id, fontSizeDefault);
         int songNumber = preferences.getInt(songNumberPrefKey + id, songNumberDefault);
+        boolean isHtmlFormatted = preferences.getBoolean(htmlFormattedPrefKey + id, isHtmlFormattedDefault);
 
         int[] timeRunning = new int[totalTimers];
         int[] timeStopped = new int[totalTimers];
@@ -100,7 +105,7 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
         }
 
         return Configuration.newCompleteInstance(scrollSpeed, timeRunning,
-                fontSize, timeStopped, totalTimers, songNumber);
+                fontSize, timeStopped, totalTimers, songNumber, isHtmlFormatted);
     }
 
     @Override
@@ -183,11 +188,13 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
         int totalTimers = preferences.getInt(totalTimersPrefKey + oldFileName, totalTimersDefault);
         int fontSize = preferences.getInt(textSizePrefKey + oldFileName, fontSizeDefault);
         int songNumber = preferences.getInt(songNumberPrefKey + oldFileName, songNumberDefault);
+        boolean isHtmlFormatted = preferences.getBoolean(htmlFormattedPrefKey + oldFileName, isHtmlFormattedDefault);
 
         editor.remove(scrollSpeedPrefKey);
         editor.remove(totalTimersPrefKey);
         editor.remove(textSizePrefKey);
         editor.remove(songNumberPrefKey);
+        editor.remove(htmlFormattedPrefKey);
 
         if (scrollSpeed != 0)
             editor.putInt(scrollSpeedPrefKey + newFileName, scrollSpeed);
@@ -197,6 +204,8 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
             editor.putInt(textSizePrefKey + newFileName, fontSize);
         if (songNumber != 0)
             editor.putInt(songNumberPrefKey + newFileName, songNumber);
+
+        editor.putBoolean(htmlFormattedPrefKey + newFileName, isHtmlFormatted);
 
         for (int i = 0; i < totalTimers; i++) {
             int timeRunning = preferences.getInt(timeRunningPrefKey + oldFileName + i,
@@ -223,5 +232,9 @@ public class AndroidPreferenceConfigurationRepository extends FileSystemReposito
 
     private int getResourcesInt(int resource) {
         return getContext().getResources().getInteger(resource);
+    }
+
+    private boolean getResourcesBoolean(int resource) {
+        return getContext().getResources().getBoolean(resource);
     }
 }

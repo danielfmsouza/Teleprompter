@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.view.View;
 
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.presentation.component.NumberPickerPreference;
@@ -17,13 +19,13 @@ import com.easyapps.singerpro.presentation.component.NumberPickerPreference;
  * Fragment that holds the set of waiting and running timers accordingly the total timers chose by
  * user.
  */
-public class TimerPreferenceFragment extends PreferenceFragment {
+public class SettingsPreferenceFragment extends PreferenceFragment {
 
     private static final String LYRIC_NAME = "LYRIC_NAME";
     private Context mContext;
 
-    public static TimerPreferenceFragment newInstance(String lyricName) {
-        TimerPreferenceFragment fragment = new TimerPreferenceFragment();
+    public static SettingsPreferenceFragment newInstance(String lyricName) {
+        SettingsPreferenceFragment fragment = new SettingsPreferenceFragment();
 
         Bundle b = new Bundle();
         b.putString(LYRIC_NAME, lyricName);

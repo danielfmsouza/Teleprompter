@@ -65,7 +65,7 @@
     <string name="rename_playlist">Renomear Repertório</string>
     <string name="load_existing_playlist">Carregar Repertório Existente</string>
     <string name="add_song_playlist">Adicionar Letra(s) ao Repertório</string>
-    <string name="copyright_developer">SingerPro - versão 2.8\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
+    <string name="copyright_developer">SingerPro - versão 2.9.1\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->
     <string name="pref_summary_scrollSpeed">Define o quão rápido a tela deve rolar. A velocidade da rolagem diminuirá com valores mais altos.</string>
@@ -73,6 +73,7 @@
     <string name="pref_summary_timeRunning">Quanto tempo (em segundos) a tela deve continuar funcionando normalmente. Se for zero, será executado indefinidamente. Conseqüentemente, se um temporizador com zero não for o último, os subsequentes não terão efeito.</string>
     <string name="pref_summary_totalTimers">Quantos temporizadores terão durante a execução da música. Depois de alterada a quantidade de temporizadores, deve ser definido o tempo para cada um. A seqüência de execução segue exatamente na mesma ordem que os temporizadores são colocados aqui.</string>
     <string name="pref_summary_textSize">Tamanho do texto solicitado.</string>
+    <string name="pref_summary_htmlFormatted">Quando selecionado, o estilo do texto será enriquecido com formatação HTML. Quaisquer tags HTML presentes na letra serão considerados para formatá-la.</string>
     <string name="pref_title_scrollSpeed">Velocidade de rolagem do texto</string>
     <string name="pref_title_textSize">Tamanho do texto</string>
     <string name="pref_title_totalTimers">Quantidade total de temporizadores para execução</string>
@@ -90,6 +91,7 @@
     <string name="pref_pairedDevices">Dispositivos Disponíveis</string>
     <string name="pref_prompterFontsAndColors">Fontes e Cores da Tela</string>
     <string name="pref_title_playNext">Iniciar próxima música automaticamente</string>
+    <string name="pref_title_htmlFormatted">Texto formatado com marcações HTML</string>
     <string name="pref_title_timeBeforeStart">Tempo antes de começar a execução da música</string>
     <string name="pref_summary_timeBeforeStart">Quanto tempo (em segundos) o aplicativo deve aguardar antes de iniciar a próxima música do repertório atual.</string>
 

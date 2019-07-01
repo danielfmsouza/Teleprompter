@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
-import com.easyapps.singerpro.presentation.fragment.TimerPreferenceFragment;
+import com.easyapps.singerpro.presentation.fragment.SettingsPreferenceFragment;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 import com.easyapps.singerpro.R;
 
@@ -28,7 +28,7 @@ public class SettingsActivity extends Activity {
 
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction().replace(android.R.id.content,
-                TimerPreferenceFragment.newInstance(mLyricName)).commit();
+                SettingsPreferenceFragment.newInstance(mLyricName)).commit();
     }
 
     @Override

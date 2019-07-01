@@ -65,7 +65,7 @@
     <string name="rename_playlist">Rename Playlist</string>
     <string name="load_existing_playlist">Load Existing Playlist</string>
     <string name="add_song_playlist">Add Lyric(s) to Playlist</string>
-    <string name="copyright_developer">SingerPro - version 2.8\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
+    <string name="copyright_developer">SingerPro - version 2.9.1\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->
     <string name="pref_summary_scrollSpeed">Defines how fast the screen must scroll. It will decrease with higher values.</string>
@@ -73,6 +73,7 @@
     <string name="pref_summary_timeRunning">How much time (in seconds) should the screen keep running normally. If zero, it will run indefinitely. Consequently, if a timer with zero is not the last, the other ones won\'t make any difference.</string>
     <string name="pref_summary_totalTimers">How many timers will execute while prompting. After changed, the amount of time that the lyric is stopped and running on the screen must be set for each timer. The execution sequence follows exactly the way as the timers are placed here.</string>
     <string name="pref_summary_textSize">Size of the text prompted.</string>
+    <string name="pref_summary_htmlFormatted">When true, the text style will be enriched with HTML formatting. Any HTML tags present in the lyric will be considered to format it.</string>
     <string name="pref_title_scrollSpeed">Scroll speed</string>
     <string name="pref_title_textSize">Text size</string>
     <string name="pref_title_totalTimers">Timers to execute</string>
@@ -89,12 +90,14 @@
     <string name="pref_pairedDevices">Available Devices</string>
     <string name="pref_prompterFontsAndColors">Prompter Fonts and Colors</string>
     <string name="pref_title_playNext">Play Next Automatically</string>
+    <string name="pref_title_htmlFormatted">Html Formatted Text</string>
     <string name="pref_title_timeBeforeStart">Time Before Start Prompting</string>
     <string name="pref_summary_timeBeforeStart">How much time (in seconds) the app must wait before start prompting the next song in the current set list.</string>
 
     <!--Not translated resources-->
     <string name="pref_key_backgroundColor">pref_backgroundColor</string>
     <string name="pref_key_fontFamily">pref_fontFamily</string>
+    <string name="pref_key_htmlFormatted">pref_htmlFormatted</string>
     <string name="pref_textColor_default">-1</string>
     <string name="pref_key_playNext">pref_playNext</string>
     <string name="pref_key_timeBeforeStart">pref_timeBeforeStart</string>

@@ -18,6 +18,13 @@
         preference:minValue="@integer/number_min_value_text_size"
         preference:wrapSelectorWheel="false"/>
 
+    <com.easyapps.singerpro.presentation.component.CustomCheckboxPreference
+        android:defaultValue="false"
+        android:dialogTitle="@string/pref_key_htmlFormatted"
+        android:key="@string/pref_key_htmlFormatted"
+        android:summary="@string/pref_summary_htmlFormatted"
+        android:title="@string/pref_title_htmlFormatted" />
+
     <com.easyapps.singerpro.presentation.component.TimersCountPickerPreference
         android:key="@string/pref_key_totalTimers"
         android:title="@string/pref_title_totalTimers"

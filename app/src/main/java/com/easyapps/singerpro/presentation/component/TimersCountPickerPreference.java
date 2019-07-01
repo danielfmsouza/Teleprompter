@@ -5,7 +5,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
-import com.easyapps.singerpro.presentation.fragment.TimerPreferenceFragment;
+import com.easyapps.singerpro.presentation.fragment.SettingsPreferenceFragment;
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
@@ -38,7 +38,7 @@ public class TimersCountPickerPreference extends NumberPickerPreference {
 
         if (positiveResult) {
             mContext.getFragmentManager().beginTransaction().replace(android.R.id.content,
-                    TimerPreferenceFragment.newInstance(mFileName)).commit();
+                    SettingsPreferenceFragment.newInstance(mFileName)).commit();
         }
     }
 }

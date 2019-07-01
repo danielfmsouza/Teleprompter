@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -130,8 +131,8 @@ public class PrompterActivity extends AppCompatActivity
 
         try {
             Lyric lyric = mLyricAppService.loadLyricWithConfiguration(fileName, false);
-            mPrompter.setText(lyric.getContent());
             setPrompterDefinitions(lyric.getConfiguration(), fileName);
+            mPrompter.setText(lyric.getContent());
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
@@ -144,6 +145,7 @@ public class PrompterActivity extends AppCompatActivity
         mPrompter.setTimeRunning(config.getTimerRunning());
         mPrompter.setTimeStopped(config.getTimerStopped());
         mPrompter.setTotalTimers(config.getTimersCount());
+        mPrompter.setHtmlFormatted(config.isHtmlFormatted());
         mPrompter.setFileName(fileName);
     }
 
