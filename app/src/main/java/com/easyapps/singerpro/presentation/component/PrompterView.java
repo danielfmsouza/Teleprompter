@@ -1,17 +1,23 @@
 package com.easyapps.singerpro.presentation.component;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.presentation.helper.CountDownTimer;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +59,7 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
             listener = (PausablePrompterAnimation.OnFinishAnimationListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFinishAnimationListener");
+                    + " must implement OnFinishAnimationCallback");
         }
     }
 
@@ -80,6 +86,7 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
     public void startAnimation(TextView tvCountTimer) {
         if (animationPrepared) {
             startAnimation(animation);
+//        ObjectAnimator objectAnimator = ObjectAnimator.ofInt(this, "scrollY", 0, 950).setDuration(9000);
             initialTimer.start();
             createTimers(tvCountTimer);
             initializeTimers();

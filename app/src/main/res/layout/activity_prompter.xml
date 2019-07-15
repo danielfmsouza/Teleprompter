@@ -7,41 +7,78 @@
     android:fitsSystemWindows="true"
     tools:context="com.easyapps.singerpro.presentation.activity.PrompterActivity">
 
-    <ScrollView
+    <com.easyapps.singerpro.presentation.component.CustomScrollView
         android:id="@+id/svText"
         android:layout_width="match_parent"
-        android:background="@android:color/black"
         android:layout_height="match_parent"
         android:animationCache="true"
+        android:background="@android:color/black"
+        android:clickable="true"
+        android:focusable="true"
         android:isScrollContainer="true"
-        android:overScrollMode="always">
+        android:overScrollMode="always"
+        preference:scrollSpeed="@integer/number_default_value_scroll_speed"
+        preference:timerRunningValue="@integer/number_min_value_timer"
+        preference:timerWaitingValue="@integer/number_min_value_timer"
+        preference:timersCount="@integer/number_min_value_count_timers">
 
-        <com.easyapps.singerpro.presentation.component.PrompterView
+        <TextView
             android:id="@+id/fullscreen_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/black"
-            android:gravity="bottom"
+            android:fontFamily="sans-serif"
             android:keepScreenOn="true"
+            android:focusable="false"
+            android:onClick="startStop"
+            android:gravity="bottom"
             android:textColor="#ffffff"
             android:textSize="50sp"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif"
-            android:scrollbars = "vertical"
-            android:verticalScrollbarPosition="right"
-            android:scrollbarAlwaysDrawVerticalTrack="true"
-            preference:scrollSpeed="@integer/number_default_value_scroll_speed"
-            preference:timerRunningValue="@integer/number_min_value_timer"
-            preference:timerWaitingValue="@integer/number_min_value_timer"
-            preference:timersCount="@integer/number_min_value_count_timers" />
-    </ScrollView>
+            android:textStyle="bold" />
+    </com.easyapps.singerpro.presentation.component.CustomScrollView>
+
+    <!--<ScrollView-->
+        <!--android:id="@+id/svText"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:animationCache="true"-->
+        <!--android:background="@android:color/black"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="true"-->
+        <!--android:isScrollContainer="true"-->
+        <!--android:overScrollMode="always"-->
+        <!--&gt;-->
+
+        <!--<com.easyapps.singerpro.presentation.component.PrompterView-->
+            <!--android:id="@+id/fullscreen_content"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@android:color/black"-->
+            <!--android:fontFamily="sans-serif"-->
+            <!--android:gravity="bottom"-->
+            <!--android:keepScreenOn="true"-->
+            <!--android:focusable="false"-->
+            <!--android:onClick="startStop"-->
+            <!--android:scrollbarAlwaysDrawVerticalTrack="true"-->
+            <!--android:scrollbars="vertical"-->
+            <!--android:textColor="#ffffff"-->
+            <!--android:textSize="50sp"-->
+            <!--android:textStyle="bold"-->
+            <!--android:verticalScrollbarPosition="right"-->
+            <!--preference:scrollSpeed="@integer/number_default_value_scroll_speed"-->
+            <!--preference:timerRunningValue="@integer/number_min_value_timer"-->
+            <!--preference:timerWaitingValue="@integer/number_min_value_timer"-->
+            <!--preference:timersCount="@integer/number_min_value_count_timers"/>-->
+    <!--</ScrollView>-->
+
     <TextView
         android:id="@+id/tvCountTimer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:textAlignment="textEnd"
         android:focusable="false"
+        android:clickable="false"
+        android:textAlignment="textEnd"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         android:textStyle="italic" />

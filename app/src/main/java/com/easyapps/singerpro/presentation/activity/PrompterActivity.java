@@ -1,12 +1,15 @@
 package com.easyapps.singerpro.presentation.activity;
 
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ScrollView;
@@ -18,17 +21,20 @@ import com.easyapps.singerpro.application.LyricApplicationService;
 import com.easyapps.singerpro.domain.model.lyric.Configuration;
 import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
+import com.easyapps.singerpro.presentation.component.CustomScrollView;
 import com.easyapps.singerpro.presentation.component.PausablePrompterAnimation;
 import com.easyapps.singerpro.presentation.component.PrompterView;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
+
+import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 
 public class PrompterActivity extends AppCompatActivity
-        implements PausablePrompterAnimation.OnFinishAnimationListener {
-    private PrompterView mPrompter;
+        implements CustomScrollView.OnFinishAnimationCallback {
+    private CustomScrollView mPrompter;
     private String mLyricName;
 
     @Inject
@@ -46,6 +52,10 @@ public class PrompterActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         hideUI();
         playQueuedLyric(null);
+    }
+
+    public void startStop(View view) {
+        mPrompter.startStop();
     }
 
     private void playQueuedLyric(String lyricPreviouslyPlayed) {
@@ -121,32 +131,51 @@ public class PrompterActivity extends AppCompatActivity
         int backgroundColor = Integer.parseInt(sharedPref.getString(
                 getResources().getString(R.string.pref_key_backgroundColor), backgroundColorDefault));
 
-        final ScrollView scrollView = findViewById(R.id.svText);
-        scrollView.setBackgroundColor(backgroundColor);
+        mPrompter.setBackgroundColor(backgroundColor);
+    }
+
+    private void setTextViewPaddingBottom(TextView textView){
+        Display display = getWindowManager(). getDefaultDisplay();
+        Point size = new Point();
+        display. getSize(size);
+        int heightToAdd = size. y;
+
+        textView.setPadding(0, 0, 0, heightToAdd);
     }
 
     private void loadFileIntoPrompter(String fileName) {
         setContentView(R.layout.activity_prompter);
-        mPrompter = findViewById(R.id.fullscreen_content);
-
+        mPrompter = findViewById(R.id.svText);
+        TextView textView = findViewById(R.id.fullscreen_content);
         try {
             Lyric lyric = mLyricAppService.loadLyricWithConfiguration(fileName, false);
             setPrompterDefinitions(lyric.getConfiguration(), fileName);
-            mPrompter.setText(lyric.getContent());
+            setTextViewDefinitions(textView, lyric);
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
+        setTextViewPaddingBottom(textView);
     }
 
     private void setPrompterDefinitions(Configuration config, String fileName) {
-        mPrompter.setAnimationId(R.anim.text_prompter);
-        mPrompter.setTextSize(config.getFontSize());
+//        mPrompter.setAnimationId(R.anim.text_prompter);
+//        mPrompter.setTextSize(config.getFontSize());
         mPrompter.setScrollSpeed(config.getScrollSpeed());
         mPrompter.setTimeRunning(config.getTimerRunning());
         mPrompter.setTimeStopped(config.getTimerStopped());
         mPrompter.setTotalTimers(config.getTimersCount());
-        mPrompter.setHtmlFormatted(config.isHtmlFormatted());
+//        mPrompter.setHtmlFormatted(config.isHtmlFormatted());
         mPrompter.setFileName(fileName);
+    }
+
+    private void setTextViewDefinitions(TextView textView, Lyric lyric){
+        textView.setTextSize(lyric.getConfiguration().getFontSize());
+        if (lyric.getConfiguration().isHtmlFormatted()){
+            textView.setText(Html.fromHtml(lyric.getContent()), TextView.BufferType.SPANNABLE);
+        }
+        else{
+            textView.setText(lyric.getContent());
+        }
     }
 
     private void hideUI() {
@@ -163,11 +192,12 @@ public class PrompterActivity extends AppCompatActivity
     public void onBackPressed() {
         backToCallerActivity(mLyricName);
         showToastMessage(R.string.prompting_canceled);
+        mPrompter.cancelAnimation();
     }
 
     @Override
-    public void onFinishAnimation(String lyricPlayed) {
-        mPrompter.setText("");
-        playQueuedLyric(lyricPlayed);
+    public void onFinishAnimation(String fileScrolled) {
+//        mPrompter.setText("");
+        playQueuedLyric(fileScrolled);
     }
 }

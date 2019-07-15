@@ -24,6 +24,8 @@ public abstract class CountDownTimer {
 
     private boolean mPaused = false;
 
+    private boolean mRunning = false;
+
     /**
      * @param millisInFuture The number of millis in the future from the call
      *   to {@link #start()} until the countdown is done and {@link #onFinish()}
@@ -58,6 +60,7 @@ public abstract class CountDownTimer {
         mHandler.sendMessage(mHandler.obtainMessage(MSG));
         mCancelled = false;
         mPaused = false;
+        mRunning = true;
         return this;
     }
 
@@ -82,6 +85,10 @@ public abstract class CountDownTimer {
 
     public boolean isPaused(){
         return mPaused;
+    }
+
+    public boolean isRunning(){
+        return mRunning;
     }
     /**
      * Callback fired on regular interval.
@@ -109,6 +116,7 @@ public abstract class CountDownTimer {
                     final long millisLeft = mStopTimeInFuture - SystemClock.elapsedRealtime();
 
                     if (millisLeft <= 0) {
+                        mRunning = false;
                         onFinish();
                     } else if (millisLeft < mCountdownInterval) {
                         // no tick, just delay until done
