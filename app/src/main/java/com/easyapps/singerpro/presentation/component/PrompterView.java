@@ -86,7 +86,6 @@ public class PrompterView extends android.support.v7.widget.AppCompatTextView {
     public void startAnimation(TextView tvCountTimer) {
         if (animationPrepared) {
             startAnimation(animation);
-//        ObjectAnimator objectAnimator = ObjectAnimator.ofInt(this, "scrollY", 0, 950).setDuration(9000);
             initialTimer.start();
             createTimers(tvCountTimer);
             initializeTimers();

@@ -2,6 +2,7 @@ package com.easyapps.singerpro.presentation.activity;
 
 import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBar;
@@ -52,10 +53,6 @@ public class PrompterActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         hideUI();
         playQueuedLyric(null);
-    }
-
-    public void startStop(View view) {
-        mPrompter.startStop();
     }
 
     private void playQueuedLyric(String lyricPreviouslyPlayed) {
@@ -134,11 +131,11 @@ public class PrompterActivity extends AppCompatActivity
         mPrompter.setBackgroundColor(backgroundColor);
     }
 
-    private void setTextViewPaddingBottom(TextView textView){
-        Display display = getWindowManager(). getDefaultDisplay();
+    private void setTextViewPaddingBottom(TextView textView) {
+        Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
-        display. getSize(size);
-        int heightToAdd = size. y;
+        display.getSize(size);
+        int heightToAdd = size.y;
 
         textView.setPadding(0, 0, 0, heightToAdd);
     }
@@ -168,12 +165,26 @@ public class PrompterActivity extends AppCompatActivity
         mPrompter.setFileName(fileName);
     }
 
-    private void setTextViewDefinitions(TextView textView, Lyric lyric){
+    private void setTextViewDefinitions(TextView textView, Lyric lyric) {
+        String textColorDefault = getResources().getString(R.string.pref_textColor_default);
+        String fontFamilyDefault = getResources().getString(R.string.pref_fontFamily_default);
+        String backgroundColorDefault = getResources().getString(R.string.pref_backgroundColor_default);
+
+        int textColor = Integer.parseInt(sharedPref.getString(
+                getResources().getString(R.string.pref_key_textColor), textColorDefault));
+        String fontFamily = sharedPref.getString(
+                getResources().getString(R.string.pref_key_fontFamily), fontFamilyDefault);
+        int backgroundColor = Integer.parseInt(sharedPref.getString(
+                getResources().getString(R.string.pref_key_backgroundColor), backgroundColorDefault));
+
+        textView.setTypeface(Typeface.create(fontFamily, Typeface.BOLD));
+        textView.setTextColor(textColor);
         textView.setTextSize(lyric.getConfiguration().getFontSize());
-        if (lyric.getConfiguration().isHtmlFormatted()){
+        textView.setBackgroundColor(backgroundColor);
+
+        if (lyric.getConfiguration().isHtmlFormatted()) {
             textView.setText(Html.fromHtml(lyric.getContent()), TextView.BufferType.SPANNABLE);
-        }
-        else{
+        } else {
             textView.setText(lyric.getContent());
         }
     }

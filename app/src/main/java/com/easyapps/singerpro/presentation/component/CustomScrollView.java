@@ -1,11 +1,10 @@
 package com.easyapps.singerpro.presentation.component;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Point;
 import android.util.AttributeSet;
-import android.view.Display;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ScrollView;
@@ -20,6 +19,7 @@ import java.util.List;
 public class CustomScrollView extends ScrollView {
     private static final int DELAY_MILLIS = 50;
 
+    private GestureDetector gestureDetector;
     private ObjectAnimator animator;
     private Runnable scrollChecker;
     private int scrollPrevPosition;
@@ -54,6 +54,7 @@ public class CustomScrollView extends ScrollView {
         @Override
         public void onFlingStarted() {
             isFlinging = true;
+            System.out.println("onFling started");
             if (animator != null) {
                 if (animator.isRunning() && !animator.isPaused()) {
                     wasAnimationRunning = true;
@@ -65,6 +66,7 @@ public class CustomScrollView extends ScrollView {
         @Override
         public void onFlingStopped() {
             isFlinging = false;
+            System.out.println("onFling stopped");
             if (getScrollY() != bottomScrollYValue) {
                 initializeAnimator(getContext(), getScrollY(), bottomScrollYValue);
                 if (wasAnimationRunning) {
@@ -106,6 +108,39 @@ public class CustomScrollView extends ScrollView {
                 }
             }
         };
+
+        setOnTouchListener(new OnTouchListener() {
+            private boolean itMoved = false;
+            private boolean wasAnimationRunning = false;
+
+            public boolean onTouch(View view, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (animator != null) {
+                        if (animator.isRunning() && !animator.isPaused()) {
+                            wasAnimationRunning = true;
+                            animator.pause();
+                        }
+                    }
+                    System.out.println("touched down!");
+                } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    System.out.println("MOVING!!!!");
+                    itMoved = true;
+                } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                    System.out.println("touched up!");
+                    if (itMoved) {
+                        animator.cancel();
+                        initializeAnimator(getContext(), getScrollY(), bottomScrollYValue);
+                        if (wasAnimationRunning)
+                            animator.start();
+                    } else if (!wasAnimationRunning) {
+                        animator.resume();
+                    }
+                    itMoved = false;
+                    wasAnimationRunning = false;
+                }
+                return false;
+            }
+        });
     }
 
     public void startStop() {
@@ -161,12 +196,12 @@ public class CustomScrollView extends ScrollView {
 
     @Override
     protected void onScrollChanged(int x, int y, int oldX, int oldY) {
-        int diff = (bottomScrollYValue - (getHeight() + getScrollY()));
-        if (!hasFinishedAnimation && !flingListener.isFlinging() && bottomScrollYValue != 0 && diff <= 0) {
-            onFinishAnimationCallback.onFinishAnimation(fileName);
-            hasFinishedAnimation = true;
-        } else
-            super.onScrollChanged(x, y, oldX, oldY);
+//        int diff = (bottomScrollYValue - (getHeight() + getScrollY()));
+//        if (!hasFinishedAnimation && !flingListener.isFlinging() && bottomScrollYValue != 0 && diff <= 0) {
+//            onFinishAnimationCallback.onFinishAnimation(fileName);
+//            hasFinishedAnimation = true;
+//        } else
+        super.onScrollChanged(x, y, oldX, oldY);
     }
 
     private void createTimers(TextView tvCountTimer) {
@@ -288,4 +323,5 @@ public class CustomScrollView extends ScrollView {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
+
 }
