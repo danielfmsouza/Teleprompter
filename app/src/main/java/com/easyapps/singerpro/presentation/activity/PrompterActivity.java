@@ -151,18 +151,11 @@ public class PrompterActivity extends AppCompatActivity
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
-        setTextViewPaddingBottom(textView);
     }
 
     private void setPrompterDefinitions(Configuration config, String fileName) {
-//        mPrompter.setAnimationId(R.anim.text_prompter);
-//        mPrompter.setTextSize(config.getFontSize());
-        mPrompter.setScrollSpeed(config.getScrollSpeed());
-        mPrompter.setTimeRunning(config.getTimerRunning());
-        mPrompter.setTimeStopped(config.getTimerStopped());
-        mPrompter.setTotalTimers(config.getTimersCount());
-//        mPrompter.setHtmlFormatted(config.isHtmlFormatted());
         mPrompter.setFileName(fileName);
+        mPrompter.setTimersConfig(config);
     }
 
     private void setTextViewDefinitions(TextView textView, Lyric lyric) {
@@ -187,6 +180,7 @@ public class PrompterActivity extends AppCompatActivity
         } else {
             textView.setText(lyric.getContent());
         }
+        setTextViewPaddingBottom(textView);
     }
 
     private void hideUI() {
@@ -208,7 +202,8 @@ public class PrompterActivity extends AppCompatActivity
 
     @Override
     public void onFinishAnimation(String fileScrolled) {
-//        mPrompter.setText("");
+        TextView textView = findViewById(R.id.fullscreen_content);
+        textView.setText("");
         playQueuedLyric(fileScrolled);
     }
 }
