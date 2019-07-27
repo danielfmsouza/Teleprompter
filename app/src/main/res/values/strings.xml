@@ -31,6 +31,8 @@
     <string name="bluetooth_enable_dialog_title">Enable bluetooth?</string>
     <string name="bluetooth_paired_devices_dialog_title">Paired Device(s)</string>
     <string name="bluetooth_paired_devices_dialog_desc">Please choose one or more paired devices to share your screen with</string>
+    <string name="search_no_results">No Results</string>
+
 
     <!--UI components resources-->
     <string name="tv_timeWaiting">Time stopped (%1$d): %2$d</string>
@@ -95,25 +97,25 @@
     <string name="pref_summary_timeBeforeStart">How much time (in seconds) the app must wait before start prompting the next song in the current set list.</string>
 
     <!--Not translated resources-->
-    <string name="pref_key_backgroundColor">pref_backgroundColor</string>
-    <string name="pref_key_fontFamily">pref_fontFamily</string>
-    <string name="pref_key_htmlFormatted">pref_htmlFormatted</string>
+    <string name="pref_key_backgroundColor" translatable="false">pref_backgroundColor</string>
+    <string name="pref_key_fontFamily" translatable="false">pref_fontFamily</string>
+    <string name="pref_key_htmlFormatted" translatable="false">pref_htmlFormatted</string>
     <string name="pref_textColor_default">-1</string>
-    <string name="pref_key_playNext">pref_playNext</string>
-    <string name="pref_key_timeBeforeStart">pref_timeBeforeStart</string>
-    <string name="pref_key_currentPlaylistName">pref_currentPlaylistName</string>
-    <string name="pref_key_currentSelectedLyric">pref_currentSelectedLyric</string>
-    <string name="pref_key_isNewLyric">pref_isNewLyric</string>
-    <string name="pref_key_clickedOnLyric">pref_clickedOnLyric</string>
-    <string name="app_logo_description">App logo</string>
-    <string name="pref_key_scrollSpeed">pref_scrollSpeed</string>
-    <string name="pref_key_totalTimers">pref_totalTimers</string>
-    <string name="pref_key_timeWaiting">pref_timeWaiting</string>
-    <string name="pref_key_timeRunning">pref_timeRunning</string>
-    <string name="pref_key_textSize">pref_textSize</string>
-    <string name="pref_key_songNumber">pref_songNumber</string>
-    <string name="pref_fontFamily_default">sans-serif</string>
-    <string name="pref_backgroundColor_default">-16777216</string>
-    <string name="pref_key_textColor">pref_textColor</string>
-    <string name="title_activity_search">SearchActivity</string>
+    <string name="pref_key_playNext" translatable="false">pref_playNext</string>
+    <string name="pref_key_timeBeforeStart" translatable="false">pref_timeBeforeStart</string>
+    <string name="pref_key_currentPlaylistName" translatable="false">pref_currentPlaylistName</string>
+    <string name="pref_key_currentSelectedLyric" translatable="false">pref_currentSelectedLyric</string>
+    <string name="pref_key_isNewLyric" translatable="false">pref_isNewLyric</string>
+    <string name="pref_key_clickedOnLyric" translatable="false">pref_clickedOnLyric</string>
+    <string name="app_logo_description" translatable="false">App logo</string>
+    <string name="pref_key_scrollSpeed" translatable="false">pref_scrollSpeed</string>
+    <string name="pref_key_totalTimers" translatable="false">pref_totalTimers</string>
+    <string name="pref_key_timeWaiting" translatable="false">pref_timeWaiting</string>
+    <string name="pref_key_timeRunning" translatable="false">pref_timeRunning</string>
+    <string name="pref_key_textSize" translatable="false">pref_textSize</string>
+    <string name="pref_key_songNumber" translatable="false">pref_songNumber</string>
+    <string name="pref_fontFamily_default" translatable="false">sans-serif</string>
+    <string name="pref_backgroundColor_default" translatable="false">-16777216</string>
+    <string name="pref_key_textColor" translatable="false">pref_textColor</string>
+    <string name="title_activity_search" translatable="false">SearchActivity</string>
 </resources>

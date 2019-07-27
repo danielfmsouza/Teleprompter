@@ -52,8 +52,10 @@ public class MaintainLyricActivity extends AppCompatActivity implements Maintain
         }
 
         EditText etTextFile = findViewById(R.id.etTextFile);
-        etTextFile.setTypeface(Typeface.create(getFontFamily(), Typeface.BOLD));
+        if (etTextFile != null)
+            etTextFile.setTypeface(Typeface.create(getFontFamily(), Typeface.BOLD));
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -94,7 +96,7 @@ public class MaintainLyricActivity extends AppCompatActivity implements Maintain
         return contentFragment != null && contentFragment.saveLyricFile();
     }
 
-    private String getFontFamily(){
+    private String getFontFamily() {
         String fontFamilyDefault = getResources().getString(R.string.pref_fontFamily_default);
 
         return sharedPref.getString(

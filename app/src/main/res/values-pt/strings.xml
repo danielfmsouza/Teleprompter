@@ -31,6 +31,7 @@
     <string name="bluetooth_enable_dialog_title">Ativar o bluetooth?</string>
     <string name="bluetooth_paired_devices_dialog_title">Dispositivo(s) Pareado(s)</string>
     <string name="bluetooth_paired_devices_dialog_desc">Por favor Escolha um ou mais dispositivos pareados para compartilhar com sua tela</string>
+    <string name="search_no_results">Sem resultados na pesquisa</string>
 
     <!--UI components resources-->
     <string name="tv_timeWaiting">Tempo Parado (%1$d): %2$d</string>
@@ -95,22 +96,4 @@
     <string name="pref_title_timeBeforeStart">Tempo antes de começar a execução da música</string>
     <string name="pref_summary_timeBeforeStart">Quanto tempo (em segundos) o aplicativo deve aguardar antes de iniciar a próxima música do repertório atual.</string>
 
-    <!--Not translated resources-->
-    <string name="pref_key_backgroundColor">pref_backgroundColor</string>
-    <string name="pref_key_playNext">pref_playNext</string>
-    <string name="pref_key_timeBeforeStart">pref_timeBeforeStart</string>
-    <string name="pref_key_currentPlaylistName">pref_currentPlaylistName</string>
-    <string name="pref_key_currentSelectedLyric">pref_currentSelectedLyric</string>
-    <string name="pref_key_isNewLyric">pref_isNewLyric</string>
-    <string name="pref_key_clickedOnLyric">pref_clickedOnLyric</string>
-    <string name="app_logo_description">App logo</string>
-    <string name="pref_key_scrollSpeed">pref_scrollSpeed</string>
-    <string name="pref_key_totalTimers">pref_totalTimers</string>
-    <string name="pref_key_timeWaiting">pref_timeWaiting</string>
-    <string name="pref_key_timeRunning">pref_timeRunning</string>
-    <string name="pref_key_textSize">pref_textSize</string>
-    <string name="pref_key_songNumber">pref_songNumber</string>
-    <string name="pref_backgroundColor_default">-16777216</string>
-    <string name="pref_key_textColor">pref_textColor</string>
-    <string name="title_activity_search">SearchActivity</string>
 </resources>
