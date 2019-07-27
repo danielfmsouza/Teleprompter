@@ -191,28 +191,20 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
 
     private void startActivity(Class clazz, int position) {
         String currentPlaylistName = ActivityUtils.getCurrentPlaylistName(getContext());
-        fillQueueToPlay(position, currentPlaylistName);
+        fillQueueToPlay(position);
         ActivityUtils.startActivity((Activity) getContext(), currentPlaylistName, clazz);
     }
 
-    private void fillQueueToPlay(int position, String currentPlaylistName) {
-        String lyricName = getLyricName(position);
-        SharedPreferences sharedPref =
-                PreferenceManager.getDefaultSharedPreferences(getContext());
-        boolean playNext = sharedPref.getBoolean(getContext().
-                getResources().getString(R.string.pref_key_playNext), false);
+    private void fillQueueToPlay(int position) {
+        List<String> lyricsToPlay = new ArrayList<>();
+        for (int i = 0; i < getCount(); i++) {
+            String lyricName = getLyricName(i);
+            if (!"".equals(lyricName))
+                lyricsToPlay.add(lyricName);
+        }
 
         lyricQueue.clearPlaylistQueue();
-        if (playNext) {
-            try {
-                lyricQueue.queueLyricsForPlaying(lyricName, currentPlaylistName);
-            } catch (FileSystemException e) {
-                Toast.makeText(getContext(), R.string.file_not_found,
-                        Toast.LENGTH_LONG).show();
-            }
-        } else {
-            lyricQueue.queueLyricForPlaying(lyricName);
-        }
+        lyricQueue.queueLyricsForPlaying(lyricsToPlay, position);
     }
 
     private String getConfigurationMessage(ConfigurationQueryModel config) {

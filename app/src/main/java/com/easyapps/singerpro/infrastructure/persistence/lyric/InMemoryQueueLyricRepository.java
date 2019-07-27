@@ -3,9 +3,9 @@ package com.easyapps.singerpro.infrastructure.persistence.lyric;
 import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;
 import com.easyapps.singerpro.query.model.lyric.ILyricFinder;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -17,31 +17,48 @@ import javax.inject.Singleton;
 @Singleton
 public class InMemoryQueueLyricRepository implements IQueueLyricRepository {
 
-    private final Queue<String> playlistQueue;
-    private final ILyricFinder playlistFinder;
+    private final LinkedList<String> playlistQueue;
+    private int currentLyricPosition;
 
     @Inject
-    public InMemoryQueueLyricRepository(ILyricFinder playlistFinder) {
+    public InMemoryQueueLyricRepository() {
         this.playlistQueue = new LinkedList<>();
-        this.playlistFinder = playlistFinder;
     }
 
     public boolean queueLyricForPlaying(String lyricName) {
         return lyricName != null && !lyricName.isEmpty() && playlistQueue.add(lyricName);
     }
 
-    public String getNextLyricToPlay() {
-        return playlistQueue.poll();
+    @Override
+    public String getPreviousLyric() {
+        currentLyricPosition--;
+
+        return getCurrentLyric();
     }
 
-    public void clearPlaylistQueue(){
+    @Override
+    public String getNextLyric() {
+        currentLyricPosition =
+                currentLyricPosition == playlistQueue.size() - 1 ? -1 : currentLyricPosition + 1;
+
+        return getCurrentLyric();
+    }
+
+    public void clearPlaylistQueue() {
         playlistQueue.clear();
     }
 
     @Override
-    public void queueLyricsForPlaying(String lyricName, String playlistName)throws FileSystemException {
-        List<String> allLyricsToPlay = playlistFinder.getAllLyricNamesFromPlaylist(playlistName, lyricName);
+    public void queueLyricsForPlaying(Collection<String> lyrics, int firstLyric) {
+        currentLyricPosition = firstLyric;
+        playlistQueue.addAll(lyrics);
+    }
 
-        playlistQueue.addAll(allLyricsToPlay);
+    @Override
+    public String getCurrentLyric() {
+        if (currentLyricPosition < 0) {
+            return null;
+        }
+        return playlistQueue.get(currentLyricPosition);
     }
 }

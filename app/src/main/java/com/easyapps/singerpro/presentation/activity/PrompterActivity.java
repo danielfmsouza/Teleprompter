@@ -5,15 +5,13 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.Display;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,11 +21,7 @@ import com.easyapps.singerpro.domain.model.lyric.Configuration;
 import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
 import com.easyapps.singerpro.presentation.component.CustomScrollView;
-import com.easyapps.singerpro.presentation.component.PausablePrompterAnimation;
-import com.easyapps.singerpro.presentation.component.PrompterView;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
-
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -52,20 +46,19 @@ public class PrompterActivity extends AppCompatActivity
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         hideUI();
-        playQueuedLyric(null);
+        startPrompting(lyricQueue.getCurrentLyric());
     }
 
-    private void playQueuedLyric(String lyricPreviouslyPlayed) {
-        mLyricName = lyricQueue.getNextLyricToPlay();
+    private void finishAllPrompting(String lyricPreviouslyPlayed) {
+        backToCallerActivity(lyricPreviouslyPlayed);
+        showToastMessage(R.string.prompting_finished);
+    }
 
-        if (mLyricName == null || mLyricName.isEmpty()) {
-            backToCallerActivity(lyricPreviouslyPlayed);
-            showToastMessage(R.string.prompting_finished);
-        } else {
-            loadFileIntoPrompter(mLyricName);
-            setScrollViewBackgroundColor();
-            verifyTimeBeforeStartAnimation();
-        }
+    private void startPrompting(String lyric) {
+        mLyricName = lyric;
+        loadFileIntoPrompter(lyric);
+        setScrollViewBackgroundColor();
+        verifyTimeBeforeStartAnimation();
     }
 
     private void backToCallerActivity(String fileName) {
@@ -202,8 +195,53 @@ public class PrompterActivity extends AppCompatActivity
 
     @Override
     public void onFinishAnimation(String fileScrolled) {
+        SharedPreferences sharedPref =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        boolean playNext = sharedPref.getBoolean(
+                getResources().getString(R.string.pref_key_playNext), false);
+
+        if (playNext){
+            TextView textView = findViewById(R.id.fullscreen_content);
+            textView.setText("");
+
+            String nextLyric =lyricQueue.getNextLyric();
+            if (nextLyric == null){
+                finishAllPrompting(fileScrolled);
+            }
+            else{
+                startPrompting(nextLyric);
+            }
+        }
+        else{
+            finishAllPrompting(fileScrolled);
+        }
+    }
+
+    @Override
+    public void onSwipeNext(String fileScrolled) {
         TextView textView = findViewById(R.id.fullscreen_content);
         textView.setText("");
-        playQueuedLyric(fileScrolled);
+
+        String nextLyric =lyricQueue.getNextLyric();
+        if (nextLyric == null){
+            finishAllPrompting(fileScrolled);
+        }
+        else{
+            startPrompting(nextLyric);
+        }
+    }
+
+    @Override
+    public void onSwipePrevious(String fileScrolled) {
+        TextView textView = findViewById(R.id.fullscreen_content);
+        textView.setText("");
+
+        String previousLyric =lyricQueue.getPreviousLyric();
+        if (previousLyric == null){
+            finishAllPrompting(fileScrolled);
+        }
+        else{
+            startPrompting(previousLyric);
+        }
     }
 }

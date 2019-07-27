@@ -20,22 +20,23 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
     private int scrollPrevPosition;
     private int bottomScrollYValue;
     private boolean hasFinishedAnimation = false;
-    private OnFinishAnimationCallback onFinishAnimationCallback;
+    private OnFinishAnimationCallback finishAnimationCallback;
 
     private String fileName = "";
     private Configuration timersConfig;
-    private PrompterTimers prompterTimers;
 
     public interface OnFinishAnimationCallback {
         void onFinishAnimation(String fileScrolled);
+        void onSwipeNext(String fileScrolled);
+        void onSwipePrevious(String fileScrolled);
     }
 
     private interface OnFlingListener {
-        public void onFlingStarted();
+        void onFlingStarted();
 
-        public boolean isFlinging();
+        boolean isFlinging();
 
-        public void onFlingStopped();
+        void onFlingStopped();
     }
 
     private OnFlingListener flingListener = new OnFlingListener() {
@@ -58,7 +59,7 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
         public void onFlingStopped() {
             isFlinging = false;
             if (getScrollY() != bottomScrollYValue) {
-                initializeAnimator(getContext(), getScrollY(), bottomScrollYValue);
+                initializeAnimator(getScrollY(), bottomScrollYValue);
                 if (wasAnimationRunning) {
                     animator.start();
                 }
@@ -86,7 +87,7 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
     public CustomScrollView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        setOnFinishAnimationCallback(context);
+        setFinishAnimationCallback(context);
 
         scrollChecker = new Runnable() {
             @Override
@@ -105,20 +106,49 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
         setOnTouchListener(new OnTouchListener() {
             private boolean isDragging = false;
             private boolean wasAnimationRunning = false;
+            private static final int MIN_DISTANCE = 100;
+            private float downX, upX;
 
             public boolean onTouch(View view, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        downX = event.getX();
                         onFingerPress();
                         break;
                     case MotionEvent.ACTION_MOVE:
                         onDragging();
                         break;
                     case MotionEvent.ACTION_UP:
+                        upX = event.getX();
+
+                        float deltaX = downX - upX;
+
+                        // swipe horizontal?
+                        if (Math.abs(deltaX) > MIN_DISTANCE) {
+                            // left or right
+                            if (deltaX < 0) {
+                                onSwipeLeftToRight();
+                                return true;
+                            }
+                            if (deltaX > 0) {
+                                onSwipeRightToLeft();
+                                return true;
+                            }
+                        }
                         onFingerRelease();
                         break;
                 }
                 return false;
+            }
+
+            private void onSwipeRightToLeft() {
+                cancelAnimation();
+                finishAnimationCallback.onSwipeNext(fileName);
+            }
+
+            private void onSwipeLeftToRight() {
+                cancelAnimation();
+                finishAnimationCallback.onSwipePrevious(fileName);
             }
 
             private void onFingerPress() {
@@ -137,7 +167,7 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
             private void onFingerRelease() {
                 if (isDragging) {
                     animator.cancel();
-                    initializeAnimator(getContext(), getScrollY(), bottomScrollYValue);
+                    initializeAnimator(getScrollY(), bottomScrollYValue);
                     if (wasAnimationRunning)
                         animator.start();
                 } else if (!wasAnimationRunning) {
@@ -163,7 +193,7 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
     protected void onScrollChanged(int x, int y, int oldX, int oldY) {
         int diff = (bottomScrollYValue - (getHeight() + getScrollY()));
         if (!hasFinishedAnimation && !flingListener.isFlinging() && bottomScrollYValue != 0 && diff <= 0) {
-            onFinishAnimationCallback.onFinishAnimation(fileName);
+            finishAnimationCallback.onFinishAnimation(fileName);
             hasFinishedAnimation = true;
         } else
             super.onScrollChanged(x, y, oldX, oldY);
@@ -174,14 +204,9 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
         startStopAnimation();
     }
 
-    public void startStop() {
-        startStopAnimation();
-        prompterTimers.startStopCurrentTimer();
-    }
-
     public void startAnimation(TextView tvTimeCounter) {
         setBottomScrollYValue();
-        initializeAnimator(getContext(), 0, bottomScrollYValue);
+        initializeAnimator(0, bottomScrollYValue);
         createAndInitializeTimers(tvTimeCounter);
     }
 
@@ -190,9 +215,9 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
             animator.cancel();
     }
 
-    private void setOnFinishAnimationCallback(Context context) {
+    private void setFinishAnimationCallback(Context context) {
         if (context instanceof OnFinishAnimationCallback) {
-            onFinishAnimationCallback = (OnFinishAnimationCallback) context;
+            finishAnimationCallback = (OnFinishAnimationCallback) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFinishAnimationCallback");
@@ -204,7 +229,7 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
         bottomScrollYValue = view.getBottom();
     }
 
-    private void initializeAnimator(Context context, int fromValue, int toValue) {
+    private void initializeAnimator(int fromValue, int toValue) {
         long duration = (toValue - fromValue) * timersConfig.getScrollSpeed();
         animator = ObjectAnimator.ofInt(this, "scrollY", fromValue, toValue).setDuration(duration);
         animator.setTarget(this);
@@ -217,7 +242,7 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
         final String textTimerStopped = getResources().getString(R.string.tv_timeWaiting);
         final String textTimerRunning = getResources().getString(R.string.tv_timeRunning);
 
-        prompterTimers = new PrompterTimers(
+        PrompterTimers prompterTimers = new PrompterTimers(
                 timersConfig,
                 this,
                 tvCountTimer,
