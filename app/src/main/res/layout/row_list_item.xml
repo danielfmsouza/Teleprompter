@@ -11,8 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/btn_play_description"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/skin" />
+        android:background="?attr/selectableItemBackgroundBorderless"/>
 
     <TextView
         android:id="@+id/tvFileName"

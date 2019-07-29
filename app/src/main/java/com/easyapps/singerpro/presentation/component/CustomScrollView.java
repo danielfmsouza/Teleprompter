@@ -106,7 +106,7 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
         setOnTouchListener(new OnTouchListener() {
             private boolean isDragging = false;
             private boolean wasAnimationRunning = false;
-            private static final int MIN_DISTANCE = 100;
+            private static final int MIN_DISTANCE = 200;
             private float downX, upX;
 
             public boolean onTouch(View view, MotionEvent event) {

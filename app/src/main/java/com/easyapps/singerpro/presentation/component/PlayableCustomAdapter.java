@@ -95,9 +95,12 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     public View getView(final int position, final View convertView, @NonNull final ViewGroup parent) {
         View row = super.getView(position, convertView, parent);
         final Holder holder = new Holder();
+
+        holder.playButton = row.findViewById(R.id.btnPlay);
+
         holder.text = row.findViewById(R.id.tvFileName);
         holder.configs = row.findViewById(R.id.tvFileConfiguration);
-        holder.playButton = row.findViewById(R.id.btnPlay);
+
 
         final String lyricName = getLyricName(position);
         ConfigurationQueryModel config = getConfiguration(position);
@@ -116,6 +119,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         holder.playButton.setFocusable(false);
         holder.playButton.setFocusableInTouchMode(false);
 
+        setPlayButtonIconSelector(holder.playButton, position);
         holder.playButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,6 +130,24 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         mHolders.put(position, holder);
         row.setTag(holder);
         return row;
+    }
+
+    private void setPlayButtonIconSelector(ImageView playButton, int position) {
+        int mod = position % 4;
+        switch (mod) {
+            case 0:
+                playButton.setImageResource(R.drawable.ic_play_selector_orange);
+                break;
+            case 1:
+                playButton.setImageResource(R.drawable.ic_play_selector_green);
+                break;
+            case 2:
+                playButton.setImageResource(R.drawable.ic_play_selector_purple);
+                break;
+            case 3:
+                playButton.setImageResource(R.drawable.ic_play_selector_yellow);
+                break;
+        }
     }
 
     private void setRowClickAction(int position, ListView listView, View convertView) {
