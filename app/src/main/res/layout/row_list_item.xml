@@ -19,10 +19,9 @@
         android:layout_height="wrap_content"
         android:focusable="false"
         android:layout_marginEnd="0dp"
-        android:layout_marginLeft="@dimen/margin_left_song_texts"
         android:layout_marginStart="@dimen/margin_left_song_texts"
-        android:layout_marginRight="0dp"
         android:textColor="@android:color/black"
+        android:fontFamily="@font/gothic"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -33,11 +32,11 @@
         android:layout_below="@id/tvFileName"
         android:focusable="false"
         android:layout_marginEnd="0dp"
-        android:layout_marginLeft="@dimen/margin_left_song_texts"
         android:layout_marginStart="@dimen/margin_left_song_texts"
-        android:layout_marginRight="0dp"
         android:textColor="@android:color/darker_gray"
+        android:fontFamily="@font/gothici"
+        android:textStyle="italic"
         android:textSize="14sp"
-        android:textStyle="italic" />
+        />
 
 </RelativeLayout>

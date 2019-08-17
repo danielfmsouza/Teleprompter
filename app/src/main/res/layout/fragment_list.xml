@@ -27,6 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@color/purplePrimary"
-        app:srcCompat="@drawable/ic_action_add" />
+        app:backgroundTint="@color/orangePrimary"
+        app:srcCompat="@drawable/ic_action_add_old" />
 </FrameLayout>

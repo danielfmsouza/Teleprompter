@@ -5,7 +5,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="actionModeStyle">@style/LStyled.ActionMode</item>
-        <item name="colorAccent">@color/purplePrimary</item>
+        <item name="colorAccent">@color/orangePrimary</item>
+        <item name="android:fontFamily">@font/gothic</item>
     </style>
 
     <style name="LStyled.ActionMode" parent="@style/Widget.AppCompat.ActionMode">

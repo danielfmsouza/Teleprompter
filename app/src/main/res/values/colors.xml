@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#6C5A84</color>
     <color name="colorPrimaryDark">#534072</color>
-    <color name="purplePrimary">#8941af</color>
+    <color name="orangePrimary">#F68F42</color>
     <color name="colorSelectedItem">#d3d3d3</color>
     <color name="colorSelectedItemDark">#3C344C</color>
 </resources>
