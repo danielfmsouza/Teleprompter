@@ -2,8 +2,6 @@ package com.easyapps.singerpro.presentation.component;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -15,11 +13,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;
-import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
 import com.easyapps.singerpro.presentation.activity.PrompterActivity;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 import com.easyapps.singerpro.query.model.lyric.ConfigurationQueryModel;
@@ -107,13 +103,14 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
 
         holder.text.setText(getLyricTitle(lyricName, config));
         holder.configs.setText(getConfigurationMessage(config));
-
         if (mSelection.contains(position)) {
-            row.setBackgroundColor(getContext().getResources().getColor(R.color.colorSelectedItem));
             holder.playButton.setSelected(true);
+//            row.setBackgroundColor(getContext().getResources().getColor(R.color.selectedItem));
+            row.setBackgroundResource(R.drawable.row_list_item_selected);
         } else {
-            row.setBackgroundColor(getContext().getResources().getColor(android.R.color.transparent));
             holder.playButton.setSelected(false);
+//            row.setBackgroundResource(getContext().getResources().get(android.R.color.white));
+            row.setBackgroundResource(R.drawable.row_list_item_white);
         }
 
         holder.playButton.setFocusable(false);
@@ -133,7 +130,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
     }
 
     private void setPlayButtonIconSelector(ImageView playButton, int position) {
-        int mod = position % 4;
+        int mod = position % 3;
         switch (mod) {
             case 0:
                 playButton.setImageResource(R.drawable.ic_play_selector_orange);
@@ -143,9 +140,6 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
                 break;
             case 2:
                 playButton.setImageResource(R.drawable.ic_play_selector_purple);
-                break;
-            case 3:
-                playButton.setImageResource(R.drawable.ic_play_selector_yellow);
                 break;
         }
     }

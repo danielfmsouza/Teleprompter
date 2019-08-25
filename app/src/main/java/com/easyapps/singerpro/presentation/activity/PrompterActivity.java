@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 
-public class PrompterActivity extends AppCompatActivity
+public class PrompterActivity extends BaseActivity
         implements CustomScrollView.OnFinishAnimationCallback {
     private CustomScrollView mPrompter;
     private String mLyricName;

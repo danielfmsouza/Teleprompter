@@ -39,6 +39,7 @@
     <string name="app_name_all_songs">Todas as Músicas</string>
     <string name="app_name">SingerPro</string>
     <string name="search_hint">Pesquisar em SingerPro</string>
+    <string name="maintain_lyric">Manter Letra</string>
     <string name="search_filtered">(Filtrado)</string>
     <string name="btn_create_file_description">Criar uma nova letra</string>
     <string name="btn_play_description">Iniciar Música</string>

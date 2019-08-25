@@ -44,7 +44,7 @@ import dagger.android.AndroidInjection;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity extends BaseActivity implements
         MainListFragment.OnListChangeListener,
         MaintainLyricFragment.OnSaveItemListener {
 
@@ -299,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements
                             try {
                                 mAppService.updatePlaylistName(mCurrentPlaylist, value);
                                 mCurrentPlaylist = value;
-                                setTitle(getString(R.string.app_name) + " - " + mCurrentPlaylist);
+                                setTitle(mCurrentPlaylist);
                                 ActivityUtils.setCurrentPlaylistName(value, getApplicationContext());
                             } catch (FileSystemException | FileNotFoundException e) {
                                 Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();

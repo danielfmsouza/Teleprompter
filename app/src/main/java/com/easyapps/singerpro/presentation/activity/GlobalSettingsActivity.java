@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.presentation.fragment.GlobalSettingsFragment;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
@@ -11,7 +12,7 @@ import com.easyapps.singerpro.presentation.helper.ActivityUtils;
  * Created by daniel on 28/06/2017.
  * Global Settings activity for entire application.
  */
-public class GlobalSettingsActivity extends Activity {
+public class GlobalSettingsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +21,8 @@ public class GlobalSettingsActivity extends Activity {
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new GlobalSettingsFragment())
                 .commit();
+
+        setTitle(getString(R.string.menu_item_global_options_title));
     }
 
     @Override

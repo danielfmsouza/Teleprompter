@@ -40,6 +40,7 @@
     <string name="app_name_all_songs">All Songs</string>
     <string name="app_name">SingerPro</string>
     <string name="search_hint">Search SingerPro</string>
+    <string name="maintain_lyric">Maintain Lyric</string>
     <string name="search_filtered">(Filtered)</string>
     <string name="btn_create_file_description">Create a new lyric file</string>
     <string name="btn_play_description">Play song</string>

@@ -106,25 +106,26 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
         setOnTouchListener(new OnTouchListener() {
             private boolean isDragging = false;
             private boolean wasAnimationRunning = false;
-            private static final int MIN_DISTANCE = 200;
-            private float downX, upX;
+            private static final int MIN_SWIPE_DISTANCE = 200;
+            private static final int MIN_DRAGGING_DISTANCE = 15;
+            private float downX;
+            private float downY;
 
             public boolean onTouch(View view, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         downX = event.getX();
+                        downY = event.getY();
                         onFingerPress();
                         break;
                     case MotionEvent.ACTION_MOVE:
                         onDragging();
                         break;
                     case MotionEvent.ACTION_UP:
-                        upX = event.getX();
-
-                        float deltaX = downX - upX;
 
                         // swipe horizontal?
-                        if (Math.abs(deltaX) > MIN_DISTANCE) {
+                        float deltaX = downX - event.getX();
+                        if (Math.abs(deltaX) > MIN_SWIPE_DISTANCE) {
                             // left or right
                             if (deltaX < 0) {
                                 onSwipeLeftToRight();
@@ -135,7 +136,9 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
                                 return true;
                             }
                         }
-                        onFingerRelease();
+
+                        float deltaY = downY - event.getY();
+                        onFingerRelease(deltaX, deltaY);
                         break;
                 }
                 return false;
@@ -164,8 +167,10 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
                 isDragging = true;
             }
 
-            private void onFingerRelease() {
-                if (isDragging) {
+            private void onFingerRelease(float deltaX, float deltaY) {
+                if (isDragging && (
+                        Math.abs(deltaX) > MIN_DRAGGING_DISTANCE ||
+                        Math.abs(deltaY) > MIN_DRAGGING_DISTANCE)) {
                     animator.cancel();
                     initializeAnimator(getScrollY(), bottomScrollYValue);
                     if (wasAnimationRunning)

@@ -20,8 +20,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".presentation.activity.MainActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEARCH" />
@@ -33,7 +33,9 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".presentation.activity.MaintainLyricActivity" />
+        <activity
+            android:name=".presentation.activity.MaintainLyricActivity"
+            android:label="@string/maintain_lyric" />
         <activity
             android:name=".presentation.activity.PrompterActivity"
             android:configChanges="orientation|screenSize" />

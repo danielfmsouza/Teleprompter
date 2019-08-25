@@ -25,7 +25,7 @@ import dagger.android.AndroidInjection;
  * Activity that controls the creation and update of a Lyric file.
  */
 
-public class MaintainLyricActivity extends AppCompatActivity implements MaintainLyricFragment.OnSaveItemListener {
+public class MaintainLyricActivity extends BaseActivity implements MaintainLyricFragment.OnSaveItemListener {
 
     private String mCurrentPlaylist;
 
@@ -54,6 +54,8 @@ public class MaintainLyricActivity extends AppCompatActivity implements Maintain
         EditText etTextFile = findViewById(R.id.etTextFile);
         if (etTextFile != null)
             etTextFile.setTypeface(Typeface.create(getFontFamily(), Typeface.BOLD));
+
+        setTitle(getString(R.string.maintain_lyric));
     }
 
     @Override

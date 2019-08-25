@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
-public class AboutActivity extends AppCompatActivity {
+public class AboutActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

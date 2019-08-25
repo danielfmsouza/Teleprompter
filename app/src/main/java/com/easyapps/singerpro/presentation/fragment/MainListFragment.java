@@ -230,7 +230,7 @@ public class MainListFragment extends Fragment {
         mFiltered = false;
         ActivityUtils.setCurrentPlaylistName(mCurrentPlaylist, getActivity());
         listAllLyrics();
-        getActivity().setTitle(getString(R.string.app_name) + " - " + getString(R.string.app_name_all_songs));
+        getActivity().setTitle(getString(R.string.app_name_all_songs));
     }
 
     private void setPrimaryStatusBarColor() {
@@ -243,7 +243,7 @@ public class MainListFragment extends Fragment {
     private void setSelectedStatusBarColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (getActivity() != null && getActivity().getWindow() != null)
-                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.colorSelectedItemDark));
+                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.selectedItemDark));
         }
     }
 
@@ -267,7 +267,7 @@ public class MainListFragment extends Fragment {
                 mAdapter = new PlayableCustomAdapter(getActivity(),
                         R.layout.row_list_item, lyrics, R.id.tvFileName, lyricQueue);
                 mListView.setAdapter(mAdapter);
-                getActivity().setTitle(getString(R.string.app_name) + " - " + setListName);
+                getActivity().setTitle(setListName);
                 mCurrentPlaylist = setListName;
                 mFiltered = false;
                 return true;
@@ -441,9 +441,11 @@ public class MainListFragment extends Fragment {
 
         mListView.setEmptyView(getActivity().findViewById(R.id.noResultsSearch));
 
-        if (!mFiltered)
-            getActivity().setTitle(getActivity().getTitle() + " " + getString(R.string.search_filtered));
-
+        if (!mFiltered) {
+            String title = mCurrentPlaylist == null || mCurrentPlaylist.isEmpty() ?
+                    getString(R.string.app_name_all_songs) : mCurrentPlaylist;
+            getActivity().setTitle(title + " " + getString(R.string.search_filtered));
+        }
         mFiltered = true;
     }
 

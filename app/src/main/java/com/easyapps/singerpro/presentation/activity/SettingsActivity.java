@@ -14,7 +14,7 @@ import dagger.android.AndroidInjection;
  * Created by daniel on 08/09/2016.
  * Settings activity for each lyric. The file name is received by parameter.
  */
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends BaseActivity {
     private String mLyricName;
 
     @Override
@@ -29,6 +29,8 @@ public class SettingsActivity extends Activity {
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction().replace(android.R.id.content,
                 SettingsPreferenceFragment.newInstance(mLyricName)).commit();
+
+        setTitle(getString(R.string.title_activity_settings));
     }
 
     @Override

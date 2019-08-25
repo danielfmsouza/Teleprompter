@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6C5A84</color>
-    <color name="colorPrimaryDark">#534072</color>
-    <color name="orangePrimary">#F68F42</color>
-    <color name="colorSelectedItem">#d3d3d3</color>
-    <color name="colorSelectedItemDark">#3C344C</color>
+    <color name="colorPrimary">#FFFF</color>
+    <color name="colorPrimaryDark">#652C90</color>
+    <color name="orangePrimary">#F7931D</color>
+    <color name="greenPrimary">#00A79D</color>
+    <color name="selectedItem">#E6E7E8</color>
+    <color name="selectedItemDark">#9274B1</color>
+    <color name="primaryPlayButton">#E6E7E8</color>
 </resources>

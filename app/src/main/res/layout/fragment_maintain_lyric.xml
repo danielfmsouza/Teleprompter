@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
@@ -14,8 +15,6 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btnSave"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/etFileName"
         android:enabled="true"
@@ -35,7 +34,7 @@
         android:layout_centerHorizontal="true"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/btn_save_name"
-        android:src="@drawable/ic_save"
+        app:srcCompat="@drawable/ic_save"
         android:text="@string/btn_save_name" />
 
     <EditText
@@ -43,9 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/etTextFile"
-        android:layout_alignRight="@+id/etTextFile"
         android:layout_toEndOf="@+id/etSongNumber"
-        android:layout_toRightOf="@+id/etSongNumber"
         android:hint="@string/et_file_name_hint"
         android:inputType="text"
         android:maxLength="@integer/number_max_song_name_size"
@@ -55,7 +52,6 @@
         android:id="@+id/etSongNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:focusable="true"
