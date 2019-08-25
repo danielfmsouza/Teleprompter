@@ -5,6 +5,8 @@
         <item name="colorAccent">@color/greenPrimary</item>
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:fontFamily">@font/gothic</item>
+        <item name="android:actionMenuTextColor">@color/colorPrimaryDark</item>
+        <item name="android:textColorSecondary">@color/colorPrimaryDark</item>
     </style>
 
     <style name="MyActionBar" parent="Widget.AppCompat.ActionBar">

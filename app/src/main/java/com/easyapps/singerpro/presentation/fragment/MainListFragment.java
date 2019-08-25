@@ -124,6 +124,7 @@ public class MainListFragment extends Fragment {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 mode.setTitle(String.valueOf(selectedItems.size()));
+
                 mode.getMenuInflater().inflate(R.menu.menu_contextual_selection, menu);
 
                 MenuItem removeFromPlaylistButton = menu.findItem(R.id.menu_remove_from_playlist);

@@ -105,11 +105,9 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         holder.configs.setText(getConfigurationMessage(config));
         if (mSelection.contains(position)) {
             holder.playButton.setSelected(true);
-//            row.setBackgroundColor(getContext().getResources().getColor(R.color.selectedItem));
             row.setBackgroundResource(R.drawable.row_list_item_selected);
         } else {
             holder.playButton.setSelected(false);
-//            row.setBackgroundResource(getContext().getResources().get(android.R.color.white));
             row.setBackgroundResource(R.drawable.row_list_item_white);
         }
 
