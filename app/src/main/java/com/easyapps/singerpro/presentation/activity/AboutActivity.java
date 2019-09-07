@@ -16,7 +16,7 @@ public class AboutActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        TextView aboutText = (TextView) findViewById(R.id.tvAbout);
+        TextView aboutText = findViewById(R.id.tvAbout);
         Linkify.addLinks(aboutText, Linkify.WEB_URLS);
         hideActionBar();
     }

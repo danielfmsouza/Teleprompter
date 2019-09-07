@@ -119,10 +119,12 @@ public class ActivityUtils {
     private static void setParameter(String value, Intent intent, String paramName) {
         Bundle b = new Bundle();
         b.putString(paramName, value);
-        intent.putExtras(b);
+        if (intent != null)
+            intent.putExtras(b);
     }
 
     private static String getStringParameter(Intent intent, String paramName) {
+        if (intent == null) return null;
         Bundle b = intent.getExtras();
         if (b != null)
             return b.getString(paramName);
@@ -136,7 +138,7 @@ public class ActivityUtils {
     }
 
     public static void startActivity(Activity currentActivity, String playlistName,
-                                     Class activityToStart){
+                                     Class activityToStart) {
         Intent i = new Intent(currentActivity.getApplicationContext(), activityToStart);
 
         String lyricName = ActivityUtils.getLyricFileNameParameter(currentActivity.getIntent());
