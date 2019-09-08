@@ -47,5 +47,5 @@
         android:textAlignment="textEnd"
         android:textColor="@android:color/white"
         android:textSize="18sp"
-        android:textStyle="italic" />
+        android:textStyle="normal" />
 </merge>

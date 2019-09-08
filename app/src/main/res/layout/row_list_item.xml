@@ -6,38 +6,38 @@
     android:gravity="start">
 
     <ImageView
-        android:layout_margin="12dp"
         android:id="@+id/btnPlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/btn_play_description"
-        android:background="?attr/selectableItemBackgroundBorderless"/>
+        android:layout_margin="@dimen/list_item_internal_margin"
+        android:layout_centerVertical="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/btn_play_description" />
 
-    <TextView
-        android:layout_marginTop="12dp"
-        android:id="@+id/tvFileName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="false"
-        android:layout_marginEnd="0dp"
-        android:layout_marginStart="@dimen/margin_left_song_texts"
-        android:textColor="@android:color/black"
-        android:fontFamily="@font/gothic"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tvFileName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_left_song_texts"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="0dp"
+            android:focusable="false"
+            android:fontFamily="@font/gothic"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tvFileConfiguration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvFileName"
-        android:focusable="false"
-        android:layout_marginEnd="0dp"
-        android:layout_marginStart="@dimen/margin_left_song_texts"
-        android:textColor="@android:color/darker_gray"
-        android:fontFamily="@font/gothici"
-        android:textStyle="italic"
-        android:textSize="14sp"
-        />
-
+        <TextView
+            android:id="@+id/tvFileConfiguration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvFileName"
+            android:layout_marginStart="@dimen/margin_left_song_texts"
+            android:layout_marginEnd="@dimen/list_item_internal_margin"
+            android:layout_marginBottom="@dimen/list_item_internal_margin"
+            android:focusable="false"
+            android:fontFamily="@font/gothici"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp"
+            android:textStyle="italic" />
 </RelativeLayout>

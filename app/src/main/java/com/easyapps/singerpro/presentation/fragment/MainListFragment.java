@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -92,12 +91,12 @@ public class MainListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View container, int position, long id) {
                 ActivityUtils.setClickedOnLyric(true, getActivity());
                 setSelectedItem(position);
-                removeSelectedBackgroundColor(parent);
+                removeSelectedBackgroundResource(parent);
 
                 boolean isTablet = getResources().getBoolean(R.bool.isTablet);
                 int orientation = getResources().getConfiguration().orientation;
                 if (isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE)
-                    container.setBackgroundColor(Color.LTGRAY);
+                    container.setBackgroundResource(R.drawable.row_list_item_clicked_tablet);
             }
         };
 
@@ -166,10 +165,10 @@ public class MainListFragment extends Fragment {
         return v;
     }
 
-    private void removeSelectedBackgroundColor(AdapterView<?> parent) {
+    private void removeSelectedBackgroundResource(AdapterView<?> parent) {
         if (parent == null) return;
         for (int a = 0; a < parent.getChildCount(); a++) {
-            parent.getChildAt(a).setBackgroundColor(Color.TRANSPARENT);
+            parent.getChildAt(a).setBackgroundResource(R.drawable.row_list_item_white);
         }
     }
 
@@ -467,7 +466,7 @@ public class MainListFragment extends Fragment {
      * Remove the background color for the last selected item in the list
      */
     public void removeSelection() {
-        removeSelectedBackgroundColor(mListView);
+        removeSelectedBackgroundResource(mListView);
     }
 
     public interface OnListChangeListener {
