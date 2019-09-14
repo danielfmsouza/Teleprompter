@@ -20,6 +20,7 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
     private int scrollPrevPosition;
     private int bottomScrollYValue;
     private boolean hasFinishedAnimation = false;
+    private boolean hasStartedAnimation = false;
     private OnFinishAnimationCallback finishAnimationCallback;
 
     private String fileName = "";
@@ -112,6 +113,8 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
             private float downY;
 
             public boolean onTouch(View view, MotionEvent event) {
+                if (!hasStartedAnimation) return true;
+
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         downX = event.getX();
@@ -213,6 +216,7 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
         setBottomScrollYValue();
         initializeAnimator(0, bottomScrollYValue);
         createAndInitializeTimers(tvTimeCounter);
+        hasStartedAnimation = true;
     }
 
     public void cancelAnimation() {

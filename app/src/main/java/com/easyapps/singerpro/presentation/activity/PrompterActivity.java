@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.Display;
 import android.view.ViewTreeObserver;
@@ -31,7 +30,8 @@ public class PrompterActivity extends BaseActivity
         implements CustomScrollView.OnFinishAnimationCallback {
     private CustomScrollView mPrompter;
     private String mLyricName;
-
+    private CountDownTimer mTimerBeforeStartPrompting;
+    private Toast mToast;
     @Inject
     SharedPreferences sharedPref;
 
@@ -69,7 +69,8 @@ public class PrompterActivity extends BaseActivity
 
     private void showToastMessage(int resourceId) {
         String message = getResources().getString(resourceId);
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        mToast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+        mToast.show();
     }
 
     private void verifyTimeBeforeStartAnimation() {
@@ -92,7 +93,7 @@ public class PrompterActivity extends BaseActivity
     private void countDownTimeBeforeStartAnimation(final int timeBeforeStart, boolean playNext) {
         if (playNext) {
             final int leftover = 500; // I need to add a half second so the toast is shown correctly
-            new CountDownTimer(timeBeforeStart * 1000 + leftover, 1000) {
+            mTimerBeforeStartPrompting = new CountDownTimer(timeBeforeStart * 1000 + leftover, 1000) {
                 int aux = timeBeforeStart;
                 Toast toast = Toast.makeText(getApplicationContext(), "...",
                         Toast.LENGTH_SHORT);
@@ -108,7 +109,8 @@ public class PrompterActivity extends BaseActivity
                     toast.cancel();
                     mPrompter.startAnimation((TextView) findViewById(R.id.tvCountTimer));
                 }
-            }.start();
+            };
+            mTimerBeforeStartPrompting.start();
 
         } else {
             mPrompter.startAnimation((TextView) findViewById(R.id.tvCountTimer));
@@ -191,6 +193,8 @@ public class PrompterActivity extends BaseActivity
         backToCallerActivity(mLyricName);
         showToastMessage(R.string.prompting_canceled);
         mPrompter.cancelAnimation();
+        if (mTimerBeforeStartPrompting != null)
+            mTimerBeforeStartPrompting.cancel();
     }
 
     @Override

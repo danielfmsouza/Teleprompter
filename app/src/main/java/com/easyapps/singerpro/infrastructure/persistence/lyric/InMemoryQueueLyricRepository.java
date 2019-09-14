@@ -6,6 +6,7 @@ import com.easyapps.singerpro.query.model.lyric.ILyricFinder;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -17,7 +18,9 @@ import javax.inject.Singleton;
 @Singleton
 public class InMemoryQueueLyricRepository implements IQueueLyricRepository {
 
+    ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final LinkedList<String> playlistQueue;
+    //todo RETHINK THIS APPROACH URGENTLY!!!!
     private int currentLyricPosition;
 
     @Inject
@@ -26,39 +29,66 @@ public class InMemoryQueueLyricRepository implements IQueueLyricRepository {
     }
 
     public boolean queueLyricForPlaying(String lyricName) {
-        return lyricName != null && !lyricName.isEmpty() && playlistQueue.add(lyricName);
+        lock.writeLock().lock();
+
+        boolean result = lyricName != null && !lyricName.isEmpty() && playlistQueue.add(lyricName);
+
+        lock.writeLock().unlock();
+
+        return result;
     }
 
     @Override
     public String getPreviousLyric() {
+        lock.writeLock().lock();
+
         currentLyricPosition--;
 
-        return getCurrentLyric();
+        String result = getCurrentLyric();
+
+        lock.writeLock().unlock();
+
+        return result;
     }
 
     @Override
     public String getNextLyric() {
+        lock.writeLock().lock();
+
         currentLyricPosition =
                 currentLyricPosition == playlistQueue.size() - 1 ? -1 : currentLyricPosition + 1;
 
-        return getCurrentLyric();
+        String result =  getCurrentLyric();
+
+        lock.writeLock().unlock();
+
+        return result;
     }
 
     public void clearPlaylistQueue() {
+        lock.writeLock().lock();
         playlistQueue.clear();
+        currentLyricPosition = 0;
+        lock.writeLock().unlock();
     }
 
     @Override
     public void queueLyricsForPlaying(Collection<String> lyrics, int firstLyric) {
+        lock.writeLock().lock();
         currentLyricPosition = firstLyric;
         playlistQueue.addAll(lyrics);
+        lock.writeLock().unlock();
     }
 
     @Override
     public String getCurrentLyric() {
+        lock.readLock().lock();
         if (currentLyricPosition < 0) {
             return null;
         }
-        return playlistQueue.get(currentLyricPosition);
+        String result =  playlistQueue.get(currentLyricPosition);
+        lock.readLock().unlock();
+
+        return result;
     }
 }
