@@ -207,6 +207,7 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
         String currentPlaylistName = ActivityUtils.getCurrentPlaylistName(getContext());
         fillQueueToPlay(position);
         ActivityUtils.startActivity((Activity) getContext(), currentPlaylistName, clazz);
+        ActivityUtils.setIsNewLyric(false, getContext());
     }
 
     private void fillQueueToPlay(int position) {
