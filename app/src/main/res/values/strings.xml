@@ -68,7 +68,7 @@
     <string name="rename_playlist">Rename Playlist</string>
     <string name="load_existing_playlist">Load Existing Playlist</string>
     <string name="add_song_playlist">Add Lyric(s) to Playlist</string>
-    <string name="copyright_developer">SingerPro - version 3.0.2\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
+    <string name="copyright_developer">SingerPro - version 3.0.3\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->
     <string name="pref_summary_scrollSpeed">Defines how fast the screen must scroll. It will decrease with higher values.</string>

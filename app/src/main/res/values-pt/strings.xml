@@ -67,7 +67,7 @@
     <string name="rename_playlist">Renomear Repertório</string>
     <string name="load_existing_playlist">Carregar Repertório Existente</string>
     <string name="add_song_playlist">Adicionar Letra(s) ao Repertório</string>
-    <string name="copyright_developer">SingerPro - versão 3.0.2\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
+    <string name="copyright_developer">SingerPro - versão 3.0.3\nEasyApps - Daniel Faria\nGitHub: https://github.com/danielfmsouza/</string>
 
     <!-- Strings related to Preferences -->
     <string name="pref_summary_scrollSpeed">Define o quão rápido a tela deve rolar. A velocidade da rolagem diminuirá com valores mais altos.</string>

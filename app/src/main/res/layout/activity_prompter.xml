@@ -33,6 +33,8 @@
             android:focusable="false"
             android:gravity="bottom"
             android:textColor="#ffffff"
+            android:layout_marginStart="@dimen/prompter_margin"
+            android:layout_marginEnd="@dimen/prompter_margin"
             android:textSize="50sp"
             android:textStyle="bold" />
     </com.easyapps.singerpro.presentation.component.CustomScrollView>
@@ -47,5 +49,6 @@
         android:textAlignment="textEnd"
         android:textColor="@android:color/white"
         android:textSize="18sp"
+        android:layout_margin="@dimen/prompter_margin"
         android:textStyle="normal" />
 </merge>
