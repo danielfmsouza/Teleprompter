@@ -45,7 +45,7 @@ public class InMemoryQueueLyricRepository implements IQueueLyricRepository {
     @Override
     public String getNextLyric() {
         currentLyricPosition =
-                currentLyricPosition == playlistQueue.size() - 1 ? -1 : currentLyricPosition + 1;
+                currentLyricPosition >= playlistQueue.size() - 1 ? -1 : currentLyricPosition + 1;
 
         String result =  getCurrentLyric();
 
@@ -65,9 +65,10 @@ public class InMemoryQueueLyricRepository implements IQueueLyricRepository {
 
     @Override
     public String getCurrentLyric() {
-        if (currentLyricPosition < 0) {
+        if (currentLyricPosition < 0 || currentLyricPosition >= playlistQueue.size()) {
             return null;
         }
+
         String result =  playlistQueue.get(currentLyricPosition);
         return result;
     }

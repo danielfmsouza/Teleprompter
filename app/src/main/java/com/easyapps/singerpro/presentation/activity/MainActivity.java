@@ -367,7 +367,9 @@ public class MainActivity extends BaseActivity implements
     }
 
     public void showAllLyrics(MenuItem item) {
-        getMainListFragment().showAllLyrics();
+        MainListFragment frag = getMainListFragment();
+        if (frag != null)
+            frag.showAllLyrics();
         mCurrentPlaylist = "";
         MenuItem menuRenamePlaylist = mMenu.findItem(R.id.menu_rename_playlist);
         menuRenamePlaylist.setVisible(false);
