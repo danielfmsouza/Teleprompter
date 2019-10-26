@@ -84,8 +84,9 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
         setFinishAnimationCallback(context);
 
         setOnTouchListener(new OnTouchListener() {
-
+            private static final int MIN_SWIPE_DISTANCE = 200;
             private static final int MIN_DRAGGING_DISTANCE = 30;
+            private float downX;
             private float downY;
 
             public boolean onTouch(View view, MotionEvent event) {
@@ -93,6 +94,7 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        downX = event.getX();
                         downY = event.getY();
                         onFingerPress();
                         break;
@@ -101,10 +103,32 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
                         break;
                     case MotionEvent.ACTION_UP:
                         float deltaY = downY - event.getY();
-                        onFingerRelease(deltaY);
+                        float deltaX = downX - event.getX();
+                        if (Math.abs(deltaX) > MIN_SWIPE_DISTANCE) {
+                            // left or right
+                            if (deltaX < 0) {
+                                onSwipeLeftToRight();
+                                return true;
+                            }
+                            if (deltaX > 0) {
+                                onSwipeRightToLeft();
+                                return true;
+                            }
+                        }
+                        onFingerRelease(deltaX, deltaY);
                         break;
                 }
                 return false;
+            }
+
+            private void onSwipeRightToLeft() {
+                cancelAnimation();
+                finishAnimationCallback.onSwipeNext(fileName);
+            }
+
+            private void onSwipeLeftToRight() {
+                cancelAnimation();
+                finishAnimationCallback.onSwipePrevious(fileName);
             }
 
             private void onFingerPress() {
@@ -117,8 +141,9 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
                 isDragging = true;
             }
 
-            private void onFingerRelease(float deltaY) {
-                if (Math.abs(deltaY) < MIN_DRAGGING_DISTANCE) {
+            private void onFingerRelease(float deltaX, float deltaY) {
+                if (Math.abs(deltaY) < MIN_DRAGGING_DISTANCE &&
+                        Math.abs(deltaX) < MIN_DRAGGING_DISTANCE ) {
                     if (wasAnimationRunning)
                         animator.pause();
                     else {

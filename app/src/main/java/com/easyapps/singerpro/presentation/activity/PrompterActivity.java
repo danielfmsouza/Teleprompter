@@ -204,19 +204,17 @@ public class PrompterActivity extends BaseActivity
         boolean playNext = sharedPref.getBoolean(
                 getResources().getString(R.string.pref_key_playNext), false);
 
-        if (playNext){
+        if (playNext) {
             TextView textView = findViewById(R.id.fullscreen_content);
             textView.setText("");
 
-            String nextLyric =lyricQueue.getNextLyric();
-            if (nextLyric == null){
+            String nextLyric = lyricQueue.getNextLyric();
+            if (nextLyric == null) {
                 finishAllPrompting(fileScrolled);
-            }
-            else{
+            } else {
                 startPrompting(nextLyric);
             }
-        }
-        else{
+        } else {
             finishAllPrompting(fileScrolled);
         }
     }
@@ -226,11 +224,10 @@ public class PrompterActivity extends BaseActivity
         TextView textView = findViewById(R.id.fullscreen_content);
         textView.setText("");
 
-        String nextLyric =lyricQueue.getNextLyric();
-        if (nextLyric == null){
+        String nextLyric = lyricQueue.getNextLyric();
+        if (nextLyric == null) {
             finishAllPrompting(fileScrolled);
-        }
-        else{
+        } else {
             startPrompting(nextLyric);
         }
     }
@@ -240,11 +237,10 @@ public class PrompterActivity extends BaseActivity
         TextView textView = findViewById(R.id.fullscreen_content);
         textView.setText("");
 
-        String previousLyric =lyricQueue.getPreviousLyric();
-        if (previousLyric == null){
+        String previousLyric = lyricQueue.getPreviousLyric();
+        if (previousLyric == null) {
             finishAllPrompting(fileScrolled);
-        }
-        else{
+        } else {
             startPrompting(previousLyric);
         }
     }
