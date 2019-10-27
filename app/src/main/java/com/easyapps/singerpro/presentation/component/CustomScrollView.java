@@ -2,6 +2,7 @@ package com.easyapps.singerpro.presentation.component;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,6 +22,8 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
     private Runnable scrollChecker;
     private int scrollPrevPosition;
     private int bottomScrollYValue;
+    private int screenWidth;
+    private int minSwipeDistance;
     private boolean hasFinishedAnimation = false;
     private boolean hasStartedAnimation = false;
     private OnFinishAnimationCallback finishAnimationCallback;
@@ -81,10 +84,11 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
     public CustomScrollView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        handleOrientationChange(getScreenWidth());
+
         setFinishAnimationCallback(context);
 
         setOnTouchListener(new OnTouchListener() {
-            private static final int MIN_SWIPE_DISTANCE = 200;
             private static final int MIN_DRAGGING_DISTANCE = 30;
             private float downX;
             private float downY;
@@ -103,8 +107,9 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
                         break;
                     case MotionEvent.ACTION_UP:
                         float deltaY = downY - event.getY();
+
                         float deltaX = downX - event.getX();
-                        if (Math.abs(deltaX) > MIN_SWIPE_DISTANCE) {
+                        if (Math.abs(deltaX) > minSwipeDistance) {
                             // left or right
                             if (deltaX < 0) {
                                 onSwipeLeftToRight();
@@ -199,6 +204,14 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
         bottomScrollYValue = view.getBottom();
     }
 
+    private static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    private void setMinSwipeDistance(int minSwipeDistance) {
+        this.minSwipeDistance = minSwipeDistance;
+    }
+
     private void initializeAnimator(int fromValue, int toValue) {
         long duration = (toValue - fromValue) * timersConfig.getScrollSpeed();
         if (animator != null) animator.pause();
@@ -243,5 +256,10 @@ public class CustomScrollView extends ScrollView implements PrompterTimers.Timer
 
     public void setTimersConfig(Configuration timersConfig) {
         this.timersConfig = timersConfig;
+    }
+
+    public void handleOrientationChange(int newScreenWidth) {
+        this.screenWidth = newScreenWidth;
+        setMinSwipeDistance(newScreenWidth / 2);
     }
 }

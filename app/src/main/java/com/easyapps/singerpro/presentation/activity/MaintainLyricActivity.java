@@ -24,7 +24,6 @@ import dagger.android.AndroidInjection;
  * Created by Daniel on 2017-12-28.
  * Activity that controls the creation and update of a Lyric file.
  */
-
 public class MaintainLyricActivity extends BaseActivity implements MaintainLyricFragment.OnSaveItemListener {
 
     private String mCurrentPlaylist;

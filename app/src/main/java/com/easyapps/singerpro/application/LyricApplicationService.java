@@ -27,7 +27,6 @@ import javax.inject.Inject;
  * Application service that manages all calls for Lyric aggregate.
  * Created by daniel on 03/10/2016.
  */
-
 public class LyricApplicationService {
 
     private ILyricRepository lyricRepository;
@@ -52,7 +51,7 @@ public class LyricApplicationService {
         return ILyricRepository.TEMP_LYRIC_NAME;
     }
 
-    public void addLyric(AddLyricCommand cmd) throws Exception {
+     public void addLyric(AddLyricCommand cmd) throws Exception {
         Lyric lyric = Lyric.newInstance(cmd.getName(), cmd.getContent());
 
         configurationRepository.addOrUpdateSongNumber(cmd.getName(), cmd.getSongNumber());

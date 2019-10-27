@@ -1,6 +1,7 @@
 package com.easyapps.singerpro.presentation.activity;
 
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -47,6 +48,16 @@ public class PrompterActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         hideUI();
         startPrompting(lyricQueue.getCurrentLyric());
+    }
+
+    @Override
+    public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (mPrompter != null){
+            int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+            mPrompter.handleOrientationChange(width);
+        }
     }
 
     private void finishAllPrompting(String lyricPreviouslyPlayed) {
