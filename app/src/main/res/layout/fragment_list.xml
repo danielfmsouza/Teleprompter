@@ -1,34 +1,33 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.easyapps.singerpro.presentation.fragment.MainListFragment">
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:choiceMode="multipleChoice"
         android:background="@drawable/list_view_background"
+        android:choiceMode="multipleChoice"
+        android:descendantFocusability="blocksDescendants"
         android:divider="@android:color/transparent"
         android:dividerHeight="10.0sp"
+        android:drawSelectorOnTop="true"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:drawSelectorOnTop="true"
-        android:scrollbars="none"
-        android:descendantFocusability="blocksDescendants">
-    </ListView>
+        android:scrollbars="none" />
 
     <TextView
         android:id="@+id/noResultsSearch"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="No Results"
         android:gravity="center"
+        android:text="@string/search_no_results"
         android:visibility="gone" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

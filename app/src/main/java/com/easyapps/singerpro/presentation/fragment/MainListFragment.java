@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +19,8 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.application.LyricApplicationService;
@@ -59,9 +60,6 @@ public class MainListFragment extends Fragment {
 
     @Inject
     IQueueLyricRepository lyricQueue;
-
-    public MainListFragment() {
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -373,12 +371,10 @@ public class MainListFragment extends Fragment {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        deleteFiles();
-                        mode.finish();
-                        selectedItems.clear();
-                        break;
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    deleteFiles();
+                    mode.finish();
+                    selectedItems.clear();
                 }
             }
         };

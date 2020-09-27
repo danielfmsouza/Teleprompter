@@ -3,9 +3,9 @@ package com.easyapps.singerpro.infrastructure.persistence.lyric;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 
 import com.easyapps.singerpro.BuildConfig;
 import com.easyapps.singerpro.R;
@@ -20,8 +20,6 @@ import java.io.ObjectOutputStream;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.inject.Scope;
-import javax.inject.Singleton;
 
 /**
  * Implementation of IConfigurationRepository specific for an Android Shared Preference.

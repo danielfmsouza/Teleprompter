@@ -1,6 +1,6 @@
 package com.easyapps.singerpro.domain.model.lyric;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Represents each configuration that a Lyric holds.

@@ -2,7 +2,7 @@ package com.easyapps.singerpro.infrastructure.persistence.lyric;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.domain.model.lyric.IPlaylistRepository;

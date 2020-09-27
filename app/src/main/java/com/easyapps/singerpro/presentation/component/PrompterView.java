@@ -1,23 +1,17 @@
 package com.easyapps.singerpro.presentation.component;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.text.Html;
-import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.presentation.helper.CountDownTimer;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +21,7 @@ import java.util.List;
  * View ready to hold a animated text on the screen. Besides that, it stills controls
  * CountDownTimerPrompter instances.
  */
-public class PrompterView extends android.support.v7.widget.AppCompatTextView {
+public class PrompterView extends androidx.appcompat.widget.AppCompatTextView {
     private int animationId;
 
     private int scrollSpeed;

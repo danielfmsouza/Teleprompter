@@ -7,7 +7,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.app.ActionBar;
 import android.text.Html;
 import android.view.Display;
 import android.view.ViewTreeObserver;
