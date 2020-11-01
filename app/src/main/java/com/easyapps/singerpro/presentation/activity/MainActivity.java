@@ -13,7 +13,6 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 
 import android.view.LayoutInflater;
@@ -74,7 +73,7 @@ public class MainActivity extends BaseActivity implements
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createLyric();
+                showMaintainLyricFeature();
             }
         });
         verifyDetailsFragment();
@@ -108,13 +107,21 @@ public class MainActivity extends BaseActivity implements
     private void verifyDetailsFragment() {
         MaintainLyricFragment contentFragment = (MaintainLyricFragment) getFragmentManager()
                 .findFragmentById(R.id.details_frag);
-
+        boolean isTablet = getResources().getBoolean(R.bool.isTablet);
+//        if (contentFragment != null &&
+//                isTablet &&
+//                getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
+//            MainListFragment listFragment = getMainListFragment();
+//
+//            if (!listFragment.selectCurrentItem()) {
+//                createLyric();
+//            }
+//        }
         if (contentFragment != null) {
             MainListFragment listFragment = getMainListFragment();
-
-            if (!listFragment.selectCurrentItem()) {
-                createLyric();
-            }
+//            if (!listFragment.selectCurrentItem()) {
+                showMaintainLyricFeature();
+//            }
         }
     }
 
@@ -312,7 +319,7 @@ public class MainActivity extends BaseActivity implements
         d.show();
     }
 
-    private void createLyric() {
+    private void showMaintainLyricFeature() {
         MaintainLyricFragment contentFragment = (MaintainLyricFragment) getFragmentManager()
                 .findFragmentById(R.id.details_frag);
 

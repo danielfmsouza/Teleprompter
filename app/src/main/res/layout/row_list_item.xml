@@ -25,6 +25,7 @@
             android:fontFamily="@font/gothic"
             android:textColor="@android:color/black"
             android:textSize="18sp"
+            android:maxLines="1"
             android:textStyle="bold" />
 
         <TextView

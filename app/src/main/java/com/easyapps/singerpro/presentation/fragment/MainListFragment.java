@@ -196,7 +196,7 @@ public class MainListFragment extends Fragment {
     private void setSelectedItem(int position) {
         if (position < 0) return;
         mPositionClicked = position;
-        ActivityUtils.setCurrentSelectedLyric(mPositionClicked, getActivity());
+        ActivityUtils.setCurrentListViewPosition(mPositionClicked, getActivity());
         ActivityUtils.setIsNewLyric(false, getActivity());
         mListener.onItemSelected(mAdapter.getLyricName(position));
     }
@@ -473,7 +473,7 @@ public class MainListFragment extends Fragment {
     public boolean selectCurrentItem() {
         if (mAdapter != null && !mAdapter.isEmpty() && !ActivityUtils.isNewLyric(getActivity())) {
             ActivityUtils.setClickedOnLyric(false, getActivity());
-            setSelectedItem(ActivityUtils.getCurrentSelectedLyric(getActivity()));
+            setSelectedItem(ActivityUtils.getCurrentListViewPosition(getActivity()));
             return true;
         }
         return false;
