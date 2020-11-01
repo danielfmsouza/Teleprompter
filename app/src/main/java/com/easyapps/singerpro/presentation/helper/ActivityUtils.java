@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.widget.Toast;
 
 import com.easyapps.singerpro.R;
@@ -35,6 +37,14 @@ public class ActivityUtils {
 
     public static void setCurrentSelectedLyric(int position, Context context) {
         setPreference(position, context, R.string.pref_key_currentSelectedLyric);
+    }
+
+    public static void setCurrentListViewPosition(int listViewPosition, Context context) {
+        setPreference(listViewPosition, context, R.string.pref_key_currentListViewPosition);
+    }
+
+    public static void setCurrentListViewPositionOffset(int listViewPositionOffset, Context context) {
+        setPreference(listViewPositionOffset, context, R.string.pref_key_currentListViewPositionOffset);
     }
 
     public static void setIsNewLyric(boolean value, Context context) {
@@ -81,6 +91,14 @@ public class ActivityUtils {
 
     public static int getCurrentSelectedLyric(Context context) {
         return getIntPreference(R.string.pref_key_currentSelectedLyric, context, -1);
+    }
+
+    public static int getCurrentListViewPosition(Context context) {
+        return getIntPreference(R.string.pref_key_currentListViewPosition, context, -1);
+    }
+
+    public static int getCurrentListViewPositionOffset(Context context){
+        return getIntPreference(R.string.pref_key_currentListViewPositionOffset, context, 0);
     }
 
     public static boolean isNewLyric(Context context) {

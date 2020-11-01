@@ -18,6 +18,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -26,6 +27,7 @@ import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.application.LyricApplicationService;
 import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;
 import com.easyapps.singerpro.infrastructure.persistence.lyric.FileSystemException;
+import com.easyapps.singerpro.presentation.component.CustomListView;
 import com.easyapps.singerpro.presentation.component.PlayableCustomAdapter;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 import com.easyapps.singerpro.query.model.lyric.LyricQueryModel;
@@ -50,7 +52,7 @@ public class MainListFragment extends Fragment {
     private ArrayList<Integer> selectedItems = new ArrayList<>();
     private int mPositionClicked;
     private PlayableCustomAdapter mAdapter;
-    private ListView mListView;
+    private CustomListView mListView;
     private OnListChangeListener mListener;
     private String mCurrentPlaylist = "";
     private boolean mFiltered;
@@ -77,12 +79,21 @@ public class MainListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_list, container, false);
+        final int position = ActivityUtils.getCurrentListViewPosition(getActivity());
+        int positionOffset = ActivityUtils.getCurrentListViewPositionOffset(getActivity());
 
         mListView = v.findViewById(R.id.list);
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         mListView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-
         loadLyricsFromPlaylist(mCurrentPlaylist);
+
+        int paddingValue = (int) getResources().getDimension(R.dimen.list_view_padding);
+        int dividerValue = (int) getResources().getDimension(R.dimen.list_view_divider_size);
+
+        // the final offset considers the top padding (added twice)
+        // and the divider is multiplied by the amount of items that appear from the current position to the first
+        int calculatedOffset = positionOffset + paddingValue + (dividerValue * position);
+        mListView.setSelectionFromTop(position, (calculatedOffset - paddingValue) * -1);
 
         AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -160,6 +171,18 @@ public class MainListFragment extends Fragment {
             }
         });
 
+        mListView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            public void onLayoutChange(View v, int left, int top, int right,
+                                       int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                v.removeOnLayoutChangeListener(this);
+                View row = mListView.getViewByPosition(position);
+                TextView test = row.findViewById(R.id.tvFileName);
+                System.out.println("SONG NAME: " + test.getText());
+                int itemHeight = row.getHeight();
+                System.out.println("HEIGHT OF THE ELEMENT: " + itemHeight);
+            }
+        });
+
         return v;
     }
 
@@ -220,6 +243,8 @@ public class MainListFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        ActivityUtils.setCurrentListViewPosition(mListView.getFirstVisiblePosition(), getActivity());
+        ActivityUtils.setCurrentListViewPositionOffset(mListView.getVerticalScrollOffset(), getActivity());
         mListener = null;
     }
 

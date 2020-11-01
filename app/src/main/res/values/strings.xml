@@ -106,6 +106,8 @@
     <string name="pref_key_timeBeforeStart" translatable="false">pref_timeBeforeStart</string>
     <string name="pref_key_currentPlaylistName" translatable="false">pref_currentPlaylistName</string>
     <string name="pref_key_currentSelectedLyric" translatable="false">pref_currentSelectedLyric</string>
+    <string name="pref_key_currentListViewPosition" translatable="false">pref_currentListViewPosition</string>
+    <string name="pref_key_currentListViewPositionOffset" translatable="false">pref_currentListViewPositionOffset</string>
     <string name="pref_key_isNewLyric" translatable="false">pref_isNewLyric</string>
     <string name="pref_key_clickedOnLyric" translatable="false">pref_clickedOnLyric</string>
     <string name="app_logo_description" translatable="false">App logo</string>

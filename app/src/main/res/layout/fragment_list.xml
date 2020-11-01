@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.easyapps.singerpro.presentation.fragment.MainListFragment">
 
-    <ListView
+    <com.easyapps.singerpro.presentation.component.CustomListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,10 +13,8 @@
         android:choiceMode="multipleChoice"
         android:descendantFocusability="blocksDescendants"
         android:divider="@android:color/transparent"
-        android:dividerHeight="10.0sp"
+        android:dividerHeight="@dimen/list_view_divider_size"
         android:drawSelectorOnTop="true"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
         android:scrollbars="none" />
 
     <TextView

@@ -4,14 +4,14 @@ android {
     signingConfigs {
         config {
             keyAlias 'AndroidKey'
-            storeFile file('/Users/karinasantanadasilva/StudioProjects/android-new.jks')
+            storeFile file('/Users/karina/StudioProjects/android-new.jks')
         }
     }
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId 'com.easyapps.singerpro'
         minSdkVersion 19
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 34
         versionName '3.0.4'
         vectorDrawables.useSupportLibrary = true

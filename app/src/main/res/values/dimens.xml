@@ -9,4 +9,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="list_item_internal_margin">12dp</dimen>
     <dimen name="prompter_margin">15dp</dimen>
+    <dimen name="list_view_padding">12dp</dimen>
+    <dimen name="list_view_divider_size">10sp</dimen>
 </resources>

@@ -10,9 +10,12 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -64,9 +67,7 @@ public class MainActivity extends BaseActivity implements
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
         mCurrentPlaylist = ActivityUtils.getCurrentPlaylistName(this);
-
         handleIntent(getIntent());
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -99,7 +100,7 @@ public class MainActivity extends BaseActivity implements
         }
 
         MainListFragment listFragment = getMainListFragment();
-        if (listFragment != null){
+        if (listFragment != null) {
             listFragment.filterLyrics(normalizedQuery);
         }
     }
@@ -472,7 +473,7 @@ public class MainActivity extends BaseActivity implements
 
     private void clearSearchQuery() {
         Intent intent = getIntent();
-        if (intent != null){
+        if (intent != null) {
             intent.setAction(Intent.ACTION_MAIN);
         }
     }
@@ -480,5 +481,4 @@ public class MainActivity extends BaseActivity implements
     public void search(MenuItem item) {
         onSearchRequested();
     }
-
 }
