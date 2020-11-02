@@ -2,8 +2,10 @@ package com.easyapps.singerpro.presentation.component;
 
 import android.app.Activity;
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -36,10 +38,10 @@ import java.util.Set;
  * select it for deletion
  */
 public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
-    private Map<Integer, Holder> mHolders = new HashMap<>();
+    private final Map<Integer, Holder> mHolders = new HashMap<>();
     private boolean mMultiSelectionEnabled = false;
     private Set<Integer> mSelection = new HashSet<>();
-    private IQueueLyricRepository lyricQueue;
+    private final IQueueLyricRepository lyricQueue;
 
     public PlayableCustomAdapter(Context context, int resource, List<LyricQueryModel> lyrics,
                                  int textViewResourceId,
@@ -96,7 +98,6 @@ public class PlayableCustomAdapter extends ArrayAdapter<LyricQueryModel> {
 
         holder.text = row.findViewById(R.id.tvFileName);
         holder.configs = row.findViewById(R.id.tvFileConfiguration);
-
 
         final String lyricName = getLyricName(position);
         ConfigurationQueryModel config = getConfiguration(position);

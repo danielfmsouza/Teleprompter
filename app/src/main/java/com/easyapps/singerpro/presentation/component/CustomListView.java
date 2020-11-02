@@ -1,9 +1,14 @@
 package com.easyapps.singerpro.presentation.component;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.easyapps.singerpro.R;
+import com.easyapps.singerpro.presentation.helper.ActivityUtils;
 
 public class CustomListView extends ListView {
 
@@ -30,15 +35,5 @@ public class CustomListView extends ListView {
         return -firstElement.getTop() + getFirstVisiblePosition() * firstElement.getHeight();
     }
 
-    public View getViewByPosition(int pos) {
-        final int firstListItemPosition = getFirstVisiblePosition();
-        final int lastListItemPosition = getLastVisiblePosition();
 
-        if (pos < firstListItemPosition || pos > lastListItemPosition) {
-            return getAdapter().getView(pos, null, this);
-        } else {
-            final int childIndex = pos - firstListItemPosition;
-            return getChildAt(childIndex);
-        }
-    }
 }

@@ -18,7 +18,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -79,8 +78,8 @@ public class MainListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_list, container, false);
-        final int position = ActivityUtils.getCurrentListViewPosition(getActivity());
-        int positionOffset = ActivityUtils.getCurrentListViewPositionOffset(getActivity());
+        final int position = ActivityUtils.getCurrentFirstVisibleElement(getActivity());
+        int positionOffset = ActivityUtils.getCurrentFirstVisibleElementOffset(getActivity());
 
         mListView = v.findViewById(R.id.list);
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -104,8 +103,9 @@ public class MainListFragment extends Fragment {
 
                 boolean isTablet = getResources().getBoolean(R.bool.isTablet);
                 int orientation = getResources().getConfiguration().orientation;
-                if (isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE)
+                if (isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     container.setBackgroundResource(R.drawable.row_list_item_clicked_tablet);
+                }
             }
         };
 
@@ -170,19 +170,6 @@ public class MainListFragment extends Fragment {
                 mode.setTitle(String.valueOf(selectedItems.size()));
             }
         });
-
-        mListView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            public void onLayoutChange(View v, int left, int top, int right,
-                                       int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                v.removeOnLayoutChangeListener(this);
-                View row = mListView.getViewByPosition(position);
-                TextView test = row.findViewById(R.id.tvFileName);
-                System.out.println("SONG NAME: " + test.getText());
-                int itemHeight = row.getHeight();
-                System.out.println("HEIGHT OF THE ELEMENT: " + itemHeight);
-            }
-        });
-
         return v;
     }
 
@@ -196,7 +183,7 @@ public class MainListFragment extends Fragment {
     private void setSelectedItem(int position) {
         if (position < 0) return;
         mPositionClicked = position;
-        ActivityUtils.setCurrentListViewPosition(mPositionClicked, getActivity());
+        ActivityUtils.setCurrentSelectedLyric(mPositionClicked, getActivity());
         ActivityUtils.setIsNewLyric(false, getActivity());
         mListener.onItemSelected(mAdapter.getLyricName(position));
     }
@@ -243,10 +230,13 @@ public class MainListFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        ActivityUtils.setCurrentListViewPosition(mListView.getFirstVisiblePosition(), getActivity());
-        ActivityUtils.setCurrentListViewPositionOffset(mListView.getVerticalScrollOffset(), getActivity());
+        if (mListView != null && mListView.getChildCount() > 0) {
+            ActivityUtils.setCurrentFirstVisibleElement(mListView.getFirstVisiblePosition(), getActivity());
+            ActivityUtils.setCurrentFirstVisibleElementOffset(mListView.getVerticalScrollOffset(), getActivity());
+        }
         mListener = null;
     }
+
 
     public void showAllLyrics() {
         mCurrentPlaylist = "";
@@ -473,7 +463,7 @@ public class MainListFragment extends Fragment {
     public boolean selectCurrentItem() {
         if (mAdapter != null && !mAdapter.isEmpty() && !ActivityUtils.isNewLyric(getActivity())) {
             ActivityUtils.setClickedOnLyric(false, getActivity());
-            setSelectedItem(ActivityUtils.getCurrentListViewPosition(getActivity()));
+            setSelectedItem(ActivityUtils.getCurrentSelectedLyric(getActivity()));
             return true;
         }
         return false;

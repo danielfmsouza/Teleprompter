@@ -10,11 +10,6 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.appcompat.app.AlertDialog;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +20,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.application.LyricApplicationService;
 import com.easyapps.singerpro.domain.model.lyric.Lyric;
@@ -34,6 +31,7 @@ import com.easyapps.singerpro.presentation.component.ChecklistCustomAdapter;
 import com.easyapps.singerpro.presentation.fragment.MainListFragment;
 import com.easyapps.singerpro.presentation.fragment.MaintainLyricFragment;
 import com.easyapps.singerpro.presentation.helper.ActivityUtils;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.FileNotFoundException;
 import java.text.DateFormat;
@@ -81,6 +79,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         setIntent(intent);
         handleIntent(intent);
     }
@@ -107,21 +106,11 @@ public class MainActivity extends BaseActivity implements
     private void verifyDetailsFragment() {
         MaintainLyricFragment contentFragment = (MaintainLyricFragment) getFragmentManager()
                 .findFragmentById(R.id.details_frag);
-        boolean isTablet = getResources().getBoolean(R.bool.isTablet);
-//        if (contentFragment != null &&
-//                isTablet &&
-//                getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
-//            MainListFragment listFragment = getMainListFragment();
-//
-//            if (!listFragment.selectCurrentItem()) {
-//                createLyric();
-//            }
-//        }
         if (contentFragment != null) {
             MainListFragment listFragment = getMainListFragment();
-//            if (!listFragment.selectCurrentItem()) {
+            if (!listFragment.selectCurrentItem()) {
                 showMaintainLyricFeature();
-//            }
+            }
         }
     }
 
@@ -244,19 +233,18 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        switch (requestCode) {
-            case PICK_FILE_RESULT_CODE:
-                if (resultCode == RESULT_OK) {
-                    ClipData data = intent.getClipData();
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == PICK_FILE_RESULT_CODE) {
+            if (resultCode == RESULT_OK) {
+                ClipData data = intent.getClipData();
 
-                    if (data != null) {
-                        importFiles(data);
-                    } else {
-                        importFile(intent);
-                    }
-                    showAllLyrics(null);
+                if (data != null) {
+                    importFiles(data);
+                } else {
+                    importFile(intent);
                 }
-                break;
+                showAllLyrics(null);
+            }
         }
     }
 

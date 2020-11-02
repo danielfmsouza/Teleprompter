@@ -35,16 +35,37 @@ public class ActivityUtils {
         setPreference(playlistName, context, R.string.pref_key_currentPlaylistName);
     }
 
+    public static String getCurrentPlaylistName(Context context) {
+        return getStringPreference(R.string.pref_key_currentPlaylistName, context);
+    }
+
+    /**
+     * Used for table mode only, so there is a different format in the current selected lyric
+     * @param position position of the element in the list
+     * @param context activity context
+     */
     public static void setCurrentSelectedLyric(int position, Context context) {
         setPreference(position, context, R.string.pref_key_currentSelectedLyric);
     }
 
-    public static void setCurrentListViewPosition(int listViewPosition, Context context) {
+    public static int getCurrentSelectedLyric(Context context) {
+        return getIntPreference(R.string.pref_key_currentSelectedLyric, context, -1);
+    }
+
+    public static void setCurrentFirstVisibleElement(int listViewPosition, Context context) {
         setPreference(listViewPosition, context, R.string.pref_key_currentListViewPosition);
     }
 
-    public static void setCurrentListViewPositionOffset(int listViewPositionOffset, Context context) {
+    public static int getCurrentFirstVisibleElement(Context context) {
+        return getIntPreference(R.string.pref_key_currentListViewPosition, context, -1);
+    }
+
+    public static void setCurrentFirstVisibleElementOffset(int listViewPositionOffset, Context context) {
         setPreference(listViewPositionOffset, context, R.string.pref_key_currentListViewPositionOffset);
+    }
+
+    public static int getCurrentFirstVisibleElementOffset(Context context){
+        return getIntPreference(R.string.pref_key_currentListViewPositionOffset, context, 0);
     }
 
     public static void setIsNewLyric(boolean value, Context context) {
@@ -53,6 +74,10 @@ public class ActivityUtils {
 
     public static void setClickedOnLyric(boolean clickedOnLyric, Context context) {
         setPreference(clickedOnLyric, context, R.string.pref_key_clickedOnLyric);
+    }
+
+    public static boolean isClickedOnLyric(Context context) {
+        return getBoolPreference(R.string.pref_key_clickedOnLyric, context);
     }
 
     private static void setPreference(String value, Context context, int resource) {
@@ -85,29 +110,11 @@ public class ActivityUtils {
         editor.apply();
     }
 
-    public static String getCurrentPlaylistName(Context context) {
-        return getStringPreference(R.string.pref_key_currentPlaylistName, context);
-    }
-
-    public static int getCurrentSelectedLyric(Context context) {
-        return getIntPreference(R.string.pref_key_currentSelectedLyric, context, -1);
-    }
-
-    public static int getCurrentListViewPosition(Context context) {
-        return getIntPreference(R.string.pref_key_currentListViewPosition, context, -1);
-    }
-
-    public static int getCurrentListViewPositionOffset(Context context){
-        return getIntPreference(R.string.pref_key_currentListViewPositionOffset, context, 0);
-    }
-
     public static boolean isNewLyric(Context context) {
         return getBoolPreference(R.string.pref_key_isNewLyric, context);
     }
 
-    public static boolean isClickedOnLyric(Context context) {
-        return getBoolPreference(R.string.pref_key_clickedOnLyric, context);
-    }
+
 
     @NonNull
     private static String getStringPreference(int resource, Context context) {
