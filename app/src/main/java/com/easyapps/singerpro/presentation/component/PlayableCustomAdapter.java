@@ -2,10 +2,6 @@ package com.easyapps.singerpro.presentation.component;
 
 import android.app.Activity;
 import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -15,6 +11,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.easyapps.singerpro.R;
 import com.easyapps.singerpro.domain.model.lyric.IQueueLyricRepository;

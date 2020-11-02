@@ -78,21 +78,9 @@ public class MainListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_list, container, false);
-        final int position = ActivityUtils.getCurrentFirstVisibleElement(getActivity());
-        int positionOffset = ActivityUtils.getCurrentFirstVisibleElementOffset(getActivity());
-
         mListView = v.findViewById(R.id.list);
-        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        mListView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         loadLyricsFromPlaylist(mCurrentPlaylist);
-
-        int paddingValue = (int) getResources().getDimension(R.dimen.list_view_padding);
-        int dividerValue = (int) getResources().getDimension(R.dimen.list_view_divider_size);
-
-        // the final offset considers the top padding (added twice)
-        // and the divider is multiplied by the amount of items that appear from the current position to the first
-        int calculatedOffset = positionOffset + paddingValue + (dividerValue * position);
-        mListView.setSelectionFromTop(position, (calculatedOffset - paddingValue) * -1);
+        loadListViewPreviousPositionInScreen(true);
 
         AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -171,6 +159,27 @@ public class MainListFragment extends Fragment {
             }
         });
         return v;
+    }
+
+    private void loadListViewPreviousPositionInScreen(boolean doublePadding) {
+        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        mListView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+
+        int position = ActivityUtils.getCurrentFirstVisibleElement(getActivity());
+        int positionOffset = ActivityUtils.getCurrentFirstVisibleElementOffset(getActivity());
+        int paddingValue = (int) getResources().getDimension(R.dimen.list_view_padding);
+        int dividerValue = (int) getResources().getDimension(R.dimen.list_view_divider_size);
+
+        // the final offset considers the top padding (added twice)
+        // and the divider is multiplied by the amount of items that appear from the current position to the first
+        int calculatedOffset = positionOffset + paddingValue + (dividerValue * position);
+        //TODO REMOVE THIS CRAPPY PARAMETER!!!!! THIS IS ONLY TO MAKE IT WORK WHEN CALLING SETTINGS FROM TABLETS
+        if (doublePadding) {
+            mListView.setSelectionFromTop(position, (calculatedOffset - paddingValue) * -1);
+        }
+        else{
+            mListView.setSelectionFromTop(position, (calculatedOffset) * -1);
+        }
     }
 
     private void removeSelectedBackgroundResource(AdapterView<?> parent) {
@@ -471,6 +480,7 @@ public class MainListFragment extends Fragment {
 
     public void refresh() {
         loadLyricsFromPlaylist(mCurrentPlaylist);
+        loadListViewPreviousPositionInScreen(false);
     }
 
     /***
