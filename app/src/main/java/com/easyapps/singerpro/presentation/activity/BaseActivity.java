@@ -13,7 +13,6 @@ import java.text.MessageFormat;
 public class BaseActivity extends AppCompatActivity {
 
     private int titleTextColor;
-    private final String FORMATTED_TITLE = "<font color=\"{0}\"><b>{1}</b></font>";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +29,7 @@ public class BaseActivity extends AppCompatActivity {
     public void setTitle(CharSequence title) {
         if (title == null) title = "";
 
+        String FORMATTED_TITLE = "<font color=\"{0}\"><b>{1}</b></font>";
         String formattedTitle = MessageFormat.format(
                 FORMATTED_TITLE,
                 String.valueOf(titleTextColor),

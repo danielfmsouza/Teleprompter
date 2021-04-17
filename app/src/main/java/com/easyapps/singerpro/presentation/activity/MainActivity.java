@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -182,6 +181,10 @@ public class MainActivity extends BaseActivity implements
         startActivity(AboutActivity.class);
     }
 
+    public void startDonate(MenuItem item) {
+        startActivity(BillingActivity.class);
+    }
+
     public void startGlobalSettings(MenuItem item) {
         startActivity(GlobalSettingsActivity.class);
     }
@@ -214,12 +217,8 @@ public class MainActivity extends BaseActivity implements
 
     public void startImport(MenuItem item) {
         Intent intent;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
-        } else {
-            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        }
+        intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
 

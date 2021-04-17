@@ -61,6 +61,7 @@
     <string name="menu_item_search_lyric">Search</string>
     <string name="menu_item_share_screen_title">Share Screen</string>
     <string name="menu_item_about_title">About</string>
+    <string name="menu_item_donate_title">Donate</string>
     <string name="menu_item_export_title">Export Files</string>
     <string name="menu_item_import_title">Import Files</string>
     <string name="menu_item_global_options_title">Global Options</string>
@@ -68,7 +69,7 @@
     <string name="rename_playlist">Rename Playlist</string>
     <string name="load_existing_playlist">Load Existing Playlist</string>
     <string name="add_song_playlist">Add Lyric(s) to Playlist</string>
-    <string name="copyright_developer">SingerPro - version 3.1.0\nEasyApps</string>
+    <string name="copyright_developer">SingerPro - version 3.1.2\nEasyApps</string>
 
     <!-- Strings related to Preferences -->
     <string name="pref_summary_scrollSpeed">Defines how fast the screen must scroll. It will decrease with higher values.</string>

@@ -61,6 +61,7 @@
     <string name="menu_item_search_lyric">Buscar</string>
     <string name="menu_item_share_screen_title">Compartir Pantalla</string>
     <string name="menu_item_about_title">A propósito</string>
+    <string name="menu_item_donate_title">Donar</string>
     <string name="menu_item_export_title">Exportar Archivos</string>
     <string name="menu_item_import_title">Importar Archivos</string>
     <string name="menu_item_global_options_title">Opciones Globales</string>
@@ -68,7 +69,7 @@
     <string name="rename_playlist">Renombrar Playlist</string>
     <string name="load_existing_playlist">Cargar Playlist existente</string>
     <string name="add_song_playlist">Añadir texto(s) a la Playlist</string>
-    <string name="copyright_developer">SingerPro - versión 3.1.0\nEasyApps</string>
+    <string name="copyright_developer">SingerPro - versión 3.1.2\nEasyApps</string>
 
     <!-- Strings related to Preferences -->
     <string name="pref_summary_scrollSpeed">Define cómo de rápido desfilará la pantalla. Disminuirá con valores más altos.</string>

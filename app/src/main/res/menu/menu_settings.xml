@@ -69,4 +69,10 @@
         android:orderInCategory="104"
         app:showAsAction="never"
         android:onClick="startAbout"/>
+    <item
+        android:id="@+id/menu_donate"
+        android:title="@string/menu_item_donate_title"
+        android:orderInCategory="105"
+        app:showAsAction="never"
+        android:onClick="startDonate"/>
 </menu>
