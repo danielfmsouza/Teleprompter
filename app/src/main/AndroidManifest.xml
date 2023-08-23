@@ -21,7 +21,8 @@
         <activity
             android:name=".presentation.activity.MainActivity"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEARCH" />
