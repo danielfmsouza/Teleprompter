@@ -7,11 +7,11 @@ android {
             storeFile file('/Users/karina/StudioProjects/android-new.jks')
         }
     }
-    compileSdkVersion 33
+    compileSdk 35
     defaultConfig {
         applicationId 'com.easyapps.singerpro'
         minSdkVersion 19
-        targetSdkVersion 33
+        targetSdkVersion 35
         versionCode 39
         versionName '3.1.2'
         vectorDrawables.useSupportLibrary = true
@@ -27,7 +27,8 @@ android {
     }
     productFlavors {
     }
-    lintOptions {
+    namespace 'com.easyapps.singerpro'
+    lint {
         checkReleaseBuilds false
     }
 }
